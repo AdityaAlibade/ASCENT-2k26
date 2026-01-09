@@ -58,6 +58,7 @@ const IntroOverlay = ({ onComplete }: { onComplete: () => void }) => {
       <div className="absolute inset-0 opacity-20 pointer-events-none">
         <div className="absolute top-1/4 left-1/4 w-32 h-32 border border-white/20 rounded-full animate-pulse" />
         <div className="absolute bottom-1/4 right-1/4 w-32 h-32 border border-white/20 animate-pulse delay-700" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[150%] h-[150%] bg-[radial-gradient(circle,rgba(255,0,96,0.05)_0%,transparent_70%)]" />
       </div>
 
       <div className="max-w-2xl text-center space-y-12 relative z-10">
@@ -66,11 +67,11 @@ const IntroOverlay = ({ onComplete }: { onComplete: () => void }) => {
             {step >= 1 && (
               <motion.div
                 key="welcome"
-                initial={{ opacity: 0, scale: 1.1 }}
-                animate={{ opacity: 1, scale: 1 }}
+                initial={{ opacity: 0, scale: 1.1, filter: "blur(10px)" }}
+                animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
                 transition={{ duration: 2 }}
               >
-                <h1 className="font-orbitron text-4xl md:text-6xl text-white font-black tracking-[0.3em] uppercase drop-shadow-[0_0_15px_rgba(255,255,255,0.3)]">
+                <h1 className="font-orbitron text-4xl md:text-7xl text-white font-black tracking-[0.4em] uppercase drop-shadow-[0_0_20px_rgba(255,255,255,0.4)]">
                   WELCOME.
                 </h1>
               </motion.div>
@@ -81,17 +82,22 @@ const IntroOverlay = ({ onComplete }: { onComplete: () => void }) => {
             {step >= 2 && (
               <motion.div
                 key="selected"
-                initial={{ opacity: 0, y: 10 }}
+                initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.5, duration: 1 }}
-                className="space-y-4"
+                transition={{ delay: 0.5, duration: 1.5, ease: "easeOut" }}
+                className="space-y-6"
               >
-                <p className="font-montserrat text-lg md:text-xl text-primary font-bold tracking-[0.4em] uppercase">
+                <p className="font-montserrat text-xl md:text-2xl text-primary font-bold tracking-[0.5em] uppercase text-glow-primary">
                   You have been selected.
                 </p>
-                <p className="font-montserrat text-sm md:text-base text-white/60 tracking-widest uppercase italic">
+                <motion.p 
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 1.5, duration: 2 }}
+                  className="font-montserrat text-base md:text-lg text-white/60 tracking-[0.2em] uppercase italic"
+                >
                   This is your invitation to the Squid Game.
-                </p>
+                </motion.p>
               </motion.div>
             )}
           </AnimatePresence>
@@ -99,17 +105,17 @@ const IntroOverlay = ({ onComplete }: { onComplete: () => void }) => {
 
         {step >= 3 && (
           <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 1 }}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1.5 }}
           >
             <button
               onClick={onComplete}
-              className="group relative px-12 py-4 overflow-hidden bg-transparent border border-primary/50 transition-all duration-500 hover:border-primary"
+              className="group relative px-16 py-5 overflow-hidden bg-transparent border-2 border-primary/30 transition-all duration-700 hover:border-primary hover:shadow-[0_0_30px_rgba(255,0,96,0.4)]"
             >
               <div className="absolute inset-0 bg-primary/10 group-hover:bg-primary/20 transition-colors" />
               <div className="absolute -inset-full bg-gradient-to-r from-transparent via-white/10 to-transparent group-hover:animate-[shimmer_2s_infinite] pointer-events-none" />
-              <span className="relative font-orbitron font-bold text-primary tracking-[0.3em] group-hover:text-white transition-colors">
+              <span className="relative font-orbitron font-black text-primary tracking-[0.4em] text-xl group-hover:text-white transition-colors">
                 CONTINUE
               </span>
             </button>
@@ -118,9 +124,10 @@ const IntroOverlay = ({ onComplete }: { onComplete: () => void }) => {
       </div>
       
       {/* Surveillance scanline and grain */}
-      <div className="absolute inset-0 pointer-events-none overflow-hidden opacity-30">
+      <div className="absolute inset-0 pointer-events-none overflow-hidden opacity-40">
         <div className="scanline" />
-        <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 contrast-150 brightness-50" />
+        <div className="vignette" />
+        <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-30 contrast-150 brightness-50" />
       </div>
 
       <style dangerouslySetInnerHTML={{ __html: `
