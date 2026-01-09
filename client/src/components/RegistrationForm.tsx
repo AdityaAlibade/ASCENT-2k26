@@ -49,9 +49,14 @@ export function RegistrationForm() {
           style={{ backgroundImage: "url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0IiBoZWlnaHQ9IjQiPgo8cmVjdCB3aWR0aD0iNCIgaGVpZ2h0PSI0IiBmaWxsPSIjZjRmNGY0IiBmaWxsLW9wYWNpdHk9IjAuMiIvPgo8L3N2Zz4=')" }}
         >
           {/* Card texture/stamp */}
-          <div className="absolute top-4 right-4 border-4 border-red-700 text-red-700 font-black text-2xl px-3 py-1 rotate-[-15deg] opacity-80 font-orbitron">
-            ELIMINATION: OFF
-          </div>
+          <motion.div 
+            initial={{ scale: 2, opacity: 0 }}
+            animate={{ scale: 1, opacity: 0.8 }}
+            transition={{ delay: 0.5, type: "spring", damping: 12 }}
+            className="absolute top-4 right-4 border-4 border-red-700 text-red-700 font-black text-2xl px-3 py-1 rotate-[-15deg] font-orbitron"
+          >
+            CONFIRMED
+          </motion.div>
 
           <div className="flex justify-center space-x-4 mb-6 text-black/80">
             <Circle size={24} color="#000" />
@@ -60,18 +65,18 @@ export function RegistrationForm() {
           </div>
 
           <div className="text-center space-y-4">
-            <h3 className="font-orbitron text-xl uppercase tracking-widest text-black/60">Player Identification</h3>
+            <h3 className="font-orbitron text-xl uppercase tracking-widest text-black/60">PLAYER ENROLLMENT</h3>
             
             <div className="py-8">
-              <span className="block text-sm font-montserrat font-bold uppercase tracking-wider mb-2">Player Number</span>
-              <span className="font-orbitron text-6xl font-black text-black">
+              <span className="block text-sm font-montserrat font-bold uppercase tracking-wider mb-2 text-black/60">You are now Player</span>
+              <span className="font-orbitron text-7xl font-black text-black text-glow-none">
                 {String(ticketData.number).padStart(3, '0')}
               </span>
             </div>
 
             <div className="border-t-2 border-black/20 pt-4 mt-4">
-              <p className="font-montserrat font-bold text-lg">{ticketData.name}</p>
-              <p className="text-sm font-montserrat mt-1">Status: <span className="text-green-800 font-bold">Active</span></p>
+              <p className="font-montserrat font-bold text-lg uppercase tracking-widest">{ticketData.name}</p>
+              <p className="text-sm font-montserrat mt-2 text-black/60 italic">The game will contact you soon.</p>
             </div>
           </div>
           
@@ -99,13 +104,14 @@ export function RegistrationForm() {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
       onSubmit={form.handleSubmit(onSubmit)}
-      className="space-y-6 bg-black/50 backdrop-blur-sm p-8 border border-white/10 relative"
+      className="space-y-6 bg-black/80 backdrop-blur-md p-10 border-2 border-primary/20 relative shadow-[0_0_50px_rgba(0,0,0,0.5)]"
     >
-      <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary via-purple-500 to-secondary" />
+      <div className="absolute top-0 left-0 w-full h-1.5 bg-primary" />
       
-      <div className="space-y-2 mb-8">
-        <h3 className="font-orbitron text-2xl text-white tracking-wider">Player Application</h3>
-        <p className="text-white/60 font-montserrat text-sm">Complete all fields accurately. False information results in elimination.</p>
+      <div className="space-y-3 mb-10 text-center">
+        <h3 className="font-orbitron text-3xl text-white font-black tracking-[0.2em]">PLAYER ENROLLMENT</h3>
+        <div className="w-16 h-0.5 bg-primary/40 mx-auto" />
+        <p className="text-white/40 font-montserrat text-xs uppercase tracking-widest">Complete all fields. Participation is mandatory upon selection.</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

@@ -433,9 +433,9 @@ export default function Home() {
       <section id="register" className="py-24 px-4 relative z-10">
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-black mb-4 text-white">PLAYER REGISTRATION</h2>
-            <div className="w-24 h-1 bg-primary mx-auto mb-6" />
-            <p className="font-montserrat text-gray-400 max-w-2xl mx-auto">
+            <h2 className="text-4xl md:text-6xl font-black mb-4 text-white tracking-widest drop-shadow-[0_0_15px_rgba(255,0,96,0.3)]">PLAYER ENROLLMENT</h2>
+            <div className="w-32 h-1 bg-primary mx-auto mb-6" />
+            <p className="font-montserrat text-white/40 max-w-2xl mx-auto uppercase tracking-widest text-xs font-bold leading-relaxed">
               By submitting this form, you consent to all terms and conditions of the game. 
               Once the game begins, it cannot be stopped.
             </p>
