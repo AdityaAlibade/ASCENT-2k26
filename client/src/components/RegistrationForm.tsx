@@ -43,14 +43,14 @@ export function RegistrationForm() {
     return (
       <div className="max-w-md mx-auto">
         <motion.div
-          initial={{ scale: 0.9, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          className="bg-[#d2b48c] text-black p-8 rounded-sm shadow-2xl relative overflow-hidden border-4 border-black/10 rotate-1"
+          initial={{ scale: 0.9, opacity: 0, rotate: -5 }}
+          animate={{ scale: 1, opacity: 1, rotate: 1 }}
+          className="arena-card p-8 rounded-sm shadow-2xl relative overflow-hidden rotate-1"
           style={{ backgroundImage: "url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0IiBoZWlnaHQ9IjQiPgo8cmVjdCB3aWR0aD0iNCIgaGVpZ2h0PSI0IiBmaWxsPSIjZjRmNGY0IiBmaWxsLW9wYWNpdHk9IjAuMiIvPgo8L3N2Zz4=')" }}
         >
           {/* Card texture/stamp */}
-          <div className="absolute top-4 right-4 border-4 border-red-700 text-red-700 font-bold text-xl px-2 py-1 rotate-[-15deg] opacity-80 font-orbitron">
-            ACCEPTED
+          <div className="absolute top-4 right-4 border-4 border-red-700 text-red-700 font-black text-2xl px-3 py-1 rotate-[-15deg] opacity-80 font-orbitron">
+            ELIMINATION: OFF
           </div>
 
           <div className="flex justify-center space-x-4 mb-6 text-black/80">

@@ -30,6 +30,10 @@
 
   --radius: 0px; /* Brutalist sharp edges */
 
+  /* Arena Tones */
+  --arena-pale-green: 150 20% 85%;
+  --arena-beige: 35 30% 88%;
+
   --font-orbitron: 'Orbitron', sans-serif;
   --font-montserrat: 'Montserrat', sans-serif;
 
@@ -48,7 +52,7 @@
 
   h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-orbitron);
-    @apply tracking-wider uppercase;
+    @apply tracking-wider uppercase font-black;
   }
 }
 
@@ -62,7 +66,17 @@
   }
 
   .glass-panel {
-    @apply bg-black/40 backdrop-blur-md border border-white/10 shadow-2xl;
+    @apply bg-black/60 backdrop-blur-md border border-white/10 shadow-2xl;
+  }
+
+  .arena-card {
+    background-color: hsl(var(--arena-beige));
+    @apply text-black border-4 border-black/10;
+  }
+
+  .arena-card-green {
+    background-color: hsl(var(--arena-pale-green));
+    @apply text-black border-4 border-black/10;
   }
 
   .scanline {
@@ -70,8 +84,8 @@
       to bottom,
       rgba(255,255,255,0),
       rgba(255,255,255,0) 50%,
-      rgba(0,0,0,0.2) 50%,
-      rgba(0,0,0,0.2)
+      rgba(0,0,0,0.1) 50%,
+      rgba(0,0,0,0.1)
     );
     background-size: 100% 4px;
     position: fixed;
@@ -81,16 +95,25 @@
     bottom: 0;
     pointer-events: none;
     z-index: 50;
-    opacity: 0.15;
-    animation: scanline-move 8s linear infinite;
+    opacity: 0.2;
+    animation: scanline-move 10s linear infinite;
   }
 
   .vignette {
     position: fixed;
     inset: 0;
-    box-shadow: inset 0 0 150px rgba(0, 0, 0, 0.9);
+    box-shadow: inset 0 0 150px rgba(0, 0, 0, 0.95);
     pointer-events: none;
     z-index: 40;
+  }
+
+  .cctv-overlay {
+    position: fixed;
+    inset: 0;
+    border: 40px solid transparent;
+    border-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Cpath d='M0 20 V0 H20 M80 0 H100 V20 M100 80 V100 H80 M20 100 H0 V80' fill='none' stroke='white' stroke-width='2' opacity='0.3'/%3E%3C/svg%3E") 20 stretch;
+    pointer-events: none;
+    z-index: 45;
   }
 
   @keyframes scanline-move {

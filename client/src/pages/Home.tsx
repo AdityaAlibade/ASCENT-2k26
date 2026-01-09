@@ -148,9 +148,14 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen bg-black text-white selection:bg-primary selection:text-white overflow-hidden relative">
+    <div className="min-h-screen bg-black text-white selection:bg-primary selection:text-white overflow-hidden relative font-montserrat">
       <div className="scanline" />
       <div className="vignette" />
+      <div className="cctv-overlay" />
+      <div className="absolute top-8 left-8 z-50 font-mono text-[10px] opacity-40 uppercase tracking-[0.2em] pointer-events-none">
+        REC ● LIVE // CAM_01<br/>
+        SQ_DORMITORY_H1
+      </div>
       <FloatingShapes />
 
       {/* Hero Section */}
@@ -210,39 +215,39 @@ export default function Home() {
         <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
           
           {/* Card 1 */}
-          <div className="glass-panel p-8 group hover:border-primary/50 transition-colors duration-300">
+          <div className="arena-card-green p-8 group hover:scale-[1.02] transition-transform duration-500 cursor-pointer">
             <div className="flex justify-between items-start mb-6">
-              <Trophy className="w-10 h-10 text-primary" />
-              <Circle size={32} color="var(--primary)" />
+              <Trophy className="w-10 h-10 text-black/40" />
+              <Circle size={32} color="#000" opacity={0.3} />
             </div>
-            <h3 className="text-2xl font-bold mb-4 text-white">The Prize</h3>
-            <p className="font-montserrat text-gray-400 leading-relaxed">
+            <h3 className="text-2xl font-black mb-4 text-black">The Prize</h3>
+            <p className="font-montserrat text-black/70 leading-relaxed font-medium">
               45.6 Billion Won awaits the winner. Everything you desire is within reach. Do you have what it takes to seize it?
             </p>
           </div>
 
           {/* Card 2 */}
-          <div className="glass-panel p-8 group hover:border-primary/50 transition-colors duration-300">
+          <div className="arena-card p-8 group hover:scale-[1.02] transition-transform duration-500 cursor-pointer">
             <div className="flex justify-between items-start mb-6">
-              <ShieldAlert className="w-10 h-10 text-primary" />
-              <Triangle size={32} color="var(--primary)" />
+              <ShieldAlert className="w-10 h-10 text-black/40" />
+              <Triangle size={32} color="#000" opacity={0.3} />
             </div>
-            <h3 className="text-2xl font-bold mb-4 text-white">The Rules</h3>
-            <ul className="font-montserrat text-gray-400 space-y-2 list-disc list-inside">
+            <h3 className="text-2xl font-black mb-4 text-black">The Rules</h3>
+            <ul className="font-montserrat text-black/70 space-y-2 list-disc list-inside font-medium">
               <li>Player must compete in 6 games.</li>
               <li>Players who refuse to play will be eliminated.</li>
-              <li className="text-red-500 font-bold">Elimination means death.</li>
+              <li className="text-red-700 font-black italic">Elimination means death.</li>
             </ul>
           </div>
 
           {/* Card 3 */}
-          <div className="glass-panel p-8 group hover:border-primary/50 transition-colors duration-300">
+          <div className="arena-card-green p-8 group hover:scale-[1.02] transition-transform duration-500 cursor-pointer">
             <div className="flex justify-between items-start mb-6">
-              <Video className="w-10 h-10 text-primary" />
-              <Square size={32} color="var(--primary)" />
+              <Video className="w-10 h-10 text-black/40" />
+              <Square size={32} color="#000" opacity={0.3} />
             </div>
-            <h3 className="text-2xl font-bold mb-4 text-white">Surveillance</h3>
-            <p className="font-montserrat text-gray-400 leading-relaxed">
+            <h3 className="text-2xl font-black mb-4 text-black">Surveillance</h3>
+            <p className="font-montserrat text-black/70 leading-relaxed font-medium">
               We are always watching. Fairness is absolute. Any attempt to cheat or subvert the rules will result in immediate termination.
             </p>
           </div>
