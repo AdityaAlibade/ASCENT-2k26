@@ -37,5 +37,26 @@ export async function registerRoutes(
     });
   });
 
+  // Seed initial data if empty
+  const stats = await storage.getPlayerStats();
+  if (stats.totalPlayers === 0) {
+    await storage.createPlayer({
+      name: "Seong Gi-hun",
+      college: "Seoul National University",
+      academicYear: "1993",
+      department: "Business Administration",
+      email: "gihun@squid.game",
+      phone: "010-1234-5678"
+    });
+    await storage.createPlayer({
+      name: "Cho Sang-woo",
+      college: "Seoul National University",
+      academicYear: "1994",
+      department: "Business Administration",
+      email: "sangwoo@squid.game",
+      phone: "010-8765-4321"
+    });
+  }
+
   return httpServer;
 }
