@@ -401,17 +401,33 @@ export default function Home() {
           </div>
 
           {/* Card 2 */}
-          <div className="arena-card p-8 group hover:scale-[1.02] transition-transform duration-500 cursor-pointer">
-            <div className="flex justify-between items-start mb-6">
-              <ShieldAlert className="w-10 h-10 text-black/40" />
-              <Triangle size={32} color="#000" opacity={0.3} />
+          <div className="arena-card p-10 group hover:scale-[1.02] transition-transform duration-500 cursor-pointer relative overflow-hidden">
+            <div className="absolute top-0 right-0 p-2 font-mono text-[8px] opacity-20 uppercase tracking-widest">
+              RULE_BOARD_V1
             </div>
-            <h3 className="text-2xl font-black mb-4 text-black">The Rules</h3>
-            <ul className="font-montserrat text-black/70 space-y-2 list-disc list-inside font-medium">
-              <li>Player must compete in 6 games.</li>
-              <li>Players who refuse to play will be eliminated.</li>
-              <li className="text-red-700 font-black italic">Elimination means death.</li>
+            <div className="flex justify-between items-start mb-8">
+              <ShieldAlert className="w-12 h-12 text-red-700 animate-pulse" />
+              <Triangle size={40} color="#000" opacity={0.4} />
+            </div>
+            <h3 className="text-3xl font-black mb-6 text-black tracking-tighter border-b-2 border-black/10 pb-2">RULES OF THE GAME</h3>
+            <ul className="font-montserrat text-black/80 space-y-6 font-bold uppercase tracking-wide text-sm">
+              <li className="flex gap-3">
+                <span className="text-red-700">●</span>
+                <span>Rule 1: Players must follow instructions without exception.</span>
+              </li>
+              <li className="flex gap-3">
+                <span className="text-red-700">●</span>
+                <span>Rule 2: Failure in any round results in elimination.</span>
+              </li>
+              <li className="flex gap-3">
+                <span className="text-red-700">●</span>
+                <span>Rule 3: Fair play is mandatory. Cheating results in immediate removal.</span>
+              </li>
             </ul>
+            <div className="mt-8 pt-4 border-t border-black/5 flex items-center gap-2">
+               <div className="w-3 h-3 bg-red-700 rounded-full animate-ping" />
+               <span className="text-[10px] text-red-800 font-black tracking-widest">FRONT MAN ANNOUNCEMENT</span>
+            </div>
           </div>
 
           {/* Card 3 */}
@@ -429,6 +445,87 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Prize Section */}
+      <section className="py-24 px-4 relative z-10 bg-black">
+        <div className="max-w-4xl mx-auto text-center">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            className="relative p-12 border-4 border-primary/20 bg-primary/5 overflow-hidden group"
+          >
+            {/* Spotlight Reveal Simulation */}
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(255,0,96,0.2)_0%,transparent_70%)] opacity-0 group-hover:opacity-100 transition-opacity duration-1000" />
+            
+            <Trophy className="w-20 h-20 text-primary mx-auto mb-8 drop-shadow-[0_0_20px_rgba(255,0,96,0.5)]" />
+            <h2 className="text-4xl md:text-6xl font-black text-white mb-6 tracking-widest">THE PRIZE</h2>
+            <div className="w-24 h-1 bg-primary mx-auto mb-8" />
+            
+            <div className="space-y-6">
+              <p className="text-3xl md:text-5xl font-black text-white font-orbitron tracking-tighter italic">
+                45.6 BILLION WON
+              </p>
+              <p className="font-montserrat text-white/70 text-lg md:text-xl uppercase tracking-[0.2em] font-bold">
+                "The reward is worth the risk."
+              </p>
+            </div>
+
+            <div className="mt-12 grid grid-cols-2 md:grid-cols-4 gap-4 text-[10px] font-mono text-white/40 uppercase tracking-widest">
+              <div className="p-4 border border-white/10">Winner Recognition</div>
+              <div className="p-4 border border-white/10">Certificates</div>
+              <div className="p-4 border border-white/10">Interview Exp</div>
+              <div className="p-4 border border-white/10">Career Advance</div>
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Schedule Section */}
+      <section className="py-24 px-4 relative z-10 bg-[#050505] border-y border-white/5">
+        <div className="max-w-4xl mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-black text-white tracking-widest">MISSION SCHEDULE</h2>
+            <div className="w-16 h-1 bg-secondary mx-auto mt-4" />
+          </div>
+
+          <div className="space-y-8">
+            {[
+              { game: "Game 1", date: "Jan 15, 2026", time: "09:00 AM", desc: "The First Selection" },
+              { game: "Game 2", date: "Jan 16, 2026", time: "10:30 AM", desc: "The Test" },
+              { game: "Final Game", date: "Jan 20, 2026", time: "12:00 PM", desc: "The Final Decision" }
+            ].map((item, idx) => (
+              <motion.div 
+                key={idx}
+                initial={{ opacity: 0, x: -20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                className="flex items-center gap-6 p-6 bg-white/5 border border-white/10 hover:border-secondary/50 transition-colors group"
+              >
+                <div className="w-16 h-16 flex items-center justify-center border-2 border-white/20 font-orbitron font-black text-white/40 group-hover:border-secondary group-hover:text-secondary transition-colors">
+                  {idx + 1}
+                </div>
+                <div className="flex-1">
+                  <h4 className="font-orbitron font-black text-xl text-white tracking-wide">{item.game}: {item.desc}</h4>
+                  <p className="font-mono text-xs text-white/40 mt-1 uppercase tracking-widest">{item.date} // {item.time}</p>
+                </div>
+                <div className="w-3 h-3 rounded-full bg-white/10 group-hover:bg-secondary group-hover:shadow-[0_0_10px_rgba(36,159,156,0.8)]" />
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Sponsors Section */}
+      <section className="py-24 px-4 relative z-10">
+        <div className="max-w-6xl mx-auto text-center">
+          <h2 className="text-xl font-black text-white/20 tracking-[0.5em] mb-12">OFFICIAL VIP PARTNERS</h2>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-12 opacity-30 grayscale hover:grayscale-0 transition-all duration-1000">
+            <div className="h-12 bg-white/10 rounded-sm flex items-center justify-center font-orbitron font-black text-xs">V.I.P_ALPHA</div>
+            <div className="h-12 bg-white/10 rounded-sm flex items-center justify-center font-orbitron font-black text-xs">V.I.P_BETA</div>
+            <div className="h-12 bg-white/10 rounded-sm flex items-center justify-center font-orbitron font-black text-xs">V.I.P_GAMMA</div>
+            <div className="h-12 bg-white/10 rounded-sm flex items-center justify-center font-orbitron font-black text-xs">V.I.P_DELTA</div>
+          </div>
+        </div>
+      </section>
+
       {/* Registration Section */}
       <section id="register" className="py-24 px-4 relative z-10">
         <div className="max-w-4xl mx-auto">
@@ -442,6 +539,35 @@ export default function Home() {
           </div>
 
           <RegistrationForm />
+        </div>
+      </section>
+
+      {/* Contact Section */}
+      <section className="py-24 px-4 relative z-10 bg-black">
+        <div className="max-w-2xl mx-auto text-center">
+          <div className="p-1 border border-white/10 bg-white/5 backdrop-blur-sm">
+            <div className="p-8 border border-white/20 flex flex-col items-center gap-8">
+               <Video className="w-12 h-12 text-primary animate-pulse" />
+               <h3 className="font-orbitron font-black text-2xl tracking-widest">CONTROL ROOM</h3>
+               
+               <div className="flex flex-col md:flex-row gap-4 w-full">
+                 <button className="flex-1 bg-white/5 border border-white/20 py-4 font-orbitron font-bold text-xs tracking-widest hover:bg-white hover:text-black transition-all">
+                   CALL SUPPORT
+                 </button>
+                 <button className="flex-1 bg-white/5 border border-white/20 py-4 font-orbitron font-bold text-xs tracking-widest hover:bg-white hover:text-black transition-all">
+                   MESSAGE CONTROL
+                 </button>
+               </div>
+
+               <div className="pt-8">
+                 <button className="w-16 h-16 rounded-full bg-red-600/20 border-4 border-red-600 flex items-center justify-center group relative overflow-hidden">
+                    <div className="absolute inset-0 bg-red-600 opacity-20 group-active:scale-95 transition-transform" />
+                    <div className="w-8 h-8 rounded-full bg-red-600 shadow-[0_0_20px_rgba(220,38,38,0.8)]" />
+                 </button>
+                 <p className="text-[10px] font-mono text-red-600 mt-4 tracking-[0.3em] font-black">EMERGENCY TERMINAL</p>
+               </div>
+            </div>
+          </div>
         </div>
       </section>
 
