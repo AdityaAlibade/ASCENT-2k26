@@ -1,0 +1,172 @@
+🔴 ULTRA-CINEMATIC WEBSITE PROMPT
+
+## OFFICIAL SQUID GAME REGISTRATION EXPERIENCE
+
+### Event Name (Internal): **ASCENT**
+
+---
+
+🎬 OPENING EXPERIENCE (MANDATORY)
+
+Create a fully immersive Squid Game–themed website that feels like an official
+recruitment portal for the Squid Game.
+The site opens with a cinematic intro sequence.
+INTRO SCENE:
+- Black screen
+- Slow ambient hum
+- Fade in to the FRONT MAN standing in a dark control room
+- Surveillance screens flickering behind him
+- Front Man speaks via animated subtitles (no voice needed if not supported):
+  "Welcome.
+   You have been selected.
+   This is your invitation to the Squid Game."
+- Background music:
+  Use Squid Game OST such as:
+  - “Round and Round (Mingle Game Song)” OR
+  - “Jump Rope Song”
+- Music plays softly, eerie, looping
+- A blinking button appears:
+  [ CONTINUE ]
+This intro must feel tense, official, and unsettling.
+
+🟥 MAIN VISUAL IDENTITY
+VISUAL STYLE:
+- 100% Squid Game universe
+- Dormitory halls, playground arenas, control rooms
+- Guards with circle / triangle / square masks
+- CCTV overlays, scanlines, red alert flashes
+- Player numbers appear dynamically
+- Blood-red highlights for elimination or warnings
+COLORS:
+- Jet black backgrounds
+- Neon pink & red accents
+- Pale green / beige arena tones
+TYPOGRAPHY:
+- Large bold condensed fonts
+- Minimal text, maximum impact
+
+ 🟢 LANDING PAGE (AFTER INTRO)
+HERO SECTION:
+- Title: SQUID GAME
+- Subtitle:
+  "A Game Where Only the Best Survive."
+- Subtext:
+  "This competition will test your intelligence, discipline, and composure
+   under pressure."
+- Animated countdown timer:
+  "Next Game Begins In: 48:12:09"
+- Buttons:
+  [ ENTER THE GAME ]
+  [ VIEW RULES ]
+Background:
+- Slow pan of Squid Game dormitory
+- Guards walking in the distance
+- Ambient OST continues
+
+🔺 GAME STRUCTURE (REGISTRATION FLOW)
+SECTION: THE GAMES
+Display the competition as official Squid Game rounds.
+GAME 1 – THE FIRST SELECTION (Gamified Round)
+- Inspired by Red Light Green Light / Mingle
+- Logic, aptitude, reflex-based challenges
+- Visual elimination animation:
+  Player silhouettes fade to red
+GAME 2 – THE TEST (Technical / Coding Round)
+- Control-room-style interface
+- Terminal visuals
+- Difficulty meter labeled:
+  "SURVIVAL RATE"
+GAME 3 – THE FINAL DECISION (Interview)
+- Dark interrogation room
+- Spotlight on participant
+- Front Man silhouette watching
+- Final verdict animation
+
+🧾 PLAYER REGISTRATION (CORE FEATURE)
+SECTION: PLAYER REGISTRATION
+Design registration as official Squid Game onboarding.
+Form Title:
+"PLAYER ENROLLMENT"
+Fields:
+- Player Name
+- College
+- Academic Year
+- Department
+- Email
+- Phone Number
+Upon submission:
+- Assign Player Number dynamically (e.g., Player 067, Player 218)
+- Display confirmation screen:
+  "You are now Player 218.
+   The game will contact you soon."
+- Background music intensifies briefly
+- Guard confirmation stamp animation
+
+📜 RULES (FRONT MAN SPEAKS)
+SECTION: RULES OF THE GAME
+Rules presented as Front Man announcements:
+- Rule 1:
+  Players must follow instructions without exception.
+- Rule 2:
+  Failure in any round results in elimination.
+- Rule 3:
+  Fair play is mandatory. Cheating results in immediate removal.
+Use red warning highlights.
+Background: Rule boards from the Squid Game set.
+
+🕒 SCHEDULE (MISSION BOARD)
+SECTION: GAME SCHEDULE
+Timeline styled like Squid Game mission wall.
+- Game 1: Date & Time
+- Game 2: Date & Time
+- Final Game: Date & Time
+Checkpoints light up as the user scrolls.
+Alarm sound on deadline sections.
+
+🏆 PRIZES (THE REWARD)
+SECTION: THE PRIZE
+- Spotlight reveal animation
+- Description of rewards:
+  - Winner recognition
+  - Certificates
+  - Interview experience
+  - Career advancement
+Tone:
+"The reward is worth the risk."
+
+🤝 SPONSORS (CONTROL ROOM STYLE)
+SECTION: SPONSORS
+- Logos appear on surveillance screens
+- Subtle glow
+- Minimal animation
+
+📞 CONTACT (CONTROL ROOM HELP)
+SECTION: CONTACT
+- Styled as Squid Game control console
+- Buttons:
+  [ CALL SUPPORT ]
+  [ MESSAGE CONTROL ROOM ]
+Emergency red button visual (non-functional).
+
+🔊 AUDIO & INTERACTION RULES
+AUDIO:
+- Background Squid Game OST
+- Hover & click sounds
+- Alarm for eliminations
+- GLOBAL MUTE BUTTON (mandatory)
+INTERACTIONS:
+- Page transitions like entering new arenas
+- Scroll-triggered animations
+- Cinematic pacing
+
+🧠 FINAL EXPERIENCE GOAL
+The user should feel:
+- Nervous
+- Excited
+- Chosen
+- Watched
+- Committed
+This should not feel like a normal registration site.
+It should feel like accepting an invitation to Squid Game.
+
+
