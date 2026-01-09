@@ -172,34 +172,77 @@ export default function Home() {
             <Square className="w-12 h-12 md:w-20 md:h-20 stroke-white" size={80} />
           </div>
 
-          <h1 className="font-orbitron text-5xl md:text-8xl font-black tracking-tighter text-white mb-2">
+          <h1 className="font-orbitron text-5xl md:text-9xl font-black tracking-tighter text-white mb-2 text-glow">
             SQUID GAME
           </h1>
           
-          <p className="font-montserrat text-lg md:text-2xl text-gray-400 tracking-widest uppercase">
+          <p className="font-montserrat text-lg md:text-3xl text-gray-400 tracking-widest uppercase font-bold">
             A Game Where Only the Best Survive
           </p>
 
+          <p className="font-montserrat text-sm md:text-lg text-white/60 max-w-2xl mx-auto leading-relaxed tracking-wide">
+            This competition will test your intelligence, discipline, and composure
+            under pressure.
+          </p>
+
           <div className="py-12">
-            <p className="text-primary font-bold tracking-widest mb-4 font-mono text-sm">NEXT GAME BEGINS IN</p>
+            <p className="text-primary font-black tracking-[0.4em] mb-4 font-orbitron text-sm">NEXT GAME BEGINS IN</p>
             <CountdownTimer />
           </div>
 
-          <motion.a 
-            href="#register"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            className="inline-block bg-primary text-white font-orbitron font-bold text-xl px-12 py-4 tracking-widest hover:shadow-[0_0_30px_rgba(255,0,96,0.6)] transition-all duration-300 border border-white/20"
-          >
-            ENTER THE GAME
-          </motion.a>
+          <div className="flex flex-col md:flex-row items-center justify-center gap-6 mt-8">
+            <motion.a 
+              href="#register"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className="group relative overflow-hidden bg-primary px-12 py-5 font-orbitron font-black text-xl tracking-[0.2em] text-white transition-all hover:shadow-[0_0_30px_rgba(255,0,96,0.6)]"
+            >
+              <div className="absolute inset-0 bg-white/10 -translate-x-full group-hover:translate-x-0 transition-transform duration-300 ease-out skew-x-12" />
+              <span className="relative z-10">ENTER THE GAME</span>
+            </motion.a>
+
+            <motion.a 
+              href="#rules"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className="group relative overflow-hidden bg-transparent border-2 border-white/20 px-12 py-5 font-orbitron font-black text-xl tracking-[0.2em] text-white transition-all hover:border-white hover:bg-white/5"
+            >
+              <span className="relative z-10">VIEW RULES</span>
+            </motion.a>
+          </div>
 
           {stats && (
-            <p className="mt-8 font-mono text-sm text-gray-500">
-              CURRENT PLAYERS REGISTERED: <span className="text-primary font-bold">{stats.totalPlayers}</span>
-            </p>
+            <div className="mt-12 flex items-center justify-center gap-4 font-mono text-sm">
+              <span className="w-2 h-2 rounded-full bg-red-600 animate-pulse" />
+              <span className="text-gray-500 uppercase tracking-widest">
+                PLAYER ENROLLMENT STATUS: <span className="text-primary font-bold">{stats.totalPlayers}</span> / 456
+              </span>
+            </div>
           )}
         </motion.div>
+
+        {/* Background Atmosphere Simulation */}
+        <div className="absolute inset-0 -z-10 overflow-hidden pointer-events-none opacity-40">
+          <div className="absolute inset-0 bg-gradient-to-b from-black via-black/80 to-black" />
+          {/* Simulated dormitory corridor pan */}
+          <motion.div 
+            animate={{ x: [-20, 20] }}
+            transition={{ repeat: Infinity, duration: 20, ease: "linear", repeatType: "mirror" }}
+            className="absolute inset-0 scale-110"
+          >
+             <div className="w-full h-full bg-[linear-gradient(90deg,transparent_0%,rgba(36,159,156,0.05)_50%,transparent_100%)] opacity-30" />
+          </motion.div>
+          
+          {/* Simulated guards walking in distance */}
+          <motion.div
+            animate={{ x: ["-100%", "200%"] }}
+            transition={{ repeat: Infinity, duration: 40, ease: "linear" }}
+            className="absolute bottom-1/4 left-0 w-8 h-24 flex flex-col items-center opacity-20 filter blur-[2px]"
+          >
+            <div className="w-6 h-6 bg-primary rounded-full mb-1" />
+            <div className="w-4 h-16 bg-primary rounded-sm" />
+          </motion.div>
+        </div>
 
         <motion.div 
           animate={{ y: [0, 10, 0] }}
@@ -211,7 +254,7 @@ export default function Home() {
       </section>
 
       {/* Info Cards Section */}
-      <section className="py-24 px-4 relative z-10 bg-gradient-to-b from-black via-[#0a0a0a] to-black">
+      <section id="rules" className="py-24 px-4 relative z-10 bg-gradient-to-b from-black via-[#0a0a0a] to-black">
         <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
           
           {/* Card 1 */}
