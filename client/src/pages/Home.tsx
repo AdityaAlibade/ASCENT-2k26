@@ -209,6 +209,15 @@ export default function Home() {
             >
               <span className="relative z-10">VIEW RULES</span>
             </motion.a>
+
+            <motion.a 
+              href="#games"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className="group relative overflow-hidden bg-transparent border-2 border-secondary/30 px-12 py-5 font-orbitron font-black text-xl tracking-[0.2em] text-secondary transition-all hover:border-secondary hover:bg-secondary/5"
+            >
+              <span className="relative z-10">THE GAMES</span>
+            </motion.a>
           </div>
 
           {stats && (
@@ -251,6 +260,128 @@ export default function Home() {
         >
           <ChevronDown className="w-8 h-8" />
         </motion.div>
+      </section>
+
+      {/* The Games Section */}
+      <section id="games" className="py-24 px-4 relative z-10">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-6xl font-black mb-4 text-white tracking-widest">THE GAMES</h2>
+            <div className="w-32 h-1 bg-primary mx-auto mb-6" />
+            <p className="font-montserrat text-white/50 max-w-2xl mx-auto uppercase tracking-widest text-sm">
+              Six Days. Six Games. One Winner.
+            </p>
+          </div>
+
+          <div className="space-y-12">
+            {/* Game 1 */}
+            <motion.div 
+              initial={{ opacity: 0, x: -50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              className="group relative flex flex-col md:flex-row gap-8 bg-white/5 border-l-4 border-primary p-8 hover:bg-white/10 transition-all duration-500"
+            >
+              <div className="md:w-1/3 space-y-4">
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 rounded-full border-2 border-primary flex items-center justify-center font-orbitron font-bold text-primary">01</div>
+                  <h3 className="text-2xl font-black text-white">THE FIRST SELECTION</h3>
+                </div>
+                <p className="font-montserrat text-gray-400 text-sm leading-relaxed">
+                  Inspired by Red Light Green Light. A test of absolute discipline and reflex. 
+                  Movement during a red signal results in immediate elimination.
+                </p>
+              </div>
+              <div className="flex-1 h-48 bg-black/40 relative overflow-hidden flex items-center justify-center">
+                {/* Silhouette Animation Simulation */}
+                <div className="flex gap-4">
+                  {[1, 2, 3, 4, 5].map((i) => (
+                    <motion.div
+                      key={i}
+                      animate={{ 
+                        opacity: [1, 1, 0.2, 1],
+                        backgroundColor: i === 3 ? ["#fff", "#fff", "#ff003c", "#ff003c"] : ["#fff", "#fff", "#fff", "#fff"]
+                      }}
+                      transition={{ repeat: Infinity, duration: 4, delay: i * 0.5 }}
+                      className="w-8 h-20 bg-white opacity-40 rounded-t-lg"
+                    />
+                  ))}
+                </div>
+                <div className="absolute top-4 right-4 text-[10px] font-mono text-red-500 animate-pulse">ELIMINATION DETECTED</div>
+              </div>
+            </motion.div>
+
+            {/* Game 2 */}
+            <motion.div 
+              initial={{ opacity: 0, x: 50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              className="group relative flex flex-col md:flex-row-reverse gap-8 bg-white/5 border-r-4 border-secondary p-8 hover:bg-white/10 transition-all duration-500"
+            >
+              <div className="md:w-1/3 space-y-4">
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 border-2 border-secondary flex items-center justify-center font-orbitron font-bold text-secondary rotate-45"><span className="-rotate-45">02</span></div>
+                  <h3 className="text-2xl font-black text-white">THE TEST</h3>
+                </div>
+                <p className="font-montserrat text-gray-400 text-sm leading-relaxed">
+                  Technical aptitude and problem-solving under extreme duress. 
+                  Navigate the terminal. Decrypt the sequence. Survive the system.
+                </p>
+                <div className="pt-4">
+                   <p className="text-[10px] font-mono text-secondary mb-1 uppercase tracking-widest">Survival Rate</p>
+                   <div className="w-full h-2 bg-white/10">
+                     <motion.div 
+                       initial={{ width: 0 }}
+                       whileInView={{ width: "32%" }}
+                       transition={{ duration: 2 }}
+                       className="h-full bg-secondary shadow-[0_0_10px_rgba(36,159,156,0.5)]" 
+                     />
+                   </div>
+                   <p className="text-[10px] font-mono text-secondary text-right mt-1">32.4%</p>
+                </div>
+              </div>
+              <div className="flex-1 h-48 bg-black/60 font-mono p-4 text-[10px] overflow-hidden relative">
+                <div className="text-secondary opacity-70 space-y-1">
+                  <p>&gt; INITIALIZING SURVIVAL_PROTOCOL...</p>
+                  <p>&gt; DECRYPTING SEED_067...</p>
+                  <p>&gt; [WARNING] BUFFER OVERFLOW DETECTED</p>
+                  <p>&gt; ATTEMPTING RECOVERY [45%]</p>
+                  <p className="animate-pulse">_</p>
+                </div>
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent pointer-events-none" />
+              </div>
+            </motion.div>
+
+            {/* Game 3 */}
+            <motion.div 
+              initial={{ opacity: 0, y: 50 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="group relative flex flex-col md:flex-row gap-8 bg-white/5 border-b-4 border-white/20 p-8 hover:bg-white/10 transition-all duration-500"
+            >
+              <div className="md:w-1/3 space-y-4">
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 border-2 border-white flex items-center justify-center font-orbitron font-bold text-white">03</div>
+                  <h3 className="text-2xl font-black text-white">THE FINAL DECISION</h3>
+                </div>
+                <p className="font-montserrat text-gray-400 text-sm leading-relaxed">
+                  An interrogation of character. The spotlight is on you. 
+                  The Front Man watches. Every word could be your last.
+                </p>
+              </div>
+              <div className="flex-1 h-48 bg-black relative flex items-center justify-center overflow-hidden">
+                {/* Interrogation Spotlight Effect */}
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(255,255,255,0.1)_0%,transparent_50%)]" />
+                <motion.div 
+                   animate={{ opacity: [0.1, 0.3, 0.1] }}
+                   transition={{ repeat: Infinity, duration: 3 }}
+                   className="w-24 h-40 bg-white/10 rounded-full blur-xl"
+                />
+                <div className="absolute top-0 left-0 w-full h-full border border-white/5 pointer-events-none" />
+                <div className="font-orbitron text-white/20 text-4xl font-black">?</div>
+              </div>
+            </motion.div>
+          </div>
+        </div>
       </section>
 
       {/* Info Cards Section */}
