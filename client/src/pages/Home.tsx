@@ -49,49 +49,85 @@ const IntroOverlay = ({ onComplete }: { onComplete: () => void }) => {
 
   return (
     <motion.div 
-      className="fixed inset-0 z-[100] bg-black flex flex-col items-center justify-center p-4"
+      className="fixed inset-0 z-[100] bg-black flex flex-col items-center justify-center p-4 overflow-hidden"
       initial={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      transition={{ duration: 1 }}
+      transition={{ duration: 1.5, ease: "easeInOut" }}
     >
-      <div className="max-w-2xl text-center space-y-8">
-        <AnimatePresence>
-          {step >= 1 && (
-            <motion.h1 
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="font-orbitron text-3xl md:text-5xl text-white font-bold leading-tight"
-            >
-              WELCOME.
-            </motion.h1>
-          )}
-          
-          {step >= 2 && (
-            <motion.p 
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              className="font-montserrat text-lg md:text-xl text-primary font-medium tracking-widest uppercase"
-            >
-              You have been selected.
-            </motion.p>
-          )}
+      {/* Cinematic Background Elements */}
+      <div className="absolute inset-0 opacity-20 pointer-events-none">
+        <div className="absolute top-1/4 left-1/4 w-32 h-32 border border-white/20 rounded-full animate-pulse" />
+        <div className="absolute bottom-1/4 right-1/4 w-32 h-32 border border-white/20 animate-pulse delay-700" />
+      </div>
 
-          {step >= 3 && (
-            <motion.button
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              whileHover={{ scale: 1.05 }}
+      <div className="max-w-2xl text-center space-y-12 relative z-10">
+        <div className="space-y-4">
+          <AnimatePresence mode="wait">
+            {step >= 1 && (
+              <motion.div
+                key="welcome"
+                initial={{ opacity: 0, scale: 1.1 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 2 }}
+              >
+                <h1 className="font-orbitron text-4xl md:text-6xl text-white font-black tracking-[0.3em] uppercase drop-shadow-[0_0_15px_rgba(255,255,255,0.3)]">
+                  WELCOME.
+                </h1>
+              </motion.div>
+            )}
+          </AnimatePresence>
+          
+          <AnimatePresence mode="wait">
+            {step >= 2 && (
+              <motion.div
+                key="selected"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.5, duration: 1 }}
+                className="space-y-4"
+              >
+                <p className="font-montserrat text-lg md:text-xl text-primary font-bold tracking-[0.4em] uppercase">
+                  You have been selected.
+                </p>
+                <p className="font-montserrat text-sm md:text-base text-white/60 tracking-widest uppercase italic">
+                  This is your invitation to the Squid Game.
+                </p>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+
+        {step >= 3 && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 1 }}
+          >
+            <button
               onClick={onComplete}
-              className="mt-12 px-8 py-3 border-2 border-primary text-primary font-orbitron font-bold tracking-[0.2em] hover:bg-primary hover:text-white transition-all duration-300 animate-pulse"
+              className="group relative px-12 py-4 overflow-hidden bg-transparent border border-primary/50 transition-all duration-500 hover:border-primary"
             >
-              CONTINUE
-            </motion.button>
-          )}
-        </AnimatePresence>
+              <div className="absolute inset-0 bg-primary/10 group-hover:bg-primary/20 transition-colors" />
+              <div className="absolute -inset-full bg-gradient-to-r from-transparent via-white/10 to-transparent group-hover:animate-[shimmer_2s_infinite] pointer-events-none" />
+              <span className="relative font-orbitron font-bold text-primary tracking-[0.3em] group-hover:text-white transition-colors">
+                CONTINUE
+              </span>
+            </button>
+          </motion.div>
+        )}
       </div>
       
-      {/* Decorative scanlines */}
-      <div className="scanline" />
+      {/* Surveillance scanline and grain */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden opacity-30">
+        <div className="scanline" />
+        <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 contrast-150 brightness-50" />
+      </div>
+
+      <style dangerouslySetInnerHTML={{ __html: `
+        @keyframes shimmer {
+          100% { transform: translateX(100%); }
+        }
+      `}} />
     </motion.div>
   );
 };
