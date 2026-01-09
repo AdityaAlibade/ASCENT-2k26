@@ -1,9 +1,10 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useGameStats } from "@/hooks/use-players";
 import { RegistrationForm } from "@/components/RegistrationForm";
 import { Circle, Triangle, Square, FloatingShapes } from "@/components/ui/GameShapes";
-import { ChevronDown, AlertTriangle, Clock, Trophy, ShieldAlert, Video } from "lucide-react";
+import { ChevronDown, AlertTriangle, Clock, Trophy, ShieldAlert, Video, Volume2, VolumeX } from "lucide-react";
+import audioFile from "@assets/Round_And_Round_Mingle_1767983924508.mp3";
 
 const CountdownTimer = () => {
   const [time, setTime] = useState("48:12:09");
@@ -34,6 +35,8 @@ const CountdownTimer = () => {
 
 const IntroOverlay = ({ onComplete }: { onComplete: () => void }) => {
   const [step, setStep] = useState(0);
+  const [isMuted, setIsMuted] = useState(false);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
     const timer1 = setTimeout(() => setStep(1), 1000);
@@ -47,6 +50,13 @@ const IntroOverlay = ({ onComplete }: { onComplete: () => void }) => {
     };
   }, []);
 
+  const handleStart = () => {
+    if (audioRef.current) {
+      audioRef.current.play().catch(e => console.error("Audio playback failed:", e));
+    }
+    onComplete();
+  };
+
   return (
     <motion.div 
       className="fixed inset-0 z-[100] bg-black flex flex-col items-center justify-center p-4 overflow-hidden"
@@ -54,6 +64,15 @@ const IntroOverlay = ({ onComplete }: { onComplete: () => void }) => {
       exit={{ opacity: 0 }}
       transition={{ duration: 1.5, ease: "easeInOut" }}
     >
+      <audio ref={audioRef} src={audioFile} loop muted={isMuted} />
+      
+      <button 
+        onClick={() => setIsMuted(!isMuted)}
+        className="absolute top-8 right-8 z-50 p-2 text-white/40 hover:text-white transition-colors"
+      >
+        {isMuted ? <VolumeX size={24} /> : <Volume2 size={24} />}
+      </button>
+
       {/* Cinematic Background Elements */}
       <div className="absolute inset-0 opacity-20 pointer-events-none">
         <div className="absolute top-1/4 left-1/4 w-32 h-32 border border-white/20 rounded-full animate-pulse" />
@@ -110,7 +129,7 @@ const IntroOverlay = ({ onComplete }: { onComplete: () => void }) => {
             transition={{ duration: 1.5 }}
           >
             <button
-              onClick={onComplete}
+              onClick={handleStart}
               className="group relative px-16 py-5 overflow-hidden bg-transparent border-2 border-primary/30 transition-all duration-700 hover:border-primary hover:shadow-[0_0_30px_rgba(255,0,96,0.4)]"
             >
               <div className="absolute inset-0 bg-primary/10 group-hover:bg-primary/20 transition-colors" />
@@ -141,7 +160,15 @@ const IntroOverlay = ({ onComplete }: { onComplete: () => void }) => {
 
 export default function Home() {
   const [showIntro, setShowIntro] = useState(true);
+  const [isMuted, setIsMuted] = useState(false);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
   const { data: stats } = useGameStats();
+
+  useEffect(() => {
+    if (!showIntro && audioRef.current) {
+      audioRef.current.play().catch(e => console.error("Audio playback failed:", e));
+    }
+  }, [showIntro]);
 
   if (showIntro) {
     return <AnimatePresence><IntroOverlay onComplete={() => setShowIntro(false)} /></AnimatePresence>;
@@ -149,6 +176,15 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-black text-white selection:bg-primary selection:text-white overflow-hidden relative font-montserrat">
+      <audio ref={audioRef} src={audioFile} loop muted={isMuted} />
+      
+      <button 
+        onClick={() => setIsMuted(!isMuted)}
+        className="fixed top-8 right-8 z-[100] p-2 text-white/40 hover:text-white transition-colors bg-black/20 backdrop-blur-sm"
+      >
+        {isMuted ? <VolumeX size={20} /> : <Volume2 size={20} />}
+      </button>
+
       <div className="scanline" />
       <div className="vignette" />
       <div className="cctv-overlay" />
