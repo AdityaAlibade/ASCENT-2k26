@@ -121,8 +121,17 @@ const DdakjiTransition = ({ onComplete }: { onComplete: () => void }) => {
     // Transition after flip animation
     setTimeout(() => {
       onComplete();
-    }, 1500);
+    }, 2000);
   };
+
+  const PaperTexture = () => (
+    <div className="absolute inset-0 opacity-20 mix-blend-overlay pointer-events-none">
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(0,0,0,0)_0%,rgba(0,0,0,0.2)_100%)]" />
+      <div className="absolute top-1/2 left-0 w-full h-px bg-black/40 -translate-y-1/2" />
+      <div className="absolute top-0 left-1/2 w-px h-full bg-black/40 -translate-x-1/2" />
+      <div className="absolute inset-0 border border-white/10" />
+    </div>
+  );
 
   return (
     <div className="fixed inset-0 z-[150] bg-black flex items-center justify-center overflow-hidden">
@@ -136,17 +145,46 @@ const DdakjiTransition = ({ onComplete }: { onComplete: () => void }) => {
           <motion.div 
             animate={isFlipped ? { 
               rotateY: 180,
-              y: [0, -150, 0],
-              scale: [1, 1.3, 1]
+              y: [0, -200, 10, -5, 0],
+              rotateX: [0, 10, 0],
+              scale: [1, 1.2, 1, 1.05, 1]
             } : {}}
-            transition={{ duration: 0.8, ease: "easeInOut" }}
-            className="w-48 h-48 shadow-2xl relative"
-            style={{ transformStyle: "preserve-3d" }}
+            transition={{ 
+              duration: 1.2, 
+              ease: [0.45, 0, 0.55, 1],
+              times: [0, 0.4, 0.7, 0.85, 1]
+            }}
+            className="w-48 h-48 relative preserve-3d cursor-pointer group"
+            onClick={!isFlipped ? handlePlay : undefined}
           >
             {/* Front side (Blue) */}
-            <div className="absolute inset-0 bg-blue-600 backface-hidden" />
+            <div className="absolute inset-0 bg-blue-600 backface-hidden shadow-2xl rounded-sm overflow-hidden">
+              <div className="absolute inset-0 border-r border-b border-black/20" />
+              <PaperTexture />
+              {/* Paper Thickness Effect */}
+              <div className="absolute right-0 top-0 w-1 h-full bg-blue-700/50" />
+              <div className="absolute bottom-0 left-0 h-1 w-full bg-blue-700/50" />
+            </div>
+
             {/* Back side (Red) */}
-            <div className="absolute inset-0 bg-red-600" style={{ transform: "rotateY(180deg)", backfaceVisibility: "hidden" }} />
+            <div className="absolute inset-0 bg-red-600 rounded-sm overflow-hidden shadow-2xl" style={{ transform: "rotateY(180deg)", backfaceVisibility: "hidden" }}>
+              <div className="absolute inset-0 border-l border-b border-black/20" />
+              <PaperTexture />
+              {/* Paper Thickness Effect */}
+              <div className="absolute left-0 top-0 w-1 h-full bg-red-700/50" />
+              <div className="absolute bottom-0 left-0 h-1 w-full bg-red-700/50" />
+            </div>
+
+            {/* Dynamic Shadow */}
+            <motion.div 
+              animate={isFlipped ? {
+                scale: [1, 1.5, 0.8, 1],
+                opacity: [0.3, 0.1, 0.4, 0.3],
+                filter: ["blur(10px)", "blur(20px)", "blur(5px)", "blur(10px)"]
+              } : {}}
+              transition={{ duration: 1.2 }}
+              className="absolute -bottom-12 left-1/2 -translate-x-1/2 w-40 h-8 bg-black/60 rounded-[50%] blur-xl -z-10"
+            />
           </motion.div>
         </div>
         
@@ -158,7 +196,7 @@ const DdakjiTransition = ({ onComplete }: { onComplete: () => void }) => {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               onClick={handlePlay}
-              className="px-12 py-4 border border-white/20 font-orbitron text-white tracking-[0.3em] hover:bg-white hover:text-black transition-all"
+              className="px-12 py-4 border border-white/20 font-orbitron text-white tracking-[0.3em] hover:bg-white hover:text-black transition-all active:scale-95"
             >
               PLAY
             </motion.button>
