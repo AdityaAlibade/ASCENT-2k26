@@ -114,20 +114,18 @@ const SystemLoader = ({ onComplete }: { onComplete: () => void }) => {
 
 const DdakjiTransition = ({ onComplete }: { onComplete: () => void }) => {
   const [isFlipped, setIsFlipped] = useState(false);
-  const [isDarkened, setIsDarkened] = useState(false);
 
   const handlePlay = () => {
     setIsFlipped(true);
-    setIsDarkened(true);
     
     // Transition after flip animation
     setTimeout(() => {
       onComplete();
-    }, 2000);
+    }, 1500);
   };
 
   return (
-    <div className={`fixed inset-0 z-[150] bg-black flex items-center justify-center overflow-hidden transition-colors duration-300 ${isDarkened ? 'bg-black/95' : 'bg-black'}`}>
+    <div className="fixed inset-0 z-[150] bg-black flex items-center justify-center overflow-hidden">
       <motion.div 
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -135,18 +133,20 @@ const DdakjiTransition = ({ onComplete }: { onComplete: () => void }) => {
         className="text-center space-y-12"
       >
         <div className="relative w-64 h-64 mx-auto flex items-center justify-center">
-          {/* Simulated Ddakji Flip */}
+          {/* Blue Ddakji Card */}
           <motion.div 
             animate={isFlipped ? { 
-              rotateY: [0, 180, 360, 540, 720],
+              rotateY: 180,
               y: [0, -150, 0],
               scale: [1, 1.3, 1]
             } : {}}
-            transition={{ duration: 1.2, ease: "easeInOut" }}
+            transition={{ duration: 0.8, ease: "easeInOut" }}
             className="w-48 h-48 bg-blue-600 shadow-2xl relative"
             style={{ transformStyle: "preserve-3d" }}
           >
-            <div className="absolute inset-0 bg-red-600" style={{ transform: "rotateY(180deg)", backfaceVisibility: "hidden" }} />
+            {/* Both sides are blue */}
+            <div className="absolute inset-0 bg-blue-600 backface-hidden" />
+            <div className="absolute inset-0 bg-blue-600" style={{ transform: "rotateY(180deg)", backfaceVisibility: "hidden" }} />
           </motion.div>
         </div>
         
