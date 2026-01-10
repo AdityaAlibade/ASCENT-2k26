@@ -347,7 +347,7 @@ const FrontManDialogue = ({ onComplete }: { onComplete: () => void }) => {
   const lines = [
     "Participants will compete in a series of challenges.",
     "Each round will test intelligence, speed, and composure.",
-    "Failure is elimination.",
+    "FAILURE RESULTS IN ELIMINATION",
     "Success moves you forward."
   ];
 
@@ -367,7 +367,7 @@ const FrontManDialogue = ({ onComplete }: { onComplete: () => void }) => {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
-            className="font-orbitron text-xl md:text-2xl text-white tracking-[0.3em] uppercase leading-relaxed font-black drop-shadow-[0_0_15px_rgba(255,255,255,0.3)]"
+            className="font-orbitron text-lg md:text-xl text-white tracking-[0.5em] uppercase leading-relaxed font-light drop-shadow-[0_0_10px_rgba(255,255,255,0.3)]"
           >
             {lines[line] || ""}
           </motion.p>
@@ -383,12 +383,12 @@ const FrontManDialogue = ({ onComplete }: { onComplete: () => void }) => {
         >
           <button
             onClick={onComplete}
-            className="group relative px-16 py-5 border-2 border-white/20 hover:border-white transition-all duration-500 overflow-hidden bg-black/20 backdrop-blur-md"
+            className="group relative px-16 py-5 border border-white/10 hover:border-white transition-all duration-500 overflow-hidden bg-black/10 backdrop-blur-sm"
           >
-            <span className="relative z-10 font-orbitron font-black text-white tracking-[0.4em] text-lg group-hover:text-primary transition-colors">
+            <span className="relative z-10 font-orbitron font-light text-white tracking-[0.4em] text-base group-hover:text-primary transition-colors">
               ACCEPT THE CONDITIONS
             </span>
-            <div className="absolute inset-0 bg-red-600/20 opacity-0 group-hover:opacity-100 transition-opacity blur-xl" />
+            <div className="absolute inset-0 bg-red-600/5 opacity-0 group-hover:opacity-100 transition-opacity blur-2xl" />
           </button>
         </motion.div>
       )}
