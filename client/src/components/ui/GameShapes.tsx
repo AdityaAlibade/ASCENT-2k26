@@ -5,44 +5,45 @@ interface ShapeProps {
   color?: string;
   size?: number;
   delay?: number;
+  opacity?: number;
 }
 
-export const Circle = ({ className = "", color = "#FFFFFF", size = 48, delay = 0 }: ShapeProps) => (
+export const Circle = ({ className = "", color = "#FFFFFF", size = 48, delay = 0, opacity = 1 }: ShapeProps) => (
   <motion.svg 
     width={size} 
     height={size} 
     viewBox="0 0 100 100" 
     className={className}
     initial={{ opacity: 0, scale: 0.8 }}
-    animate={{ opacity: 1, scale: 1 }}
+    animate={{ opacity, scale: 1 }}
     transition={{ delay, duration: 0.8 }}
   >
     <circle cx="50" cy="50" r="40" fill="none" stroke={color} strokeWidth="8" />
   </motion.svg>
 );
 
-export const Triangle = ({ className = "", color = "#FFFFFF", size = 48, delay = 0 }: ShapeProps) => (
+export const Triangle = ({ className = "", color = "#FFFFFF", size = 48, delay = 0, opacity = 1 }: ShapeProps) => (
   <motion.svg 
     width={size} 
     height={size} 
     viewBox="0 0 100 100" 
     className={className}
     initial={{ opacity: 0, scale: 0.8 }}
-    animate={{ opacity: 1, scale: 1 }}
+    animate={{ opacity, scale: 1 }}
     transition={{ delay, duration: 0.8 }}
   >
     <polygon points="50,15 90,85 10,85" fill="none" stroke={color} strokeWidth="8" />
   </motion.svg>
 );
 
-export const Square = ({ className = "", color = "#FFFFFF", size = 48, delay = 0 }: ShapeProps) => (
+export const Square = ({ className = "", color = "#FFFFFF", size = 48, delay = 0, opacity = 1 }: ShapeProps) => (
   <motion.svg 
     width={size} 
     height={size} 
     viewBox="0 0 100 100" 
     className={className}
     initial={{ opacity: 0, scale: 0.8 }}
-    animate={{ opacity: 1, scale: 1 }}
+    animate={{ opacity, scale: 1 }}
     transition={{ delay, duration: 0.8 }}
   >
     <rect x="15" y="15" width="70" height="70" fill="none" stroke={color} strokeWidth="8" />
