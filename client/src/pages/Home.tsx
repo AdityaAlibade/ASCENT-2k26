@@ -113,35 +113,57 @@ const SystemLoader = ({ onComplete }: { onComplete: () => void }) => {
 };
 
 const DdakjiTransition = ({ onComplete }: { onComplete: () => void }) => {
-  useEffect(() => {
-    const timer = setTimeout(onComplete, 4000);
-    return () => clearTimeout(timer);
-  }, [onComplete]);
+  const [isFlipped, setIsFlipped] = useState(false);
+  const [isDarkened, setIsDarkened] = useState(false);
+
+  const handlePlay = () => {
+    setIsFlipped(true);
+    setIsDarkened(true);
+    
+    // Transition after flip animation
+    setTimeout(() => {
+      onComplete();
+    }, 2000);
+  };
 
   return (
-    <div className="fixed inset-0 z-[150] bg-black flex items-center justify-center overflow-hidden">
+    <div className={`fixed inset-0 z-[150] bg-black flex items-center justify-center overflow-hidden transition-colors duration-300 ${isDarkened ? 'bg-black/95' : 'bg-black'}`}>
       <motion.div 
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        className="text-center space-y-8"
+        className="text-center space-y-12"
       >
-        <div className="relative w-64 h-64 mx-auto">
+        <div className="relative w-64 h-64 mx-auto flex items-center justify-center">
           {/* Simulated Ddakji Flip */}
           <motion.div 
-            animate={{ 
+            animate={isFlipped ? { 
               rotateY: [0, 180, 360, 540, 720],
-              y: [0, -100, 0],
-              scale: [1, 1.2, 1]
-            }}
-            transition={{ duration: 2, ease: "easeInOut", delay: 1 }}
-            className="w-40 h-40 bg-blue-600 mx-auto shadow-2xl relative"
+              y: [0, -150, 0],
+              scale: [1, 1.3, 1]
+            } : {}}
+            transition={{ duration: 1.2, ease: "easeInOut" }}
+            className="w-48 h-48 bg-blue-600 shadow-2xl relative"
             style={{ transformStyle: "preserve-3d" }}
           >
             <div className="absolute inset-0 bg-red-600" style={{ transform: "rotateY(180deg)", backfaceVisibility: "hidden" }} />
           </motion.div>
         </div>
-        <p className="font-orbitron text-white/20 uppercase tracking-[0.5em] text-xs">SLAP... SLAP... SLAP...</p>
+        
+        <div className="space-y-8">
+          <p className="font-orbitron text-white/10 uppercase tracking-[0.5em] text-xs">SLAP... SLAP... SLAP...</p>
+          
+          {!isFlipped && (
+            <motion.button
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              onClick={handlePlay}
+              className="px-12 py-4 border border-white/20 font-orbitron text-white tracking-[0.3em] hover:bg-white hover:text-black transition-all"
+            >
+              PLAY
+            </motion.button>
+          )}
+        </div>
       </motion.div>
     </div>
   );
