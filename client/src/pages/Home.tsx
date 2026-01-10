@@ -5,6 +5,7 @@ import { RegistrationForm } from "@/components/RegistrationForm";
 import { Circle, Triangle, Square, FloatingShapes } from "@/components/ui/GameShapes";
 import { ChevronDown, AlertTriangle, Clock, Trophy, ShieldAlert, Video, Volume2, VolumeX } from "lucide-react";
 import audioFile from "@assets/Round_And_Round_Mingle_1767983924508.mp3";
+import frontManImg from "@assets/frontman_1768070945817.png";
 
 const CountdownTimer = () => {
   const [time, setTime] = useState("48:12:09");
@@ -191,6 +192,27 @@ const IntroOverlay = ({ onComplete }: { onComplete: () => void }) => {
       </button>
 
       {/* Cinematic Background Elements */}
+      <AnimatePresence>
+        {phase === 'frontman' && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 0.6 }}
+            exit={{ opacity: 0 }}
+            className="absolute inset-0 z-0"
+            style={{ 
+              backgroundImage: `url(${frontManImg})`,
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+              filter: 'brightness(0.7) contrast(1.1) saturate(1.2)'
+            }}
+          >
+            <div className="absolute inset-0 bg-gradient-to-b from-black via-transparent to-black" />
+            <div className="absolute inset-0 bg-blue-900/10 mix-blend-overlay" />
+            <div className="absolute inset-0 bg-purple-900/10 mix-blend-color-dodge" />
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       <div className="absolute inset-0 opacity-20 pointer-events-none">
         <div className="absolute top-1/4 left-1/4 w-32 h-32 border border-white/20 rounded-full animate-pulse" />
         <div className="absolute bottom-1/4 right-1/4 w-32 h-32 border border-white/20 animate-pulse delay-700" />
@@ -262,7 +284,9 @@ const IntroOverlay = ({ onComplete }: { onComplete: () => void }) => {
         )}
 
         {phase === 'frontman' && (
-          <FrontManDialogue onComplete={() => setPhase('conditions')} />
+          <div className="relative z-10 w-full">
+            <FrontManDialogue onComplete={() => setPhase('conditions')} />
+          </div>
         )}
 
         {phase === 'conditions' && (
