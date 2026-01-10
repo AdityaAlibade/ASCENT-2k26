@@ -5,7 +5,7 @@ import { RegistrationForm } from "@/components/RegistrationForm";
 import { Circle, Triangle, Square, FloatingShapes } from "@/components/ui/GameShapes";
 import { ChevronDown, AlertTriangle, Clock, Trophy, ShieldAlert, Video, Volume2, VolumeX } from "lucide-react";
 import audioFile from "@assets/Round_And_Round_Mingle_1767983924508.mp3";
-import frontManTheme from "@assets/squid_game_1768071660708.mp3";
+import frontManTheme from "@assets/squid_game_1768071980984.mp3";
 import frontManImg from "@assets/frontman_1768070945817.png";
 
 const CountdownTimer = () => {
@@ -288,7 +288,7 @@ const IntroOverlay = ({ onComplete }: { onComplete: () => void }) => {
 
         {phase === 'frontman' && (
           <div className="absolute bottom-12 left-0 right-0 px-4">
-            <audio autoPlay loop src={frontManTheme} ref={el => { if(el) el.volume = 0.3; }} />
+            <audio autoPlay loop src={frontManTheme} ref={el => { if(el) el.volume = 0.15; }} />
             <FrontManDialogue onComplete={() => setPhase('conditions')} />
           </div>
         )}
