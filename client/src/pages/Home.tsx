@@ -186,6 +186,10 @@ const IntroOverlay = ({ onComplete }: { onComplete: () => void }) => {
         clearTimeout(timer3);
       };
     }
+    // Pause main intro audio during Front Man phase
+    if (phase === 'frontman' && audioRef.current) {
+      audioRef.current.pause();
+    }
   }, [phase]);
 
   const handleStart = () => {
