@@ -344,6 +344,7 @@ const IntroOverlay = ({ onComplete }: { onComplete: () => void }) => {
 
 const FrontManDialogue = ({ onComplete }: { onComplete: () => void }) => {
   const [line, setLine] = useState(0);
+  const [displayedText, setDisplayedText] = useState("");
   const lines = [
     "Participants will compete in a series of challenges.",
     "Each round will test intelligence, speed, and composure.",
@@ -353,23 +354,36 @@ const FrontManDialogue = ({ onComplete }: { onComplete: () => void }) => {
 
   useEffect(() => {
     if (line < lines.length) {
-      const timer = setTimeout(() => setLine(l => l + 1), 3000);
-      return () => clearTimeout(timer);
+      let charIndex = 0;
+      setDisplayedText("");
+      const targetText = lines[line];
+      
+      const typeInterval = setInterval(() => {
+        if (charIndex < targetText.length) {
+          setDisplayedText(prev => prev + targetText[charIndex]);
+          charIndex++;
+        } else {
+          clearInterval(typeInterval);
+          setTimeout(() => setLine(l => l + 1), 2000);
+        }
+      }, 70); // Slower, NPC-style typing animation
+
+      return () => clearInterval(typeInterval);
     }
-  }, [line, lines.length]);
+  }, [line]);
 
   return (
-    <div className="space-y-12 w-full max-w-4xl mx-auto">
-      <div className="h-32 flex items-center justify-center">
+    <div className="flex flex-col items-center justify-center w-full max-w-4xl mx-auto h-full">
+      <div className="flex-1 flex items-center justify-center">
         <AnimatePresence mode="wait">
           <motion.p
             key={line}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            className="font-orbitron text-lg md:text-xl text-white tracking-[0.5em] uppercase leading-relaxed font-light drop-shadow-[0_0_10px_rgba(255,255,255,0.3)]"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="font-orbitron text-lg md:text-xl text-white tracking-[0.5em] uppercase leading-relaxed font-light drop-shadow-[0_0_10px_rgba(255,255,255,0.3)] text-center px-4"
           >
-            {lines[line] || ""}
+            {displayedText}
           </motion.p>
         </AnimatePresence>
       </div>
@@ -379,16 +393,17 @@ const FrontManDialogue = ({ onComplete }: { onComplete: () => void }) => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5 }}
-          className="pb-8"
+          className="pb-12"
         >
           <button
             onClick={onComplete}
-            className="group relative px-16 py-5 border border-white/10 hover:border-white transition-all duration-500 overflow-hidden bg-black/10 backdrop-blur-sm"
+            className="group relative px-16 py-6 border border-white/20 hover:border-white/40 transition-all duration-500 overflow-hidden bg-black/40 backdrop-blur-md"
           >
-            <span className="relative z-10 font-orbitron font-light text-white tracking-[0.4em] text-base group-hover:text-primary transition-colors">
+            <div className="absolute inset-0 bg-white/5 group-hover:bg-white/10 transition-colors" />
+            <span className="relative z-10 font-orbitron font-light text-white tracking-[0.6em] text-lg group-hover:text-primary transition-colors">
               ACCEPT THE CONDITIONS
             </span>
-            <div className="absolute inset-0 bg-red-600/5 opacity-0 group-hover:opacity-100 transition-opacity blur-2xl" />
+            <div className="absolute inset-0 bg-red-600/10 opacity-0 group-hover:opacity-100 transition-opacity blur-3xl" />
           </button>
         </motion.div>
       )}
