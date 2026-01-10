@@ -1,0 +1,89 @@
+Create a full-screen Squid Game system loader.
+BACKGROUND:
+- Pure black background
+- Subtle noise / film grain
+- Very faint vignette around edges
+CENTER ELEMENT:
+Three large white symbols displayed horizontally:
+◯   △   □
+Each symbol has:
+- Clean geometric stroke
+- Small neon-pink dot acting as a status indicator
+- SVG-based animation (sharp, smooth, precise)
+ANIMATION SEQUENCE (looping):
+1. Circle draws itself clockwise
+   → pink dot blinks once
+2. Triangle draws itself edge by edge
+   → pink dot blinks once
+3. Square draws itself last
+   → pink dot stays solid
+Stroke animation feels mechanical, not playful.
+SOUND DESIGN:
+- Soft electronic hum
+- Subtle digital ticks synced with stroke completion
+- No music yet
+TEXT (small, bottom-center, mono font):
+"System Check in Progress"
+No buttons.
+No scrolling.
+No user interaction.
+This screen must feel like a controlled surveillance system,
+not a website loader.
+
+After the loading screen, play a full-screen cinematic video.
+VIDEO CONTENT:
+- Close-up shot of hands playing ddakji on the ground
+- Realistic paper slaps and echoing sound
+- Slow motion as one ddakji card flips over
+- Background fades to black at the moment of the flip
+At the exact moment the card lands face-up:
+- Cut instantly to a dark screen
+- A low bass hit plays
+WELCOME ANIMATION:
+- Large white text fades in slowly:
+  "WELCOME."
+- Followed by pink text:
+  "YOU HAVE BEEN SELECTED."
+- Subtext appears beneath in smaller grey font:
+  "This is your invitation to the Squid Game."
+- Background music begins:
+  Use Squid Game OST
+  (Mingle Game Song “Round and Round” OR Jump Rope Song, low volume)
+A single button fades in:
+[ CONFIRM ]
+Button glow pulses slowly in pink.
+No other navigation.
+
+On clicking [CONFIRM], transition with a sharp sound cue.
+SCENE:
+- Dark control room environment
+- Large screens flickering in the background
+- The Front Man appears at the center (silhouette or masked figure)
+- No visible face details, only authority
+TEXT DELIVERY:
+The Front Man does NOT speak aloud.
+His message appears as animated white subtitles, line by line:
+"Participants will compete in a series of challenges."
+"Each round will test intelligence, speed, and composure."
+"Failure is elimination."
+"Success moves you forward."
+Background music lowers slightly during text display.
+After the final line:
+- Silence for 1 second
+- A confirmation button fades in:
+[ ACCEPT THE CONDITIONS ]
+Button is white with subtle red warning glow.
+
+When the user clicks [ACCEPT THE CONDITIONS]:
+- A warning overlay flashes briefly in red
+- Alarm tone plays once (short, not loud)
+Text appears:
+"By proceeding, you agree to the rules of the game."
+Below it, a final button:
+[ ENTER THE GAME ]
+Once clicked:
+- Transition to registration / player onboarding
+- Assign a player number dynamically
+- Display confirmation:
+"You are now a registered player."
+Fade out music.

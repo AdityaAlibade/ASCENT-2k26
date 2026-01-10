@@ -33,29 +33,146 @@ const CountdownTimer = () => {
   );
 };
 
+const SystemLoader = ({ onComplete }: { onComplete: () => void }) => {
+  useEffect(() => {
+    const timer = setTimeout(onComplete, 6000);
+    return () => clearTimeout(timer);
+  }, [onComplete]);
+
+  return (
+    <div className="fixed inset-0 z-[200] bg-black flex flex-col items-center justify-center overflow-hidden">
+      <div className="vignette" />
+      <div className="scanline opacity-10" />
+      
+      <div className="flex gap-16 md:gap-24 items-center mb-24">
+        {/* Circle */}
+        <div className="relative">
+          <svg className="w-16 h-16 md:w-24 md:h-24">
+            <motion.circle
+              cx="50%" cy="50%" r="45%"
+              fill="none" stroke="white" strokeWidth="2"
+              initial={{ pathLength: 0 }}
+              animate={{ pathLength: 1 }}
+              transition={{ duration: 1.5, ease: "linear", delay: 0 }}
+            />
+          </svg>
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: [0, 1, 0] }}
+            transition={{ delay: 1.5, duration: 0.5 }}
+            className="absolute top-0 right-0 w-2 h-2 bg-primary rounded-full shadow-[0_0_10px_#FF0060]"
+          />
+        </div>
+
+        {/* Triangle */}
+        <div className="relative">
+          <svg className="w-16 h-16 md:w-24 md:h-24" viewBox="0 0 100 100">
+            <motion.path
+              d="M50 15 L85 85 L15 85 Z"
+              fill="none" stroke="white" strokeWidth="2"
+              initial={{ pathLength: 0 }}
+              animate={{ pathLength: 1 }}
+              transition={{ duration: 1.5, ease: "linear", delay: 1.5 }}
+            />
+          </svg>
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: [0, 1, 0] }}
+            transition={{ delay: 3, duration: 0.5 }}
+            className="absolute top-0 right-0 w-2 h-2 bg-primary rounded-full shadow-[0_0_10px_#FF0060]"
+          />
+        </div>
+
+        {/* Square */}
+        <div className="relative">
+          <svg className="w-16 h-16 md:w-24 md:h-24">
+            <motion.rect
+              x="10%" y="10%" width="80%" height="80%"
+              fill="none" stroke="white" strokeWidth="2"
+              initial={{ pathLength: 0 }}
+              animate={{ pathLength: 1 }}
+              transition={{ duration: 1.5, ease: "linear", delay: 3 }}
+            />
+          </svg>
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 4.5, duration: 0.5 }}
+            className="absolute top-0 right-0 w-2 h-2 bg-primary rounded-full shadow-[0_0_10px_#FF0060]"
+          />
+        </div>
+      </div>
+
+      <div className="absolute bottom-12 text-white/40 font-mono text-[10px] uppercase tracking-[0.4em] animate-pulse">
+        System Check in Progress
+      </div>
+    </div>
+  );
+};
+
+const DdakjiTransition = ({ onComplete }: { onComplete: () => void }) => {
+  useEffect(() => {
+    const timer = setTimeout(onComplete, 4000);
+    return () => clearTimeout(timer);
+  }, [onComplete]);
+
+  return (
+    <div className="fixed inset-0 z-[150] bg-black flex items-center justify-center overflow-hidden">
+      <motion.div 
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        className="text-center space-y-8"
+      >
+        <div className="relative w-64 h-64 mx-auto">
+          {/* Simulated Ddakji Flip */}
+          <motion.div 
+            animate={{ 
+              rotateY: [0, 180, 360, 540, 720],
+              y: [0, -100, 0],
+              scale: [1, 1.2, 1]
+            }}
+            transition={{ duration: 2, ease: "easeInOut", delay: 1 }}
+            className="w-40 h-40 bg-blue-600 mx-auto shadow-2xl relative"
+            style={{ transformStyle: "preserve-3d" }}
+          >
+            <div className="absolute inset-0 bg-red-600" style={{ transform: "rotateY(180deg)", backfaceVisibility: "hidden" }} />
+          </motion.div>
+        </div>
+        <p className="font-orbitron text-white/20 uppercase tracking-[0.5em] text-xs">SLAP... SLAP... SLAP...</p>
+      </motion.div>
+    </div>
+  );
+};
+
 const IntroOverlay = ({ onComplete }: { onComplete: () => void }) => {
+  const [phase, setPhase] = useState<'loader' | 'video' | 'welcome' | 'frontman' | 'conditions'>('loader');
   const [step, setStep] = useState(0);
   const [isMuted, setIsMuted] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
-    const timer1 = setTimeout(() => setStep(1), 1000);
-    const timer2 = setTimeout(() => setStep(2), 2500);
-    const timer3 = setTimeout(() => setStep(3), 4000);
-    
-    return () => {
-      clearTimeout(timer1);
-      clearTimeout(timer2);
-      clearTimeout(timer3);
-    };
-  }, []);
+    if (phase === 'welcome') {
+      const timer1 = setTimeout(() => setStep(1), 1000);
+      const timer2 = setTimeout(() => setStep(2), 2500);
+      const timer3 = setTimeout(() => setStep(3), 4000);
+      return () => {
+        clearTimeout(timer1);
+        clearTimeout(timer2);
+        clearTimeout(timer3);
+      };
+    }
+  }, [phase]);
 
   const handleStart = () => {
     if (audioRef.current) {
       audioRef.current.play().catch(e => console.error("Audio playback failed:", e));
     }
-    onComplete();
+    setPhase('frontman');
   };
+
+  if (phase === 'loader') return <SystemLoader onComplete={() => setPhase('video')} />;
+  if (phase === 'video') return <DdakjiTransition onComplete={() => setPhase('welcome')} />;
 
   return (
     <motion.div 
@@ -81,64 +198,75 @@ const IntroOverlay = ({ onComplete }: { onComplete: () => void }) => {
       </div>
 
       <div className="max-w-2xl text-center space-y-12 relative z-10">
-        <div className="space-y-4">
-          <AnimatePresence mode="wait">
-            {step >= 1 && (
+        {phase === 'welcome' && (
+          <div className="space-y-4">
+            <AnimatePresence mode="wait">
+              {step >= 1 && (
+                <motion.div
+                  key="welcome"
+                  initial={{ opacity: 0, scale: 1.1, filter: "blur(10px)" }}
+                  animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
+                  transition={{ duration: 2 }}
+                >
+                  <h1 className="font-orbitron text-4xl md:text-7xl text-white font-black tracking-[0.4em] uppercase drop-shadow-[0_0_20px_rgba(255,255,255,0.4)]">
+                    WELCOME.
+                  </h1>
+                </motion.div>
+              )}
+            </AnimatePresence>
+            
+            <AnimatePresence mode="wait">
+              {step >= 2 && (
+                <motion.div
+                  key="selected"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.5, duration: 1.5, ease: "easeOut" }}
+                  className="space-y-6"
+                >
+                  <p className="font-montserrat text-xl md:text-2xl text-primary font-bold tracking-[0.5em] uppercase text-glow-primary">
+                    You have been selected.
+                  </p>
+                  <motion.p 
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 1.5, duration: 2 }}
+                    className="font-montserrat text-base md:text-lg text-white/60 tracking-[0.2em] uppercase italic"
+                  >
+                    This is your invitation to the Squid Game.
+                  </motion.p>
+                </motion.div>
+              )}
+            </AnimatePresence>
+
+            {step >= 3 && (
               <motion.div
-                key="welcome"
-                initial={{ opacity: 0, scale: 1.1, filter: "blur(10px)" }}
-                animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
-                transition={{ duration: 2 }}
-              >
-                <h1 className="font-orbitron text-4xl md:text-7xl text-white font-black tracking-[0.4em] uppercase drop-shadow-[0_0_20px_rgba(255,255,255,0.4)]">
-                  WELCOME.
-                </h1>
-              </motion.div>
-            )}
-          </AnimatePresence>
-          
-          <AnimatePresence mode="wait">
-            {step >= 2 && (
-              <motion.div
-                key="selected"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.5, duration: 1.5, ease: "easeOut" }}
-                className="space-y-6"
+                transition={{ duration: 1.5 }}
+                className="pt-12"
               >
-                <p className="font-montserrat text-xl md:text-2xl text-primary font-bold tracking-[0.5em] uppercase text-glow-primary">
-                  You have been selected.
-                </p>
-                <motion.p 
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 1.5, duration: 2 }}
-                  className="font-montserrat text-base md:text-lg text-white/60 tracking-[0.2em] uppercase italic"
+                <button
+                  onClick={handleStart}
+                  className="group relative px-16 py-5 overflow-hidden bg-transparent border-2 border-primary/30 transition-all duration-700 hover:border-primary hover:shadow-[0_0_30px_rgba(255,0,96,0.4)]"
                 >
-                  This is your invitation to the Squid Game.
-                </motion.p>
+                  <div className="absolute inset-0 bg-primary/10 group-hover:bg-primary/20 transition-colors" />
+                  <div className="absolute -inset-full bg-gradient-to-r from-transparent via-white/10 to-transparent group-hover:animate-[shimmer_2s_infinite] pointer-events-none" />
+                  <span className="relative font-orbitron font-black text-primary tracking-[0.4em] text-xl group-hover:text-white transition-colors">
+                    CONFIRM
+                  </span>
+                </button>
               </motion.div>
             )}
-          </AnimatePresence>
-        </div>
+          </div>
+        )}
 
-        {step >= 3 && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1.5 }}
-          >
-            <button
-              onClick={handleStart}
-              className="group relative px-16 py-5 overflow-hidden bg-transparent border-2 border-primary/30 transition-all duration-700 hover:border-primary hover:shadow-[0_0_30px_rgba(255,0,96,0.4)]"
-            >
-              <div className="absolute inset-0 bg-primary/10 group-hover:bg-primary/20 transition-colors" />
-              <div className="absolute -inset-full bg-gradient-to-r from-transparent via-white/10 to-transparent group-hover:animate-[shimmer_2s_infinite] pointer-events-none" />
-              <span className="relative font-orbitron font-black text-primary tracking-[0.4em] text-xl group-hover:text-white transition-colors">
-                CONTINUE
-              </span>
-            </button>
-          </motion.div>
+        {phase === 'frontman' && (
+          <FrontManDialogue onComplete={() => setPhase('conditions')} />
+        )}
+
+        {phase === 'conditions' && (
+          <ConditionsAccept onComplete={onComplete} />
         )}
       </div>
       
@@ -155,6 +283,102 @@ const IntroOverlay = ({ onComplete }: { onComplete: () => void }) => {
         }
       `}} />
     </motion.div>
+  );
+};
+
+const FrontManDialogue = ({ onComplete }: { onComplete: () => void }) => {
+  const [line, setLine] = useState(0);
+  const lines = [
+    "Participants will compete in a series of challenges.",
+    "Each round will test intelligence, speed, and composure.",
+    "Failure is elimination.",
+    "Success moves you forward."
+  ];
+
+  useEffect(() => {
+    if (line < lines.length) {
+      const timer = setTimeout(() => setLine(l => l + 1), 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [line]);
+
+  return (
+    <div className="space-y-12">
+      <div className="h-24 flex items-center justify-center">
+        <AnimatePresence mode="wait">
+          <motion.p
+            key={line}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            className="font-montserrat text-lg md:text-xl text-white tracking-[0.2em] uppercase leading-relaxed max-w-xl"
+          >
+            {lines[line] || ""}
+          </motion.p>
+        </AnimatePresence>
+      </div>
+
+      {line >= lines.length && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 1 }}
+        >
+          <button
+            onClick={onComplete}
+            className="group relative px-12 py-4 border-2 border-white/20 hover:border-white transition-all duration-500"
+          >
+            <span className="relative z-10 font-orbitron font-black text-white tracking-[0.3em] group-hover:text-primary transition-colors">
+              ACCEPT THE CONDITIONS
+            </span>
+            <div className="absolute inset-0 bg-red-600/10 opacity-0 group-hover:opacity-100 transition-opacity blur-md" />
+          </button>
+        </motion.div>
+      )}
+    </div>
+  );
+};
+
+const ConditionsAccept = ({ onComplete }: { onComplete: () => void }) => {
+  const [flashing, setFlashing] = useState(false);
+
+  const handleFinalEnter = () => {
+    setFlashing(true);
+    setTimeout(() => {
+      setFlashing(false);
+      onComplete();
+    }, 1000);
+  };
+
+  return (
+    <div className="space-y-12 relative">
+      <AnimatePresence>
+        {flashing && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[200] bg-red-600/30 backdrop-blur-sm pointer-events-none"
+          />
+        )}
+      </AnimatePresence>
+
+      <div className="space-y-6">
+        <h2 className="font-orbitron text-2xl text-red-600 font-black tracking-widest animate-pulse">WARNING</h2>
+        <p className="font-montserrat text-white/60 tracking-widest uppercase text-sm max-w-md mx-auto leading-relaxed">
+          By proceeding, you agree to the rules of the game.
+        </p>
+      </div>
+
+      <motion.button
+        initial={{ opacity: 0, scale: 0.9 }}
+        animate={{ opacity: 1, scale: 1 }}
+        onClick={handleFinalEnter}
+        className="group relative px-20 py-6 bg-primary text-white font-orbitron font-black text-2xl tracking-[0.5em] hover:shadow-[0_0_50px_rgba(255,0,96,0.6)] transition-all active:scale-95"
+      >
+        ENTER THE GAME
+      </motion.button>
+    </div>
   );
 };
 
