@@ -133,7 +133,6 @@ const DdakjiTransition = ({ onComplete }: { onComplete: () => void }) => {
         className="text-center space-y-12"
       >
         <div className="relative w-64 h-64 mx-auto flex items-center justify-center">
-          {/* Blue Ddakji Card */}
           <motion.div 
             animate={isFlipped ? { 
               rotateY: 180,
@@ -141,12 +140,13 @@ const DdakjiTransition = ({ onComplete }: { onComplete: () => void }) => {
               scale: [1, 1.3, 1]
             } : {}}
             transition={{ duration: 0.8, ease: "easeInOut" }}
-            className="w-48 h-48 bg-blue-600 shadow-2xl relative"
+            className="w-48 h-48 shadow-2xl relative"
             style={{ transformStyle: "preserve-3d" }}
           >
-            {/* Both sides are blue */}
+            {/* Front side (Blue) */}
             <div className="absolute inset-0 bg-blue-600 backface-hidden" />
-            <div className="absolute inset-0 bg-blue-600" style={{ transform: "rotateY(180deg)", backfaceVisibility: "hidden" }} />
+            {/* Back side (Red) */}
+            <div className="absolute inset-0 bg-red-600" style={{ transform: "rotateY(180deg)", backfaceVisibility: "hidden" }} />
           </motion.div>
         </div>
         
