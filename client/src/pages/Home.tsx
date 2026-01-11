@@ -343,40 +343,84 @@ const IntroOverlay = ({ onComplete }: { onComplete: () => void }) => {
 };
 
 const FrontManDialogue = ({ onComplete }: { onComplete: () => void }) => {
+  const [line, setLine] = useState(0);
+  const [displayedText, setDisplayedText] = useState("");
+  const [showButton, setShowButton] = useState(false);
+  const lines = [
+    "Participants will compete in a series of challenges.",
+    "Each round will test intelligence, speed, and composure.",
+    "Failure is elimination.",
+    "Success moves you forward."
+  ];
+
+  useEffect(() => {
+    if (line < lines.length) {
+      let charIndex = 0;
+      setDisplayedText("");
+      const targetText = lines[line];
+      
+      const typeInterval = setInterval(() => {
+        if (charIndex <= targetText.length) {
+          setDisplayedText(targetText.slice(0, charIndex));
+          charIndex++;
+        } else {
+          clearInterval(typeInterval);
+          // Wait after line is fully typed before moving to next
+          setTimeout(() => {
+            if (line < lines.length - 1) {
+              setLine(l => l + 1);
+            } else {
+              // Final line complete, wait 1 second then show button
+              setTimeout(() => setShowButton(true), 1000);
+            }
+          }, 2000);
+        }
+      }, 50);
+
+      return () => clearInterval(typeInterval);
+    }
+  }, [line]);
+
   return (
-    <div className="flex flex-col items-center justify-center w-full max-w-4xl mx-auto h-full px-4 relative">
-      {/* Small floating label near chest area */}
-      <div className="absolute top-[20%] left-1/2 -translate-x-1/2 z-20">
-        <motion.div 
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          className="bg-black/80 border border-white/20 px-6 py-1.5 flex items-center gap-2"
-        >
-          <span className="text-white/40 font-mono text-[10px]">?</span>
-          <span className="font-orbitron text-white text-[10px] tracking-[0.4em] font-bold">FRONT MAN</span>
-        </motion.div>
+    <div className="flex flex-col items-center justify-end w-full max-w-4xl mx-auto h-full pb-24 px-4 relative">
+      <div className="h-32 flex items-center justify-center w-full">
+        <AnimatePresence mode="wait">
+          {!showButton && (
+            <motion.p
+              key={line}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 1 }}
+              className="font-orbitron text-lg md:text-xl text-white tracking-[0.2em] uppercase leading-relaxed font-light drop-shadow-[0_0_10px_rgba(255,255,255,0.5)] text-center"
+            >
+              {displayedText}
+            </motion.p>
+          )}
+        </AnimatePresence>
       </div>
 
-      <div className="flex-1" />
-
-      {/* Large centered button at bottom */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.5 }}
-        className="pb-20"
-      >
-        <button
-          onClick={onComplete}
-          className="group relative px-24 py-5 border border-white/40 hover:border-white transition-all duration-500 bg-black/40 backdrop-blur-md overflow-hidden rounded-sm"
-        >
-          <div className="absolute inset-0 bg-white/5 group-hover:bg-white/10 transition-colors" />
-          <span className="relative z-10 font-orbitron font-bold text-white tracking-[0.8em] text-xl group-hover:text-white transition-all">
-            ACCEPT
-          </span>
-          <div className="absolute inset-x-0 bottom-0 h-[2px] bg-red-600/40 blur-[1px] group-hover:bg-red-500 transition-colors" />
-        </button>
-      </motion.div>
+      <AnimatePresence>
+        {showButton && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 1.5 }}
+            className="absolute bottom-24"
+          >
+            <button
+              onClick={onComplete}
+              className="group relative px-16 py-5 border border-white/20 hover:border-white transition-all duration-700 overflow-hidden bg-black/40 backdrop-blur-md rounded-sm"
+            >
+              <div className="absolute inset-0 bg-white/5 group-hover:bg-white/10 transition-colors" />
+              <span className="relative z-10 font-orbitron font-bold text-white tracking-[0.6em] text-base group-hover:text-white transition-all">
+                ACCEPT THE CONDITIONS
+              </span>
+              <div className="absolute inset-x-0 bottom-0 h-[2px] bg-red-600/40 blur-[1px] group-hover:bg-red-500 transition-colors" />
+            </button>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };
