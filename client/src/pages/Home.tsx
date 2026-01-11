@@ -477,6 +477,8 @@ const ConditionsAccept = ({ onComplete }: { onComplete: () => void }) => {
   );
 };
 
+import mainBg from "@assets/MAin_background_1768146583042.jpg";
+
 export default function Home() {
   const [showIntro, setShowIntro] = useState(true);
   const [isMuted, setIsMuted] = useState(false);
@@ -497,6 +499,13 @@ export default function Home() {
     <div className="min-h-screen bg-black text-white selection:bg-primary selection:text-white overflow-hidden relative font-montserrat">
       <audio ref={audioRef} src={audioFile} loop muted={isMuted} />
       
+      {/* Background Image with Dark Wash */}
+      <div 
+        className="fixed inset-0 z-0 bg-cover bg-center bg-no-repeat opacity-40 grayscale-[0.5]"
+        style={{ backgroundImage: `url(${mainBg})` }}
+      />
+      <div className="fixed inset-0 z-1 bg-black/60 pointer-events-none" />
+      
       <button 
         onClick={() => setIsMuted(!isMuted)}
         className="fixed top-8 right-8 z-[100] p-2 text-white/40 hover:text-white transition-colors bg-black/20 backdrop-blur-sm"
@@ -504,9 +513,9 @@ export default function Home() {
         {isMuted ? <VolumeX size={20} /> : <Volume2 size={20} />}
       </button>
 
-      <div className="scanline" />
-      <div className="vignette" />
-      <div className="cctv-overlay" />
+      <div className="scanline z-10" />
+      <div className="vignette z-10" />
+      <div className="cctv-overlay z-10" />
       <div className="absolute top-8 left-8 z-50 font-mono text-[10px] opacity-40 uppercase tracking-[0.2em] pointer-events-none">
         REC ● LIVE // CAM_01<br/>
         SQ_DORMITORY_H1
@@ -514,7 +523,7 @@ export default function Home() {
       <FloatingShapes />
 
       {/* Hero Section */}
-      <section className="relative h-screen flex flex-col items-center justify-center px-4 z-10">
+      <section className="relative h-screen flex flex-col items-center justify-center px-4 z-20">
         <motion.div 
           initial={{ opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}
