@@ -343,9 +343,11 @@ const IntroOverlay = ({ onComplete }: { onComplete: () => void }) => {
 };
 
 const FrontManDialogue = ({ onComplete }: { onComplete: () => void }) => {
-  const [line, setLine] = useState(0);
+  const [lineIndex, setLineIndex] = useState(0);
   const [displayedText, setDisplayedText] = useState("");
+  const [isTyping, setIsTyping] = useState(false);
   const [showButton, setShowButton] = useState(false);
+
   const lines = [
     "Participants will compete in a series of challenges.",
     "Each round will test intelligence, speed, and composure.",
@@ -354,69 +356,77 @@ const FrontManDialogue = ({ onComplete }: { onComplete: () => void }) => {
   ];
 
   useEffect(() => {
-    if (line < lines.length) {
-      let charIndex = 0;
+    if (lineIndex < lines.length && !showButton) {
+      setIsTyping(true);
       setDisplayedText("");
-      const targetText = lines[line];
-      
-      const typeInterval = setInterval(() => {
-        if (charIndex <= targetText.length) {
-          setDisplayedText(targetText.slice(0, charIndex));
+      let charIndex = 0;
+      const targetText = lines[lineIndex];
+
+      const interval = setInterval(() => {
+        if (charIndex < targetText.length) {
+          setDisplayedText(prev => prev + targetText[charIndex]);
           charIndex++;
         } else {
-          clearInterval(typeInterval);
-          // Wait after line is fully typed before moving to next
+          clearInterval(interval);
+          setIsTyping(false);
+          
+          // Pause after line finishes, then move to next or show button
           setTimeout(() => {
-            if (line < lines.length - 1) {
-              setLine(l => l + 1);
+            if (lineIndex < lines.length - 1) {
+              setLineIndex(prev => prev + 1);
             } else {
-              // Final line complete, wait 1 second then show button
+              // Final line finished, wait a bit then show button
               setTimeout(() => setShowButton(true), 1000);
             }
           }, 2000);
         }
       }, 50);
 
-      return () => clearInterval(typeInterval);
+      return () => clearInterval(interval);
     }
-  }, [line]);
+  }, [lineIndex, showButton]);
 
   return (
-    <div className="flex flex-col items-center justify-end w-full max-w-4xl mx-auto h-full pb-24 px-4 relative">
-      <div className="h-32 flex items-center justify-center w-full">
+    <div className="flex flex-col items-center justify-end w-full max-w-4xl mx-auto h-full pb-32 px-4 relative">
+      {/* Cinematic Subtitles */}
+      <div className="min-h-[120px] flex items-center justify-center w-full text-center">
         <AnimatePresence mode="wait">
           {!showButton && (
-            <motion.p
-              key={line}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 1 }}
-              className="font-orbitron text-lg md:text-xl text-white tracking-[0.2em] uppercase leading-relaxed font-light drop-shadow-[0_0_10px_rgba(255,255,255,0.5)] text-center"
+            <motion.div
+              key={lineIndex}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.8 }}
+              className="max-w-2xl"
             >
-              {displayedText}
-            </motion.p>
+              <p className="font-orbitron text-xl md:text-2xl text-white tracking-[0.15em] uppercase leading-relaxed font-light drop-shadow-[0_0_8px_rgba(255,255,255,0.4)]">
+                {displayedText}
+                {isTyping && <span className="inline-block w-1 h-6 bg-white ml-2 animate-pulse" />}
+              </p>
+            </motion.div>
           )}
         </AnimatePresence>
       </div>
 
+      {/* Acceptance Button */}
       <AnimatePresence>
         {showButton && (
           <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 1.5 }}
-            className="absolute bottom-24"
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 1.2, ease: "easeOut" }}
+            className="absolute bottom-32"
           >
             <button
               onClick={onComplete}
-              className="group relative px-16 py-5 border border-white/20 hover:border-white transition-all duration-700 overflow-hidden bg-black/40 backdrop-blur-md rounded-sm"
+              className="group relative px-20 py-5 bg-black/40 backdrop-blur-md border border-white/20 hover:border-white transition-all duration-700 rounded-sm overflow-hidden"
             >
               <div className="absolute inset-0 bg-white/5 group-hover:bg-white/10 transition-colors" />
-              <span className="relative z-10 font-orbitron font-bold text-white tracking-[0.6em] text-base group-hover:text-white transition-all">
-                ACCEPT THE CONDITIONS
+              <span className="relative z-10 font-orbitron font-bold text-white tracking-[0.6em] text-lg group-hover:text-white transition-all">
+                ACCEPT
               </span>
-              <div className="absolute inset-x-0 bottom-0 h-[2px] bg-red-600/40 blur-[1px] group-hover:bg-red-500 transition-colors" />
+              <div className="absolute inset-x-0 bottom-0 h-[2px] bg-red-600/40 blur-[1px] group-hover:bg-red-500 transition-colors shadow-[0_0_15px_rgba(239,68,68,0.3)]" />
             </button>
           </motion.div>
         )}
