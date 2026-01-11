@@ -373,7 +373,7 @@ const FrontManDialogue = ({ onComplete }: { onComplete: () => void }) => {
             if (lineIndex < lines.length - 1) {
               setLineIndex(prev => prev + 1);
             } else {
-              // Last statement complete, wait 1.5s then trigger button show
+              // Trigger button show after a brief pause following the last line
               setShowButton(true);
             }
           }, pauseDuration);
@@ -386,7 +386,7 @@ const FrontManDialogue = ({ onComplete }: { onComplete: () => void }) => {
 
   return (
     <div className="flex flex-col items-center justify-end w-full h-full pb-32 px-4 relative">
-      {/* Cinematic Subtitles */}
+      {/* Cinematic Subtitles with consistent typewriter animation */}
       <div className="min-h-[160px] flex items-center justify-center w-full text-center">
         <AnimatePresence mode="wait">
           {!showButton && (
@@ -404,14 +404,14 @@ const FrontManDialogue = ({ onComplete }: { onComplete: () => void }) => {
         </AnimatePresence>
       </div>
 
-      {/* Acceptance Button */}
+      {/* Acceptance Button with cinematic reveal animation */}
       <AnimatePresence>
         {showButton && (
           <motion.div
-            initial={{ opacity: 0, scale: 0.9, filter: "blur(10px)" }}
+            initial={{ opacity: 0, scale: 0.95, filter: "blur(10px)" }}
             animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
             transition={{ 
-              duration: 2, 
+              duration: 1.5, 
               ease: [0.22, 1, 0.36, 1],
               delay: 0.5
             }}
