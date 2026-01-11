@@ -375,48 +375,72 @@ const FrontManDialogue = ({ onComplete }: { onComplete: () => void }) => {
   }, [line]);
 
   return (
-    <div className="flex flex-col items-center justify-center w-full max-w-2xl mx-auto h-full px-4">
-      <div className="relative w-full">
-        <div className="absolute -top-8 left-4 bg-black/80 border border-white/20 px-4 py-1 flex items-center gap-2 z-20">
-          <span className="text-white/40 font-mono text-[10px]">?</span>
-          <span className="font-orbitron text-white text-[10px] tracking-widest font-bold">FRONT MAN</span>
-        </div>
-        
-        <div className="w-full bg-black/60 border-2 border-white/10 backdrop-blur-md p-12 min-h-[180px] flex items-center justify-center relative overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent pointer-events-none" />
-          <AnimatePresence mode="wait">
-            <motion.p
-              key={line}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="font-orbitron text-lg md:text-2xl text-white tracking-[0.3em] uppercase leading-relaxed font-bold drop-shadow-[0_0_10px_rgba(255,255,255,0.3)] text-center relative z-10"
-            >
-              {displayedText}
-            </motion.p>
-          </AnimatePresence>
-        </div>
-      </div>
+    <div className="flex flex-col items-center justify-center w-full max-w-4xl mx-auto h-full px-4">
+      <div className="relative w-full flex flex-col items-center">
+        {/* Dialogue Box Container */}
+        <div className="w-full max-w-[800px] relative">
+          {/* Name Tag */}
+          <div className="absolute -top-6 left-0 z-20">
+            <div className="bg-[#1a1a1a] border border-white/20 px-6 py-2 flex items-center gap-3 shadow-2xl" style={{ clipPath: "polygon(0 0, 100% 0, 95% 100%, 0% 100%)" }}>
+              <span className="text-white/40 font-mono text-xs">?</span>
+              <span className="font-orbitron text-white text-xs tracking-[0.3em] font-bold">FRONT MAN</span>
+            </div>
+          </div>
+          
+          {/* Main Dialogue Box */}
+          <div className="w-full bg-[#0a0a0c]/90 border border-white/20 shadow-2xl backdrop-blur-xl relative overflow-hidden">
+            <div className="flex h-[200px]">
+              {/* Left Accent Panel */}
+              <div className="w-16 border-r border-white/10 bg-white/5" />
+              
+              {/* Text Area */}
+              <div className="flex-1 p-8 flex items-center justify-center text-center">
+                <AnimatePresence mode="wait">
+                  <motion.p
+                    key={line}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    className="font-orbitron text-xl md:text-3xl text-white tracking-[0.15em] uppercase leading-relaxed font-bold drop-shadow-[0_0_8px_rgba(255,255,255,0.3)]"
+                  >
+                    {displayedText}
+                  </motion.p>
+                </AnimatePresence>
+              </div>
 
-      {line === lines.length - 1 && displayedText === lines[line] && (
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5 }}
-          className="mt-12"
-        >
-          <button
-            onClick={onComplete}
-            className="group relative px-20 py-4 rounded-full border-2 border-white/20 hover:border-white transition-all duration-500 overflow-hidden bg-black/20 backdrop-blur-md"
+              {/* Right Accent Panel */}
+              <div className="w-16 border-l border-white/10 bg-white/5" />
+            </div>
+            
+            {/* Box Decorative Corners */}
+            <div className="absolute top-0 left-0 w-2 h-2 border-t border-l border-white/40" />
+            <div className="absolute top-0 right-0 w-2 h-2 border-t border-r border-white/40" />
+            <div className="absolute bottom-0 left-0 w-2 h-2 border-b border-l border-white/40" />
+            <div className="absolute bottom-0 right-0 w-2 h-2 border-b border-r border-white/40" />
+          </div>
+        </div>
+
+        {/* Accept Button Area */}
+        {line === lines.length - 1 && displayedText === lines[line] && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.5 }}
+            className="mt-8"
           >
-            <div className="absolute inset-0 bg-white/5 group-hover:bg-white/10 transition-colors" />
-            <span className="relative z-10 font-orbitron font-bold text-white tracking-[0.6em] text-base group-hover:text-white transition-colors">
-              ACCEPT
-            </span>
-            <div className="absolute inset-0 bg-red-600/10 opacity-0 group-hover:opacity-100 transition-opacity blur-3xl" />
-          </button>
-        </motion.div>
-      )}
+            <button
+              onClick={onComplete}
+              className="group relative px-16 py-3 rounded-md border border-white/30 hover:border-white transition-all duration-300 bg-black/40 backdrop-blur-md overflow-hidden"
+            >
+              <div className="absolute inset-0 bg-white/5 group-hover:bg-white/10 transition-colors" />
+              <span className="relative z-10 font-orbitron font-bold text-white tracking-[0.4em] text-lg group-hover:text-white">
+                ACCEPT
+              </span>
+              <div className="absolute inset-x-0 bottom-0 h-[1px] bg-red-500/50 blur-sm group-hover:bg-red-500 transition-colors" />
+            </button>
+          </motion.div>
+        )}
+      </div>
     </div>
   );
 };
