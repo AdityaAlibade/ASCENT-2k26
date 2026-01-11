@@ -7,24 +7,53 @@ export interface IStorage {
   getPlayerStats(): Promise<{ totalPlayers: number }>;
 }
 
+/**
+ * In-memory fallback when DB is disabled
+ * This keeps the app alive in dev / demo mode
+ */
+const memoryPlayers: Player[] = [];
+
 export class DatabaseStorage implements IStorage {
   async createPlayer(insertPlayer: InsertPlayer): Promise<Player> {
+    // 🔴 DB DISABLED → USE MEMORY
+    if (!db) {
+      const player: Player = {
+        id: memoryPlayers.length + 1,
+        playerNumber: memoryPlayers.length + 1,
+        ...insertPlayer,
+      } as Player;
+
+      memoryPlayers.push(player);
+      return player;
+    }
+
+    // 🟢 DB ENABLED → NORMAL FLOW
     const currentCount = await this.getPlayerStats();
-    // Assign player number starting from 1 or 456, let's go with sequential 1-456 style logic
-    // or just incrementing. 
-    // To make it look cool, let's start from a random base or just 1.
     const nextNumber = currentCount.totalPlayers + 1;
 
-    const [player] = await db.insert(players).values({
-      ...insertPlayer,
-      playerNumber: nextNumber
-    }).returning();
+    const [player] = await db
+      .insert(players)
+      .values({
+        ...insertPlayer,
+        playerNumber: nextNumber,
+      })
+      .returning();
+
     return player;
   }
 
   async getPlayerStats(): Promise<{ totalPlayers: number }> {
-    const [result] = await db.select({ count: count() }).from(players);
-    return { totalPlayers: result?.count || 0 };
+    // 🔴 DB DISABLED → MEMORY COUNT
+    if (!db) {
+      return { totalPlayers: memoryPlayers.length };
+    }
+
+    // 🟢 DB ENABLED → DB COUNT
+    const [result] = await db
+      .select({ count: count() })
+      .from(players);
+
+    return { totalPlayers: Number(result?.count ?? 0) };
   }
 }
 
