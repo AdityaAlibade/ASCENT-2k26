@@ -6,7 +6,7 @@ import { Circle, Triangle, Square, FloatingShapes } from "@/components/ui/GameSh
 import { ChevronDown, AlertTriangle, Clock, Trophy, ShieldAlert, Video, Volume2, VolumeX } from "lucide-react";
 import audioFile from "@assets/Round_And_Round_Mingle_1767983924508.mp3";
 import frontManTheme from "@assets/squid_game_1768071980984.mp3";
-import frontManImg from "@assets/frontman_1768070945817.png";
+import frontManImg from "@assets/FM_1768130131807.png";
 
 const CountdownTimer = () => {
   const [time, setTime] = useState("48:12:09");
@@ -349,7 +349,7 @@ const FrontManDialogue = ({ onComplete }: { onComplete: () => void }) => {
     "Participants will compete in a series of challenges.",
     "Each round will test intelligence, speed, and composure.",
     "FAILURE RESULTS IN ELIMINATION",
-    "Success moves you forward."
+    "DO YOU ACCEPT THE CONDITIONS?"
   ];
 
   useEffect(() => {
@@ -359,49 +359,59 @@ const FrontManDialogue = ({ onComplete }: { onComplete: () => void }) => {
       const targetText = lines[line];
       
       const typeInterval = setInterval(() => {
-        if (charIndex < targetText.length) {
-          setDisplayedText(prev => prev + targetText[charIndex]);
+        if (charIndex <= targetText.length) {
+          setDisplayedText(targetText.slice(0, charIndex));
           charIndex++;
         } else {
           clearInterval(typeInterval);
-          setTimeout(() => setLine(l => l + 1), 2000);
+          if (line < lines.length - 1) {
+            setTimeout(() => setLine(l => l + 1), 2500);
+          }
         }
-      }, 70); // Slower, NPC-style typing animation
+      }, 60);
 
       return () => clearInterval(typeInterval);
     }
   }, [line]);
 
   return (
-    <div className="flex flex-col items-center justify-center w-full max-w-4xl mx-auto h-full">
-      <div className="flex-1 flex items-center justify-center">
-        <AnimatePresence mode="wait">
-          <motion.p
-            key={line}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="font-orbitron text-lg md:text-xl text-white tracking-[0.5em] uppercase leading-relaxed font-light drop-shadow-[0_0_10px_rgba(255,255,255,0.3)] text-center px-4"
-          >
-            {displayedText}
-          </motion.p>
-        </AnimatePresence>
+    <div className="flex flex-col items-center justify-center w-full max-w-2xl mx-auto h-full px-4">
+      <div className="relative w-full">
+        <div className="absolute -top-8 left-4 bg-black/80 border border-white/20 px-4 py-1 flex items-center gap-2 z-20">
+          <span className="text-white/40 font-mono text-[10px]">?</span>
+          <span className="font-orbitron text-white text-[10px] tracking-widest font-bold">FRONT MAN</span>
+        </div>
+        
+        <div className="w-full bg-black/60 border-2 border-white/10 backdrop-blur-md p-12 min-h-[180px] flex items-center justify-center relative overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent pointer-events-none" />
+          <AnimatePresence mode="wait">
+            <motion.p
+              key={line}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="font-orbitron text-lg md:text-2xl text-white tracking-[0.3em] uppercase leading-relaxed font-bold drop-shadow-[0_0_10px_rgba(255,255,255,0.3)] text-center relative z-10"
+            >
+              {displayedText}
+            </motion.p>
+          </AnimatePresence>
+        </div>
       </div>
 
-      {line >= lines.length && (
+      {line === lines.length - 1 && displayedText === lines[line] && (
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5 }}
-          className="pb-12"
+          className="mt-12"
         >
           <button
             onClick={onComplete}
-            className="group relative px-16 py-6 border border-white/20 hover:border-white/40 transition-all duration-500 overflow-hidden bg-black/40 backdrop-blur-md"
+            className="group relative px-20 py-4 rounded-full border-2 border-white/20 hover:border-white transition-all duration-500 overflow-hidden bg-black/20 backdrop-blur-md"
           >
             <div className="absolute inset-0 bg-white/5 group-hover:bg-white/10 transition-colors" />
-            <span className="relative z-10 font-orbitron font-light text-white tracking-[0.6em] text-lg group-hover:text-primary transition-colors">
-              ACCEPT THE CONDITIONS
+            <span className="relative z-10 font-orbitron font-bold text-white tracking-[0.6em] text-base group-hover:text-white transition-colors">
+              ACCEPT
             </span>
             <div className="absolute inset-0 bg-red-600/10 opacity-0 group-hover:opacity-100 transition-opacity blur-3xl" />
           </button>
@@ -739,7 +749,7 @@ export default function Home() {
             </div>
             <div className="flex justify-between items-start mb-8">
               <ShieldAlert className="w-12 h-12 text-red-700 animate-pulse" />
-              <Triangle size={40} color="#000" />
+              <Triangle size={40} color="#000" opacity={0.4} />
             </div>
             <h3 className="text-3xl font-black mb-6 text-black tracking-tighter border-b-2 border-black/10 pb-2">RULES OF THE GAME</h3>
             <ul className="font-montserrat text-black/80 space-y-6 font-bold uppercase tracking-wide text-sm">
