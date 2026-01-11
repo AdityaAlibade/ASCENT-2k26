@@ -370,15 +370,13 @@ const FrontManDialogue = ({ onComplete }: { onComplete: () => void }) => {
           clearInterval(interval);
           setIsTyping(false);
           
-          // Pause after line finishes, then move to next or show button
           setTimeout(() => {
             if (lineIndex < lines.length - 1) {
               setLineIndex(prev => prev + 1);
             } else {
-              // Final line finished, wait a bit then show button
               setTimeout(() => setShowButton(true), 1000);
             }
-          }, 2000);
+          }, 2500);
         }
       }, 50);
 
@@ -387,50 +385,75 @@ const FrontManDialogue = ({ onComplete }: { onComplete: () => void }) => {
   }, [lineIndex, showButton]);
 
   return (
-    <div className="flex flex-col items-center justify-end w-full max-w-4xl mx-auto h-full pb-32 px-4 relative">
-      {/* Cinematic Subtitles */}
-      <div className="min-h-[120px] flex items-center justify-center w-full text-center">
-        <AnimatePresence mode="wait">
-          {!showButton && (
-            <motion.div
-              key={lineIndex}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              transition={{ duration: 0.8 }}
-              className="max-w-2xl"
-            >
-              <p className="font-orbitron text-xl md:text-2xl text-white tracking-[0.15em] uppercase leading-relaxed font-light drop-shadow-[0_0_8px_rgba(255,255,255,0.4)]">
-                {displayedText}
-                {isTyping && <span className="inline-block w-1 h-6 bg-white ml-2 animate-pulse" />}
-              </p>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </div>
+    <div className="flex flex-col items-center justify-center w-full max-w-4xl mx-auto h-full px-4 relative">
+      <div className="relative w-full flex flex-col items-center mt-20">
+        {/* Dialogue Box Container */}
+        <div className="w-full max-w-[700px] relative">
+          {/* Name Tag */}
+          <div className="absolute -top-6 left-6 z-20">
+            <div className="bg-[#1a1a1a]/90 border border-white/20 px-6 py-1.5 flex items-center gap-3 backdrop-blur-md" style={{ clipPath: "polygon(0 0, 100% 0, 95% 100%, 5% 100%)" }}>
+              <span className="text-white/40 font-mono text-[10px]">?</span>
+              <span className="font-orbitron text-white text-[10px] tracking-[0.3em] font-bold">FRONT MAN</span>
+            </div>
+          </div>
+          
+          {/* Main Dialogue Box */}
+          <div className="w-full bg-[#0a0a0c]/80 border border-white/10 shadow-2xl backdrop-blur-xl relative overflow-hidden">
+            <div className="flex min-h-[160px]">
+              {/* Left Accent Panel */}
+              <div className="w-12 md:w-16 border-r border-white/5 bg-white/5 shrink-0" />
+              
+              {/* Text Area */}
+              <div className="flex-1 p-8 md:p-10 flex items-center justify-center text-center">
+                <AnimatePresence mode="wait">
+                  <motion.p
+                    key={lineIndex}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    className="font-orbitron text-lg md:text-2xl text-white tracking-[0.1em] uppercase leading-relaxed font-bold drop-shadow-[0_0_8px_rgba(255,255,255,0.3)]"
+                  >
+                    {displayedText}
+                  </motion.p>
+                </AnimatePresence>
+              </div>
 
-      {/* Acceptance Button */}
-      <AnimatePresence>
-        {showButton && (
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 1.2, ease: "easeOut" }}
-            className="absolute bottom-32"
-          >
-            <button
-              onClick={onComplete}
-              className="group relative px-20 py-5 bg-black/40 backdrop-blur-md border border-white/20 hover:border-white transition-all duration-700 rounded-sm overflow-hidden"
-            >
-              <div className="absolute inset-0 bg-white/5 group-hover:bg-white/10 transition-colors" />
-              <span className="relative z-10 font-orbitron font-bold text-white tracking-[0.6em] text-lg group-hover:text-white transition-all">
-                ACCEPT
-              </span>
-              <div className="absolute inset-x-0 bottom-0 h-[2px] bg-red-600/40 blur-[1px] group-hover:bg-red-500 transition-colors shadow-[0_0_15px_rgba(239,68,68,0.3)]" />
-            </button>
-          </motion.div>
-        )}
-      </AnimatePresence>
+              {/* Right Accent Panel */}
+              <div className="w-12 md:w-16 border-l border-white/5 bg-white/5 shrink-0" />
+            </div>
+            
+            {/* Box Decorative Corners */}
+            <div className="absolute top-0 left-0 w-2 h-2 border-t border-l border-white/20" />
+            <div className="absolute top-0 right-0 w-2 h-2 border-t border-r border-white/20" />
+            <div className="absolute bottom-0 left-0 w-2 h-2 border-b border-l border-white/20" />
+            <div className="absolute bottom-0 right-0 w-2 h-2 border-b border-r border-white/20" />
+          </div>
+        </div>
+
+        {/* Accept Button Area */}
+        <div className="h-24 flex items-center justify-center mt-6">
+          <AnimatePresence>
+            {showButton && (
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8 }}
+              >
+                <button
+                  onClick={onComplete}
+                  className="group relative px-16 py-3 border border-white/30 hover:border-white transition-all duration-300 bg-black/40 backdrop-blur-md overflow-hidden rounded-sm"
+                >
+                  <div className="absolute inset-0 bg-white/5 group-hover:bg-white/10 transition-colors" />
+                  <span className="relative z-10 font-orbitron font-bold text-white tracking-[0.4em] text-sm group-hover:text-white">
+                    ACCEPT
+                  </span>
+                  <div className="absolute inset-x-0 bottom-0 h-[1px] bg-red-500/50 blur-[1px] group-hover:bg-red-500 transition-colors" />
+                </button>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+      </div>
     </div>
   );
 };
