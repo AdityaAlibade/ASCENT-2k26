@@ -2,12 +2,6 @@
 
 ![Logo](https://github.com/user-attachments/assets/1a800022-2889-4305-b8a7-2c0ee469790e)
 
-Add the official ASCENT 2K26 logo here.
-
-* Place the logo file inside `client/public/` (recommended name: `ascent-logo.png`)
-* Use this logo consistently across all pages (navbar, landing page, footer)
-* Maintain proper spacing and contrast to match the dark event theme
-
 
 ASCENT 2K26 is a high‑stakes, elimination‑based technical event organized by **GFG RSCOE**. Inspired by competitive survival formats, ASCENT challenges participants through multiple rounds that test intelligence, speed, problem‑solving, and composure under pressure. Every round eliminates the weakest performers — only the most capable advance.
 
