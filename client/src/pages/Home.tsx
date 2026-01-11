@@ -380,8 +380,8 @@ const FrontManDialogue = ({ onComplete }: { onComplete: () => void }) => {
         {/* Dialogue Box Container */}
         <div className="w-full max-w-[800px] relative">
           {/* Name Tag */}
-          <div className="absolute -top-6 left-0 z-20">
-            <div className="bg-[#1a1a1a] border border-white/20 px-6 py-2 flex items-center gap-3 shadow-2xl" style={{ clipPath: "polygon(0 0, 100% 0, 95% 100%, 0% 100%)" }}>
+          <div className="absolute -top-6 left-1/2 -translate-x-1/2 z-20">
+            <div className="bg-[#1a1a1a] border border-white/20 px-6 py-2 flex items-center gap-3 shadow-2xl" style={{ clipPath: "polygon(0 0, 100% 0, 95% 100%, 5% 100%)" }}>
               <span className="text-white/40 font-mono text-xs">?</span>
               <span className="font-orbitron text-white text-xs tracking-[0.3em] font-bold">FRONT MAN</span>
             </div>
@@ -389,19 +389,19 @@ const FrontManDialogue = ({ onComplete }: { onComplete: () => void }) => {
           
           {/* Main Dialogue Box */}
           <div className="w-full bg-[#0a0a0c]/90 border border-white/20 shadow-2xl backdrop-blur-xl relative overflow-hidden">
-            <div className="flex h-[200px]">
+            <div className="flex min-h-[200px]">
               {/* Left Accent Panel */}
-              <div className="w-16 border-r border-white/10 bg-white/5" />
+              <div className="w-12 md:w-16 border-r border-white/10 bg-white/5 shrink-0" />
               
               {/* Text Area */}
-              <div className="flex-1 p-8 flex items-center justify-center text-center">
+              <div className="flex-1 p-6 md:p-8 flex items-center justify-center text-center">
                 <AnimatePresence mode="wait">
                   <motion.p
                     key={line}
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
-                    className="font-orbitron text-xl md:text-3xl text-white tracking-[0.15em] uppercase leading-relaxed font-bold drop-shadow-[0_0_8px_rgba(255,255,255,0.3)]"
+                    className="font-orbitron text-lg md:text-3xl text-white tracking-[0.15em] uppercase leading-relaxed font-bold drop-shadow-[0_0_8px_rgba(255,255,255,0.3)]"
                   >
                     {displayedText}
                   </motion.p>
@@ -409,7 +409,7 @@ const FrontManDialogue = ({ onComplete }: { onComplete: () => void }) => {
               </div>
 
               {/* Right Accent Panel */}
-              <div className="w-16 border-l border-white/10 bg-white/5" />
+              <div className="w-12 md:w-16 border-l border-white/10 bg-white/5 shrink-0" />
             </div>
             
             {/* Box Decorative Corners */}
