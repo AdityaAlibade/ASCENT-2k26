@@ -361,8 +361,8 @@ const FrontManDialogue = ({ onComplete }: { onComplete: () => void }) => {
       const targetText = lines[lineIndex];
 
       const interval = setInterval(() => {
-        if (charIndex < targetText.length) {
-          setDisplayedText(prev => prev + targetText[charIndex]);
+        if (charIndex <= targetText.length) {
+          setDisplayedText(targetText.slice(0, charIndex));
           charIndex++;
         } else {
           clearInterval(interval);
