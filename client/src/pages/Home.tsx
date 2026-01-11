@@ -380,28 +380,30 @@ const FrontManDialogue = ({ onComplete }: { onComplete: () => void }) => {
         {/* Dialogue Box Container */}
         <div className="w-full max-w-[800px] relative">
           {/* Name Tag */}
-          <div className="absolute -top-6 left-1/2 -translate-x-1/2 z-20">
-            <div className="bg-[#1a1a1a] border border-white/20 px-6 py-2 flex items-center gap-3 shadow-2xl" style={{ clipPath: "polygon(0 0, 100% 0, 95% 100%, 5% 100%)" }}>
+          <div className="absolute -top-7 left-1/2 -translate-x-1/2 z-20">
+            <div className="bg-[#1a1a1a] border-2 border-white/20 px-8 py-2.5 flex items-center gap-4 shadow-[0_0_30px_rgba(0,0,0,0.8)]" style={{ clipPath: "polygon(0 0, 100% 0, 85% 100%, 15% 100%)" }}>
               <span className="text-white/40 font-mono text-xs">?</span>
-              <span className="font-orbitron text-white text-xs tracking-[0.3em] font-bold">FRONT MAN</span>
+              <span className="font-orbitron text-white text-sm tracking-[0.4em] font-bold">FRONT MAN</span>
             </div>
           </div>
           
           {/* Main Dialogue Box */}
-          <div className="w-full bg-[#0a0a0c]/90 border border-white/20 shadow-2xl backdrop-blur-xl relative overflow-hidden">
-            <div className="flex min-h-[200px]">
+          <div className="w-full bg-[#0a0a0c]/95 border-2 border-white/10 shadow-[0_0_50px_rgba(0,0,0,0.9)] backdrop-blur-2xl relative overflow-hidden mt-2">
+            <div className="flex min-h-[240px]">
               {/* Left Accent Panel */}
-              <div className="w-12 md:w-16 border-r border-white/10 bg-white/5 shrink-0" />
+              <div className="w-16 md:w-24 border-r border-white/10 bg-white/5 shrink-0 flex items-center justify-center">
+                <div className="w-[1px] h-32 bg-gradient-to-b from-transparent via-white/20 to-transparent" />
+              </div>
               
               {/* Text Area */}
-              <div className="flex-1 p-6 md:p-8 flex items-center justify-center text-center">
+              <div className="flex-1 p-10 md:p-14 flex items-center justify-center text-center">
                 <AnimatePresence mode="wait">
                   <motion.p
                     key={line}
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
-                    className="font-orbitron text-lg md:text-3xl text-white tracking-[0.15em] uppercase leading-relaxed font-bold drop-shadow-[0_0_8px_rgba(255,255,255,0.3)]"
+                    className="font-orbitron text-2xl md:text-4xl text-white tracking-[0.2em] uppercase leading-relaxed font-bold drop-shadow-[0_0_15px_rgba(255,255,255,0.4)]"
                   >
                     {displayedText}
                   </motion.p>
@@ -409,34 +411,42 @@ const FrontManDialogue = ({ onComplete }: { onComplete: () => void }) => {
               </div>
 
               {/* Right Accent Panel */}
-              <div className="w-12 md:w-16 border-l border-white/10 bg-white/5 shrink-0" />
+              <div className="w-16 md:w-24 border-l border-white/10 bg-white/5 shrink-0 flex items-center justify-center">
+                <div className="w-[1px] h-32 bg-gradient-to-b from-transparent via-white/20 to-transparent" />
+              </div>
             </div>
             
             {/* Box Decorative Corners */}
-            <div className="absolute top-0 left-0 w-2 h-2 border-t border-l border-white/40" />
-            <div className="absolute top-0 right-0 w-2 h-2 border-t border-r border-white/40" />
-            <div className="absolute bottom-0 left-0 w-2 h-2 border-b border-l border-white/40" />
-            <div className="absolute bottom-0 right-0 w-2 h-2 border-b border-r border-white/40" />
+            <div className="absolute top-0 left-0 w-4 h-4 border-t-2 border-l-2 border-white/30" />
+            <div className="absolute top-0 right-0 w-4 h-4 border-t-2 border-r-2 border-white/30" />
+            <div className="absolute bottom-0 left-0 w-4 h-4 border-b-2 border-l-2 border-white/30" />
+            <div className="absolute bottom-0 right-0 w-4 h-4 border-b-2 border-r-2 border-white/30" />
+            
+            {/* Inner Glow Effect */}
+            <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent pointer-events-none" />
           </div>
         </div>
 
         {/* Accept Button Area */}
         {line === lines.length - 1 && displayedText === lines[line] && (
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.5 }}
-            className="mt-8"
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.8, type: "spring", stiffness: 100 }}
+            className="mt-12"
           >
             <button
               onClick={onComplete}
-              className="group relative px-16 py-3 rounded-md border border-white/30 hover:border-white transition-all duration-300 bg-black/40 backdrop-blur-md overflow-hidden"
+              className="group relative px-24 py-5 rounded-md border-2 border-white/30 hover:border-white transition-all duration-500 bg-black/60 backdrop-blur-xl overflow-hidden shadow-[0_0_30px_rgba(0,0,0,0.5)]"
             >
               <div className="absolute inset-0 bg-white/5 group-hover:bg-white/10 transition-colors" />
-              <span className="relative z-10 font-orbitron font-bold text-white tracking-[0.4em] text-lg group-hover:text-white">
+              <span className="relative z-10 font-orbitron font-bold text-white tracking-[0.6em] text-2xl group-hover:text-white transition-all">
                 ACCEPT
               </span>
-              <div className="absolute inset-x-0 bottom-0 h-[1px] bg-red-500/50 blur-sm group-hover:bg-red-500 transition-colors" />
+              <div className="absolute inset-x-0 bottom-0 h-[3px] bg-red-600/60 blur-[2px] group-hover:bg-red-500 transition-colors shadow-[0_0_20px_rgba(220,38,38,0.8)]" />
+              
+              {/* Button Glow on Hover */}
+              <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity bg-gradient-to-r from-transparent via-white/10 to-transparent skew-x-12 translate-x-[-100%] group-hover:translate-x-[100%] duration-1000" />
             </button>
           </motion.div>
         )}
