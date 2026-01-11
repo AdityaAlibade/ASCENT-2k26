@@ -283,7 +283,7 @@ const IntroOverlay = ({ onComplete }: { onComplete: () => void }) => {
                       transition={{ delay: 1.5, duration: 2 }}
                       className="font-montserrat text-base md:text-lg text-white/60 tracking-[0.2em] uppercase italic"
                     >
-                      This is your invitation to the Squid Game.
+                      This is your invitation to the ASCENT 2k26.
                     </motion.p>
                   </motion.div>
                 )}
