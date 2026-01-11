@@ -367,14 +367,16 @@ const FrontManDialogue = ({ onComplete }: { onComplete: () => void }) => {
         } else {
           clearInterval(interval);
           
+          const pauseDuration = lineIndex === lines.length - 1 ? 1500 : 2500;
+          
           setTimeout(() => {
             if (lineIndex < lines.length - 1) {
               setLineIndex(prev => prev + 1);
             } else {
-              // Final line finished, wait 1 second of silence then show button
-              setTimeout(() => setShowButton(true), 1000);
+              // Last statement complete, wait 1.5s then trigger button show
+              setShowButton(true);
             }
-          }, 2000);
+          }, pauseDuration);
         }
       }, 50);
 
@@ -385,16 +387,16 @@ const FrontManDialogue = ({ onComplete }: { onComplete: () => void }) => {
   return (
     <div className="flex flex-col items-center justify-end w-full h-full pb-32 px-4 relative">
       {/* Cinematic Subtitles */}
-      <div className="min-h-[120px] flex items-center justify-center w-full text-center">
+      <div className="min-h-[160px] flex items-center justify-center w-full text-center">
         <AnimatePresence mode="wait">
           {!showButton && (
             <motion.p
               key={lineIndex}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 1 }}
-              className="font-orbitron text-lg md:text-2xl text-white tracking-[0.15em] uppercase leading-relaxed font-light drop-shadow-[0_0_12px_rgba(255,255,255,0.4)] max-w-3xl"
+              initial={{ opacity: 0, filter: "blur(10px)" }}
+              animate={{ opacity: 1, filter: "blur(0px)" }}
+              exit={{ opacity: 0, filter: "blur(10px)" }}
+              transition={{ duration: 1.2, ease: "easeInOut" }}
+              className="font-orbitron text-xl md:text-3xl text-white tracking-[0.25em] uppercase leading-relaxed font-light drop-shadow-[0_0_15px_rgba(255,255,255,0.6)] max-w-4xl"
             >
               {displayedText}
             </motion.p>
@@ -406,20 +408,39 @@ const FrontManDialogue = ({ onComplete }: { onComplete: () => void }) => {
       <AnimatePresence>
         {showButton && (
           <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 1.5 }}
-            className="absolute bottom-32"
+            initial={{ opacity: 0, scale: 0.9, filter: "blur(10px)" }}
+            animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
+            transition={{ 
+              duration: 2, 
+              ease: [0.22, 1, 0.36, 1],
+              delay: 0.5
+            }}
+            className="absolute bottom-32 w-full flex justify-center"
           >
             <button
               onClick={onComplete}
-              className="group relative px-20 py-4 bg-black/40 backdrop-blur-md border border-white/20 hover:border-white transition-all duration-1000 rounded-sm overflow-hidden"
+              className="group relative px-28 py-6 bg-black/60 backdrop-blur-xl border border-white/10 hover:border-white/40 transition-all duration-1000 rounded-sm overflow-hidden shadow-[0_0_50px_rgba(0,0,0,0.8)]"
             >
-              <div className="absolute inset-0 bg-white/5 group-hover:bg-white/10 transition-colors" />
-              <span className="relative z-10 font-orbitron font-bold text-white tracking-[0.8em] text-xl group-hover:text-white transition-all">
+              <div className="absolute inset-0 bg-white/0 group-hover:bg-white/5 transition-colors" />
+              <span className="relative z-10 font-orbitron font-bold text-white tracking-[1em] text-2xl group-hover:text-white transition-all drop-shadow-[0_0_8px_rgba(255,255,255,0.4)]">
                 ACCEPT
               </span>
-              <div className="absolute inset-x-0 bottom-0 h-[2px] bg-red-600/40 blur-[1px] group-hover:bg-red-500 transition-colors shadow-[0_0_15px_rgba(239,68,68,0.3)]" />
+              {/* Pulsing Red Bottom Edge */}
+              <motion.div 
+                animate={{ 
+                  opacity: [0.3, 0.7, 0.3],
+                  boxShadow: [
+                    "0 0 10px rgba(220,38,38,0.3)",
+                    "0 0 25px rgba(220,38,38,0.6)",
+                    "0 0 10px rgba(220,38,38,0.3)"
+                  ]
+                }}
+                transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
+                className="absolute inset-x-0 bottom-0 h-[3px] bg-red-600/60" 
+              />
+              
+              {/* Hover Glow Effect */}
+              <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-1000 bg-gradient-to-t from-red-900/10 to-transparent" />
             </button>
           </motion.div>
         )}
