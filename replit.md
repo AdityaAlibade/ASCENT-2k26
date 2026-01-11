@@ -1,8 +1,8 @@
-# Squid Game Registration Portal
+# ASCENT 2k26 Registration Portal
 
 ## Overview
 
-This is an immersive Squid Game-themed registration website that simulates an official recruitment portal for the Squid Game. The application features a cinematic intro sequence with loading animations, atmospheric sound design, and a multi-step registration flow where users receive a unique player number upon completing registration. The experience includes dramatic visual effects like scanlines, vignettes, and the iconic circle-triangle-square symbols.
+This is an immersive Squid Game-themed registration website that simulates an official recruitment portal for the ASCENT 2k26 competition. The application features a cinematic intro sequence with loading animations, atmospheric sound design, and a multi-step registration flow where users receive a unique player number upon completing registration. The experience includes dramatic visual effects like scanlines, vignettes, and the iconic circle-triangle-square symbols.
 
 ## User Preferences
 

@@ -259,7 +259,7 @@ const IntroOverlay = ({ onComplete }: { onComplete: () => void }) => {
                     transition={{ duration: 2 }}
                   >
                     <h1 className="font-orbitron text-4xl md:text-7xl text-white font-black tracking-[0.4em] uppercase drop-shadow-[0_0_20px_rgba(255,255,255,0.4)]">
-                      WELCOME.
+                      ASCENT.
                     </h1>
                   </motion.div>
                 )}
@@ -528,7 +528,7 @@ export default function Home() {
           </div>
 
           <h1 className="font-orbitron text-5xl md:text-9xl font-black tracking-tighter text-white mb-2 text-glow">
-            SQUID GAME
+            ASCENT 2k26
           </h1>
           
           <p className="font-montserrat text-lg md:text-3xl text-gray-400 tracking-widest uppercase font-bold">
