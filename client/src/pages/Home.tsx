@@ -390,28 +390,28 @@ const FrontManDialogue = ({ onComplete }: { onComplete: () => void }) => {
         {/* Dialogue Box Container */}
         <div className="w-full max-w-[700px] relative">
           {/* Name Tag */}
-          <div className="absolute -top-6 left-6 z-20">
-            <div className="bg-[#1a1a1a]/90 border border-white/20 px-6 py-1.5 flex items-center gap-3 backdrop-blur-md" style={{ clipPath: "polygon(0 0, 100% 0, 95% 100%, 5% 100%)" }}>
-              <span className="text-white/40 font-mono text-[10px]">?</span>
-              <span className="font-orbitron text-white text-[10px] tracking-[0.3em] font-bold">FRONT MAN</span>
+          <div className="absolute -top-6 left-1/2 -translate-x-1/2 z-20">
+            <div className="bg-[#1a1a1a] border border-white/20 px-6 py-2 flex items-center gap-3 shadow-2xl" style={{ clipPath: "polygon(0 0, 100% 0, 90% 100%, 10% 100%)" }}>
+              <span className="text-white/40 font-mono text-xs">?</span>
+              <span className="font-orbitron text-white text-xs tracking-[0.3em] font-bold">FRONT MAN</span>
             </div>
           </div>
           
           {/* Main Dialogue Box */}
-          <div className="w-full bg-[#0a0a0c]/80 border border-white/10 shadow-2xl backdrop-blur-xl relative overflow-hidden">
-            <div className="flex min-h-[160px]">
+          <div className="w-full bg-[#0a0a0c]/90 border border-white/20 shadow-2xl backdrop-blur-xl relative overflow-hidden">
+            <div className="flex min-h-[180px]">
               {/* Left Accent Panel */}
-              <div className="w-12 md:w-16 border-r border-white/5 bg-white/5 shrink-0" />
+              <div className="w-12 md:w-20 border-r border-white/10 bg-white/5 shrink-0" />
               
               {/* Text Area */}
-              <div className="flex-1 p-8 md:p-10 flex items-center justify-center text-center">
+              <div className="flex-1 p-8 md:p-12 flex items-center justify-center text-center">
                 <AnimatePresence mode="wait">
                   <motion.p
                     key={lineIndex}
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
-                    className="font-orbitron text-lg md:text-2xl text-white tracking-[0.1em] uppercase leading-relaxed font-bold drop-shadow-[0_0_8px_rgba(255,255,255,0.3)]"
+                    className="font-orbitron text-xl md:text-3xl text-white tracking-[0.15em] uppercase leading-relaxed font-bold drop-shadow-[0_0_12px_rgba(255,255,255,0.4)]"
                   >
                     {displayedText}
                   </motion.p>
@@ -419,14 +419,14 @@ const FrontManDialogue = ({ onComplete }: { onComplete: () => void }) => {
               </div>
 
               {/* Right Accent Panel */}
-              <div className="w-12 md:w-16 border-l border-white/5 bg-white/5 shrink-0" />
+              <div className="w-12 md:w-20 border-l border-white/10 bg-white/5 shrink-0" />
             </div>
             
             {/* Box Decorative Corners */}
-            <div className="absolute top-0 left-0 w-2 h-2 border-t border-l border-white/20" />
-            <div className="absolute top-0 right-0 w-2 h-2 border-t border-r border-white/20" />
-            <div className="absolute bottom-0 left-0 w-2 h-2 border-b border-l border-white/20" />
-            <div className="absolute bottom-0 right-0 w-2 h-2 border-b border-r border-white/20" />
+            <div className="absolute top-0 left-0 w-3 h-3 border-t-2 border-l-2 border-white/40" />
+            <div className="absolute top-0 right-0 w-3 h-3 border-t-2 border-r-2 border-white/40" />
+            <div className="absolute bottom-0 left-0 w-3 h-3 border-b-2 border-l-2 border-white/40" />
+            <div className="absolute bottom-0 right-0 w-3 h-3 border-b-2 border-r-2 border-white/40" />
           </div>
         </div>
 
@@ -435,19 +435,19 @@ const FrontManDialogue = ({ onComplete }: { onComplete: () => void }) => {
           <AnimatePresence>
             {showButton && (
               <motion.div
-                initial={{ opacity: 0, y: 10 }}
+                initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8 }}
               >
                 <button
                   onClick={onComplete}
-                  className="group relative px-16 py-3 border border-white/30 hover:border-white transition-all duration-300 bg-black/40 backdrop-blur-md overflow-hidden rounded-sm"
+                  className="group relative px-20 py-4 border border-white/40 hover:border-white transition-all duration-300 bg-black/40 backdrop-blur-md overflow-hidden rounded-md shadow-2xl"
                 >
                   <div className="absolute inset-0 bg-white/5 group-hover:bg-white/10 transition-colors" />
-                  <span className="relative z-10 font-orbitron font-bold text-white tracking-[0.4em] text-sm group-hover:text-white">
+                  <span className="relative z-10 font-orbitron font-bold text-white tracking-[0.5em] text-xl group-hover:text-white">
                     ACCEPT
                   </span>
-                  <div className="absolute inset-x-0 bottom-0 h-[1px] bg-red-500/50 blur-[1px] group-hover:bg-red-500 transition-colors" />
+                  <div className="absolute inset-x-0 bottom-0 h-[2px] bg-red-600/50 blur-sm group-hover:bg-red-500 transition-colors shadow-[0_0_15px_rgba(239,68,68,0.5)]" />
                 </button>
               </motion.div>
             )}
