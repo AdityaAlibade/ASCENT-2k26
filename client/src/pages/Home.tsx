@@ -259,7 +259,7 @@ const IntroOverlay = ({ onComplete }: { onComplete: () => void }) => {
                     transition={{ duration: 2 }}
                   >
                     <h1 className="font-orbitron text-4xl md:text-7xl text-white font-black tracking-[0.4em] uppercase drop-shadow-[0_0_20px_rgba(255,255,255,0.4)]">
-                      ASCENT.
+                      WELCOME.
                     </h1>
                   </motion.div>
                 )}
@@ -501,10 +501,10 @@ export default function Home() {
       
       {/* Background Image with Dark Wash */}
       <div 
-        className="fixed inset-0 z-0 bg-cover bg-center bg-no-repeat opacity-40 grayscale-[0.5]"
+        className="fixed inset-0 z-0 bg-cover bg-center bg-no-repeat opacity-60 grayscale-[0.3]"
         style={{ backgroundImage: `url(${mainBg})` }}
       />
-      <div className="fixed inset-0 z-1 bg-black/60 pointer-events-none" />
+      <div className="fixed inset-0 z-1 bg-black/40 pointer-events-none" />
       
       <button 
         onClick={() => setIsMuted(!isMuted)}
