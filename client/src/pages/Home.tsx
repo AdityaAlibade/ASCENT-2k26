@@ -419,13 +419,13 @@ const FrontManDialogue = ({ onComplete }: { onComplete: () => void }) => {
           >
             <button
               onClick={onComplete}
-              className="group relative px-20 py-4 bg-black/80 backdrop-blur-xl border border-white/20 hover:border-white/40 transition-all duration-700 rounded-sm overflow-hidden"
+              className="group relative flex items-center justify-center bg-black/80 backdrop-blur-xl border border-white/20 hover:border-white/40 transition-all duration-700 rounded-sm overflow-hidden min-w-[320px] h-20"
             >
               <div className="absolute inset-0 bg-white/0 group-hover:bg-white/5 transition-colors" />
-              <span className="relative z-10 font-orbitron font-bold text-white tracking-[0.6em] text-xl group-hover:text-white transition-all">
+              <span className="relative z-10 font-orbitron font-bold text-white tracking-[0.8em] text-2xl group-hover:text-white transition-all pl-[0.8em]">
                 ACCEPT
               </span>
-              <div className="absolute inset-x-0 bottom-0 h-[2px] bg-red-600/40" />
+              <div className="absolute inset-x-0 bottom-0 h-[2px] bg-red-600/60" />
             </button>
           </motion.div>
         )}
