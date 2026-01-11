@@ -419,28 +419,13 @@ const FrontManDialogue = ({ onComplete }: { onComplete: () => void }) => {
           >
             <button
               onClick={onComplete}
-              className="group relative px-28 py-6 bg-black/60 backdrop-blur-xl border border-white/10 hover:border-white/40 transition-all duration-1000 rounded-sm overflow-hidden shadow-[0_0_50px_rgba(0,0,0,0.8)]"
+              className="group relative px-20 py-4 bg-black/80 backdrop-blur-xl border border-white/20 hover:border-white/40 transition-all duration-700 rounded-sm overflow-hidden"
             >
               <div className="absolute inset-0 bg-white/0 group-hover:bg-white/5 transition-colors" />
-              <span className="relative z-10 font-orbitron font-bold text-white tracking-[1em] text-2xl group-hover:text-white transition-all drop-shadow-[0_0_8px_rgba(255,255,255,0.4)]">
+              <span className="relative z-10 font-orbitron font-bold text-white tracking-[0.6em] text-xl group-hover:text-white transition-all">
                 ACCEPT
               </span>
-              {/* Pulsing Red Bottom Edge */}
-              <motion.div 
-                animate={{ 
-                  opacity: [0.3, 0.7, 0.3],
-                  boxShadow: [
-                    "0 0 10px rgba(220,38,38,0.3)",
-                    "0 0 25px rgba(220,38,38,0.6)",
-                    "0 0 10px rgba(220,38,38,0.3)"
-                  ]
-                }}
-                transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
-                className="absolute inset-x-0 bottom-0 h-[3px] bg-red-600/60" 
-              />
-              
-              {/* Hover Glow Effect */}
-              <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-1000 bg-gradient-to-t from-red-900/10 to-transparent" />
+              <div className="absolute inset-x-0 bottom-0 h-[2px] bg-red-600/40" />
             </button>
           </motion.div>
         )}
