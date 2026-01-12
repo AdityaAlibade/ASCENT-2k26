@@ -112,6 +112,11 @@ const SystemLoader = ({ onComplete }: { onComplete: () => void }) => {
   );
 };
 
+
+{/* ----------------------------------------------------------------------------------------------------------------- */}
+
+
+{/* Ddakji Flip Transition Component */}
 const DdakjiTransition = ({ onComplete }: { onComplete: () => void }) => {
   const [isFlipped, setIsFlipped] = useState(false);
 
@@ -169,6 +174,10 @@ const DdakjiTransition = ({ onComplete }: { onComplete: () => void }) => {
   );
 };
 
+
+{/* ----------------------------------------------------------------------------------------------------------------- */}
+
+{/* Welcome Intro Overlay Component */}
 const IntroOverlay = ({ onComplete }: { onComplete: () => void }) => {
   const [phase, setPhase] = useState<'loader' | 'video' | 'welcome' | 'frontman' | 'conditions'>('loader');
   const [step, setStep] = useState(0);
@@ -217,6 +226,10 @@ const IntroOverlay = ({ onComplete }: { onComplete: () => void }) => {
       >
         {isMuted ? <VolumeX size={24} /> : <Volume2 size={24} />}
       </button>
+
+
+{/* ----------------------------------------------------------------------------------------------------------------- */}
+
 
       {/* Cinematic Background Elements */}
       <AnimatePresence>
@@ -404,6 +417,10 @@ const FrontManDialogue = ({ onComplete }: { onComplete: () => void }) => {
         </AnimatePresence>
       </div>
 
+
+{/* ----------------------------------------------------------------------------------------------------------------- */}
+
+
       {/* Acceptance Button with cinematic reveal animation */}
       <AnimatePresence>
         {showButton && (
@@ -477,6 +494,10 @@ const ConditionsAccept = ({ onComplete }: { onComplete: () => void }) => {
   );
 };
 
+
+{/* ----------------------------------------------------------------------------------------------------------------- */}
+
+{/* Main Home Component */}
 import mainBg from "@assets/MAin_background_1768146583042.jpg";
 
 export default function Home() {
@@ -521,6 +542,10 @@ export default function Home() {
         SQ_DORMITORY_H1
       </div>
       <FloatingShapes />
+
+
+{/* ----------------------------------------------------------------------------------------------------------------- */}
+
 
       {/* Hero Section */}
       <section className="relative h-screen flex flex-col items-center justify-center px-4 z-20">
@@ -626,6 +651,10 @@ export default function Home() {
         </motion.div>
       </section>
 
+
+{/* ----------------------------------------------------------------------------------------------------------------- */}
+
+
       {/* The Games Section */}
       <section id="games" className="py-24 px-4 relative z-10">
         <div className="max-w-6xl mx-auto">
@@ -633,7 +662,7 @@ export default function Home() {
             <h2 className="text-4xl md:text-6xl font-black mb-4 text-white tracking-widest">THE GAMES</h2>
             <div className="w-32 h-1 bg-primary mx-auto mb-6" />
             <p className="font-montserrat text-white/50 max-w-2xl mx-auto uppercase tracking-widest text-sm">
-              Six Days. Six Games. One Winner.
+              Three Days. Three Games. One Winner.
             </p>
           </div>
 
@@ -748,100 +777,184 @@ export default function Home() {
         </div>
       </section>
 
+
+{/* ----------------------------------------------------------------------------------------------------------------- */}
+
+
       {/* Info Cards Section */}
-      <section id="rules" className="py-24 px-4 relative z-10 bg-gradient-to-b from-black via-[#0a0a0a] to-black">
-        <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
-          
-          {/* Card 1 */}
-          <div className="arena-card-green p-8 group hover:scale-[1.02] transition-transform duration-500 cursor-pointer">
-            <div className="flex justify-between items-start mb-6">
-              <Trophy className="w-10 h-10 text-black/40" />
-              <Circle size={32} color="#000" opacity={0.3} />
-            </div>
-            <h3 className="text-2xl font-black mb-4 text-black">The Prize</h3>
-            <p className="font-montserrat text-black/70 leading-relaxed font-medium">
-              45.6 Billion Won awaits the winner. Everything you desire is within reach. Do you have what it takes to seize it?
+      <section id="rules" className="py-24 px-4 relative z-10">
+        <div className="max-w-6xl mx-auto">
+
+          {/* Section Header */}
+          <div className="text-center mb-20">
+            <h2 className="text-4xl md:text-6xl font-black text-white tracking-widest uppercase">
+              The Rules
+            </h2>
+            <div className="w-24 h-[2px] bg-primary mx-auto mt-6" />
+            <p className="mt-6 text-white/ font-mono text-xs tracking-[0.4em] uppercase">
+              Compliance is Mandatory
             </p>
           </div>
 
-          {/* Card 2 */}
-          <div className="arena-card p-10 group hover:scale-[1.02] transition-transform duration-500 cursor-pointer relative overflow-hidden">
-            <div className="absolute top-0 right-0 p-2 font-mono text-[8px] opacity-20 uppercase tracking-widest">
-              RULE_BOARD_V1
-            </div>
-            <div className="flex justify-between items-start mb-8">
-              <ShieldAlert className="w-12 h-12 text-red-700 animate-pulse" />
-              <Triangle size={40} color="#000" opacity={0.4} />
-            </div>
-            <h3 className="text-3xl font-black mb-6 text-black tracking-tighter border-b-2 border-black/10 pb-2">RULES OF THE GAME</h3>
-            <ul className="font-montserrat text-black/80 space-y-6 font-bold uppercase tracking-wide text-sm">
-              <li className="flex gap-3">
-                <span className="text-red-700">●</span>
-                <span>Rule 1: Players must follow instructions without exception.</span>
-              </li>
-              <li className="flex gap-3">
-                <span className="text-red-700">●</span>
-                <span>Rule 2: Failure in any round results in elimination.</span>
-              </li>
-              <li className="flex gap-3">
-                <span className="text-red-700">●</span>
-                <span>Rule 3: Fair play is mandatory. Cheating results in immediate removal.</span>
-              </li>
-            </ul>
-            <div className="mt-8 pt-4 border-t border-black/5 flex items-center gap-2">
-               <div className="w-3 h-3 bg-red-700 rounded-full animate-ping" />
-               <span className="text-[10px] text-red-800 font-black tracking-widest">FRONT MAN ANNOUNCEMENT</span>
-            </div>
-          </div>
+          {/* Cards Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-10 items-start">
 
-          {/* Card 3 */}
-          <div className="arena-card-green p-8 group hover:scale-[1.02] transition-transform duration-500 cursor-pointer">
-            <div className="flex justify-between items-start mb-6">
-              <Video className="w-10 h-10 text-black/40" />
-              <Square size={32} color="#000" opacity={0.3} />
-            </div>
-            <h3 className="text-2xl font-black mb-4 text-black">Surveillance</h3>
-            <p className="font-montserrat text-black/70 leading-relaxed font-medium">
-              We are always watching. Fairness is absolute. Any attempt to cheat or subvert the rules will result in immediate termination.
-            </p>
-          </div>
+            {/* Left Card – Prize */}
+            <div className="arena-card-green p-8 group hover:scale-[1.015] transition-all duration-500">
+              <div className="flex justify-between items-start mb-6">
+                <Trophy className="w-10 h-10 text-black/40" />
+                <Circle size={28} color="#000" opacity={0.3} />
+              </div>
 
+              <h3 className="text-2xl font-black mb-4 text-black uppercase tracking-wide">
+                The Prize
+              </h3>
+
+              <p className="font-montserrat text-black/70 leading-relaxed font-medium text-sm">
+                45.6 Billion Won awaits the winner. Everything you desire is within reach.
+                Only one survives.
+              </p>
+            </div>
+
+            {/* Center Card – Rules (Primary) */}
+            <div className="arena-card p-10 relative overflow-hidden border-2 border-black/10 hover:scale-[1.02] transition-all duration-500">
+
+              <div className="absolute top-3 right-4 font-mono text-[9px] opacity-20 tracking-widest">
+                RULE_BOARD_V1
+              </div>
+
+              <div className="flex justify-between items-start mb-8">
+                <ShieldAlert className="w-14 h-14 text-red-700 animate-pulse" />
+                <Triangle size={42} color="#000" opacity={0.4} />
+              </div>
+
+              <h3 className="text-3xl font-black mb-6 text-black tracking-tight border-b border-black/10 pb-3">
+                Rules of the Game
+              </h3>
+
+              <ul className="font-montserrat text-black/80 space-y-5 font-bold uppercase tracking-wide text-sm">
+                <li className="flex gap-3">
+                  <span className="text-red-700">●</span>
+                  <span>Players must follow instructions without exception.</span>
+                </li>
+                <li className="flex gap-3">
+                  <span className="text-red-700">●</span>
+                  <span>Failure in any round results in elimination.</span>
+                </li>
+                <li className="flex gap-3">
+                  <span className="text-red-700">●</span>
+                  <span>Fair play is mandatory. Cheating results in removal.</span>
+                </li>
+              </ul>
+
+              <div className="mt-8 pt-5 border-t border-black/10 flex items-center gap-3">
+                <div className="w-2.5 h-2.5 bg-red-700 rounded-full animate-ping" />
+                <span className="text-[10px] text-red-800 font-black tracking-widest">
+                  FRONT MAN ANNOUNCEMENT
+                </span>
+              </div>
+            </div>
+
+            {/* Right Card – Surveillance */}
+            <div className="arena-card-green p-8 group hover:scale-[1.015] transition-all duration-500">
+              <div className="flex justify-between items-start mb-6">
+                <Video className="w-10 h-10 text-black/40" />
+                <Square size={28} color="#000" opacity={0.3} />
+              </div>
+
+              <h3 className="text-2xl font-black mb-4 text-black uppercase tracking-wide">
+                Surveillance
+              </h3>
+
+              <p className="font-montserrat text-black/70 leading-relaxed font-medium text-sm">
+                We are always watching. Any attempt to cheat or subvert the system
+                results in immediate termination.
+              </p>
+            </div>
+
+          </div>
         </div>
       </section>
 
+
+
+{/* ----------------------------------------------------------------------------------------------------------------- */}
+
+
       {/* Prize Section */}
-      <section className="py-24 px-4 relative z-10 bg-black">
-        <div className="max-w-4xl mx-auto text-center">
+      <section className="py-32 px-4 relative z-10 overflow-hidden">
+
+        {/* Ambient glow */}
+        <div className="absolute inset-0 -z-10 flex justify-center">
+          <div className="w-[700px] h-[500px] bg-primary/15 blur-[180px]" />
+        </div>
+
+        <div className="max-w-5xl mx-auto text-center">
           <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
+            initial={{ opacity: 0, scale: 0.92 }}
             whileInView={{ opacity: 1, scale: 1 }}
-            className="relative p-12 border-4 border-primary/20 bg-primary/5 overflow-hidden group"
+            transition={{ duration: 0.8, ease: "easeOut" }}
+            className="relative p-14 md:p-20
+            border border-primary/30
+            bg-black/50 backdrop-blur-xl
+            overflow-hidden group"
           >
-            {/* Spotlight Reveal Simulation */}
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(255,0,96,0.2)_0%,transparent_70%)] opacity-0 group-hover:opacity-100 transition-opacity duration-1000" />
-            
-            <Trophy className="w-20 h-20 text-primary mx-auto mb-8 drop-shadow-[0_0_20px_rgba(255,0,96,0.5)]" />
-            <h2 className="text-4xl md:text-6xl font-black text-white mb-6 tracking-widest">THE PRIZE</h2>
-            <div className="w-24 h-1 bg-primary mx-auto mb-8" />
-            
-            <div className="space-y-6">
-              <p className="text-3xl md:text-5xl font-black text-white font-orbitron tracking-tighter italic">
-                45.6 BILLION WON
-              </p>
-              <p className="font-montserrat text-white/70 text-lg md:text-xl uppercase tracking-[0.2em] font-bold">
-                "The reward is worth the risk."
-              </p>
+
+            {/* Subtle pulse */}
+            <div className="absolute inset-0 bg-primary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-1000" />
+
+            <Trophy className="w-20 h-20 text-primary mx-auto mb-10
+              drop-shadow-[0_0_30px_rgba(255,0,96,0.6)]" />
+
+            <p className="text-[15px] font-mono tracking-[0.5em] text-white/40 mb-3">
+              FINAL REWARD
+            </p>
+
+            <h2 className="text-4xl md:text-6xl font-orbitron font-black text-white tracking-[0.4em] mb-10">
+              THE PRIZE
+            </h2>
+
+            <div className="flex justify-center mb-10">
+              <div className="w-32 h-[2px] bg-primary/80" />
             </div>
 
-            <div className="mt-12 grid grid-cols-2 md:grid-cols-4 gap-4 text-[10px] font-mono text-white/40 uppercase tracking-widest">
-              <div className="p-4 border border-white/10">Winner Recognition</div>
-              <div className="p-4 border border-white/10">Certificates</div>
-              <div className="p-4 border border-white/10">Interview Exp</div>
-              <div className="p-4 border border-white/10">Career Advance</div>
+            <p className="text-3xl md:text-5xl font-black text-white font-orbitron tracking-tight italic mb-6">
+              45.6 BILLION WON
+            </p>
+
+            <p className="text-white/60 text-xs md:text-sm uppercase tracking-[0.35em] font-mono">
+              The reward justifies the risk.
+            </p>
+
+            {/* Divider */}
+            <div className="my-14 flex justify-center">
+              <div className="w-48 h-px bg-white/10" />
             </div>
+
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-[10px] font-mono uppercase tracking-widest">
+              {[
+                "Winner Recognition",
+                "Official Certificates",
+                "Interview Exposure",
+                "Career Advancement",
+              ].map((item) => (
+                <div
+                  key={item}
+                  className="p-4 border border-white/15 bg-white/5
+                  text-white/50 hover:text-white transition-colors duration-300"
+                >
+                  {item}
+                </div>
+              ))}
+            </div>
+
           </motion.div>
         </div>
       </section>
+
+
+{/* ----------------------------------------------------------------------------------------------------------------- */}
+
 
       {/* Schedule Section */}
       <section className="py-24 px-4 relative z-10 bg-[#050505] border-y border-white/5">
@@ -877,18 +990,58 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Sponsors Section */}
-      <section className="py-24 px-4 relative z-10">
+
+{/* ----------------------------------------------------------------------------------------------------------------- */}
+
+
+      {/* VIP Partners Section */}
+      <section className="py-32 px-4 relative z-10 overflow-hidden">
+
+        {/* Ambient menace glow */}
+        <div className="absolute inset-0 -z-10 flex justify-center">
+          <div className="w-[900px] h-[400px] bg-fuchsia-600/10 blur-[160px]" />
+        </div>
+
         <div className="max-w-6xl mx-auto text-center">
-          <h2 className="text-xl font-black text-white/20 tracking-[0.5em] mb-12">OFFICIAL VIP PARTNERS</h2>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-12 opacity-30 grayscale hover:grayscale-0 transition-all duration-1000">
-            <div className="h-12 bg-white/10 rounded-sm flex items-center justify-center font-orbitron font-black text-xs">V.I.P_ALPHA</div>
-            <div className="h-12 bg-white/10 rounded-sm flex items-center justify-center font-orbitron font-black text-xs">V.I.P_BETA</div>
-            <div className="h-12 bg-white/10 rounded-sm flex items-center justify-center font-orbitron font-black text-xs">V.I.P_GAMMA</div>
-            <div className="h-12 bg-white/10 rounded-sm flex items-center justify-center font-orbitron font-black text-xs">V.I.P_DELTA</div>
+
+          <p className="text-[15px] font-mono tracking-[0.45em] text-white/70 mb-3">
+            ACCESS LEVEL: RESTRICTED
+          </p>
+
+          <h2 className="text-xl font-orbitron font-black tracking-[0.6em] text-white/70 mb-16">
+            OFFICIAL VIP PARTNERS
+          </h2>
+
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-10">
+
+            {["V.I.P_ALPHA", "V.I.P_BETA", "V.I.P_GAMMA", "V.I.P_DELTA"].map((vip) => (
+              <div
+                key={vip}
+                className="group relative h-16 flex items-center justify-center
+                border border-white/15 bg-black/40 backdrop-blur-md
+                font-orbitron font-black text-xs tracking-widest text-white/50
+                transition-all duration-500
+                hover:text-white hover:border-white/40 hover:shadow-[0_0_40px_rgba(255,255,255,0.15)]"
+              >
+
+                {/* Scan line */}
+                <div className="absolute inset-0 overflow-hidden">
+                  <div className="absolute -top-full left-0 w-full h-full bg-white/10 
+                    group-hover:top-full transition-all duration-700" />
+                </div>
+
+                {vip}
+
+              </div>
+            ))}
+
           </div>
         </div>
       </section>
+
+
+{/* ----------------------------------------------------------------------------------------------------------------- */}
+
 
       {/* Registration Section */}
       <section id="register" className="py-24 px-4 relative z-10">
@@ -906,40 +1059,95 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Contact Section */}
-      <section className="py-24 px-4 relative z-10 bg-black">
-        <div className="max-w-2xl mx-auto text-center">
-          <div className="p-1 border border-white/10 bg-white/5 backdrop-blur-sm">
-            <div className="p-8 border border-white/20 flex flex-col items-center gap-8">
-               <Video className="w-12 h-12 text-primary animate-pulse" />
-               <h3 className="font-orbitron font-black text-2xl tracking-widest">CONTROL ROOM</h3>
-               
-               <div className="flex flex-col md:flex-row gap-4 w-full">
-                 <button className="flex-1 bg-white/5 border border-white/20 py-4 font-orbitron font-bold text-xs tracking-widest hover:bg-white hover:text-black transition-all">
-                   CALL SUPPORT
-                 </button>
-                 <button className="flex-1 bg-white/5 border border-white/20 py-4 font-orbitron font-bold text-xs tracking-widest hover:bg-white hover:text-black transition-all">
-                   MESSAGE CONTROL
-                 </button>
-               </div>
 
-               <div className="pt-8">
-                 <button className="w-16 h-16 rounded-full bg-red-600/20 border-4 border-red-600 flex items-center justify-center group relative overflow-hidden">
-                    <div className="absolute inset-0 bg-red-600 opacity-20 group-active:scale-95 transition-transform" />
-                    <div className="w-8 h-8 rounded-full bg-red-600 shadow-[0_0_20px_rgba(220,38,38,0.8)]" />
-                 </button>
-                 <p className="text-[10px] font-mono text-red-600 mt-4 tracking-[0.3em] font-black">EMERGENCY TERMINAL</p>
-               </div>
+{/* ----------------------------------------------------------------------------------------------------------------- */}
+
+
+      {/* Control Room Section */}
+      <section className="py-32 px-4 relative z-10">
+        <div className="max-w-2xl mx-auto text-center relative">
+
+          {/* Ambient glow */}
+          <div className="absolute inset-0 -z-10 flex items-center justify-center">
+            <div className="w-[600px] h-[300px] bg-red-600/10 blur-[120px]" />
+          </div>
+
+          {/* Glass panel */}
+          <div className="relative p-1 border border-white/10 bg-black/40 backdrop-blur-md shadow-[0_0_60px_rgba(0,0,0,0.8)]">
+            <div className="p-10 border border-white/20 flex flex-col items-center gap-8">
+
+              <Video className="w-12 h-12 text-primary animate-pulse" />
+
+              <h3 className="font-orbitron font-black text-2xl tracking-widest">
+                CONTROL ROOM
+              </h3>
+
+              {/* Action buttons */}
+              <div className="flex flex-col md:flex-row gap-4 w-full">
+                <button className="flex-1 bg-white/5 border border-white/20 py-4 
+                  font-orbitron font-bold text-xs tracking-widest
+                  hover:bg-white hover:text-black transition-all duration-300">
+                  CALL SUPPORT
+                </button>
+
+                <button className="flex-1 bg-white/5 border border-white/20 py-4 
+                  font-orbitron font-bold text-xs tracking-widest
+                  hover:bg-white hover:text-black transition-all duration-300">
+                  MESSAGE CONTROL
+                </button>
+              </div>
+
+              {/* Emergency terminal */}
+              <div className="pt-10 flex flex-col items-center">
+                <button
+                  className="w-16 h-16 rounded-full bg-red-600/20 border-4 border-red-600
+                  shadow-[0_0_40px_rgba(220,38,38,0.7)]
+                  animate-pulse flex items-center justify-center
+                  relative overflow-hidden group"
+                >
+                  <div className="absolute inset-0 bg-red-600/30 group-active:scale-90 transition-transform" />
+                  <div className="w-8 h-8 rounded-full bg-red-600 shadow-[0_0_25px_rgba(220,38,38,0.9)]" />
+                </button>
+
+                <p className="text-[10px] font-mono text-red-600 mt-4 tracking-[0.35em] font-black">
+                  EMERGENCY TERMINAL
+                </p>
+              </div>
+
             </div>
           </div>
         </div>
       </section>
 
+
+{/* ----------------------------------------------------------------------------------------------------------------- */}
+
+
       {/* Footer */}
-      <footer className="py-12 border-t border-white/10 text-center font-mono text-xs text-gray-600 relative z-10">
-        <p>OFFICIAL INVITATION // SQUID GAME // 2025</p>
-        <p className="mt-2">UNAUTHORIZED DISTRIBUTION PROHIBITED</p>
+      <footer className="relative z-10 mt-24 border-t border-red-500/20 bg-black/60 backdrop-blur-sm">
+        <div className="max-w-6xl mx-auto px-6 py-10 text-center font-mono text-xs tracking-widest text-gray-500">
+
+          <p className="text-red-500/80">
+            OFFICIAL INVITATION • ASCENT 2K26
+          </p>
+
+          <p className="mt-2 text-white-600">
+            CONTROLLED ACCESS • AUTHORIZATION REQUIRED
+          </p>
+
+          <div className="my-4 h-px w-32 mx-auto bg-gradient-to-r from-transparent via-red-500/40 to-transparent" />
+
+          <p className="text-white-700">
+            UNAUTHORIZED DISTRIBUTION STRICTLY PROHIBITED
+          </p>
+
+          <p className="mt-3 text-[10px] text-white-700">
+            SYSTEM STATUS: <span className="text-red-500">ACTIVE</span>
+          </p>
+
+        </div>
       </footer>
+
     </div>
   );
 }
