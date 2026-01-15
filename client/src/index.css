@@ -135,3 +135,40 @@
 ::-webkit-scrollbar-thumb:hover {
   background: var(--primary);
 }
+
+
+.arena-card {
+  @apply bg-neutral-900/70 backdrop-blur-xl
+         border border-white/10
+         rounded-2xl p-8
+         transition-all duration-300;
+}
+
+.arena-card--primary {
+  @apply bg-neutral-900/80
+         border-red-500/40
+         shadow-[0_0_45px_rgba(239,68,68,0.25)]
+         scale-105;
+}
+
+.card-title {
+  @apply text-xl font-bold uppercase tracking-wider text-white mb-6;
+}
+
+.rule-list {
+  @apply space-y-4 text-sm text-white/70;
+}
+
+.rule-list li {
+  @apply relative pl-4 before:absolute before:left-0 before:top-2
+         before:w-1 before:h-1 before:bg-red-500 before:rounded-full;
+}
+
+.rulebook-btn {
+  @apply px-10 py-3
+         border border-red-500/40
+         text-red-500 font-mono text-xs tracking-widest uppercase
+         rounded-full
+         hover:bg-red-500 hover:text-black
+         transition-all duration-300;
+}

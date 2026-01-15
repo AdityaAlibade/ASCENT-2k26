@@ -6,25 +6,38 @@ import { Circle, Triangle, Square, FloatingShapes } from "@/components/ui/GameSh
 import { ChevronDown, AlertTriangle, Clock, Trophy, ShieldAlert, Video, Volume2, VolumeX } from "lucide-react";
 import audioFile from "@assets/Round_And_Round_Mingle_1767983924508.mp3";
 import frontManTheme from "@assets/squid_game_1768071980984.mp3";
-import frontManImg from "@assets/FM_1768130131807.png";
+import frontManImg from "@assets/FM_1768130131807.png"
+
 
 const CountdownTimer = () => {
-  const [time, setTime] = useState("48:12:09");
+  const [time, setTime] = useState("00:00:00:00");
 
   useEffect(() => {
-    // Just a visual effect for the demo
+    // Define the static target date: January 29, 2026, 23:59:00
+    const targetDate = new Date("2026-01-29T23:59:00").getTime();
+
     const interval = setInterval(() => {
-      const now = new Date();
-      const target = new Date();
-      target.setHours(23, 59, 59);
-      
-      const diff = target.getTime() - now.getTime();
-      const h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-      const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-      const s = Math.floor((diff % (1000 * 60)) / 1000);
-      
-      setTime(`${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`);
+      const now = new Date().getTime();
+      const difference = targetDate - now;
+
+      if (difference <= 0) {
+        setTime("00:00:00:00");
+        clearInterval(interval);
+        return;
+      }
+
+      // Calculate time components
+      const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((difference % (1000 * 60)) / 1000);
+
+      // Format with padding and include days for a long-term countdown
+      setTime(
+        `${days.toString().padStart(2, '0')}:${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`
+      );
     }, 1000);
+
     return () => clearInterval(interval);
   }, []);
 
@@ -505,6 +518,14 @@ export default function Home() {
   const [isMuted, setIsMuted] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const { data: stats } = useGameStats();
+  const [open, setOpen] = useState(false);
+  const [activeAction, setActiveAction] = useState<string | null>(null);
+
+  const contacts = [
+    { name: "Patel Abdul Rahman (President)", phone: "989038583", wa: "989038583" },
+    { name: "Sanket Mandwal (Secretary)", phone: "9561590442", wa: "9561590442" },
+    { name: "Prathamesh Kshirsagar (Vice President)", phone: "8767745753", wa: "8767745753" }
+  ];
 
   useEffect(() => {
     if (!showIntro && audioRef.current) {
@@ -575,7 +596,7 @@ export default function Home() {
           </p>
 
           <div className="py-12">
-            <p className="text-primary font-black tracking-[0.4em] mb-4 font-orbitron text-sm">NEXT GAME BEGINS IN</p>
+            <p className="text-primary font-black tracking-[0.4em] mb-4 font-orbitron text-sm">REGISTRATIONS CLOSE IN</p>
             <CountdownTimer />
           </div>
 
@@ -605,18 +626,10 @@ export default function Home() {
               whileTap={{ scale: 0.95 }}
               className="group relative overflow-hidden bg-transparent border-2 border-secondary/30 px-12 py-5 font-orbitron font-black text-xl tracking-[0.2em] text-secondary transition-all hover:border-secondary hover:bg-secondary/5"
             >
-              <span className="relative z-10">THE GAMES</span>
+              <span className="relative z-10">THE TRIALS</span>
             </motion.a>
           </div>
 
-          {stats && (
-            <div className="mt-12 flex items-center justify-center gap-4 font-mono text-sm">
-              <span className="w-2 h-2 rounded-full bg-red-600 animate-pulse" />
-              <span className="text-gray-500 uppercase tracking-widest">
-                PLAYER ENROLLMENT STATUS: <span className="text-primary font-bold">{stats.totalPlayers}</span> / 456
-              </span>
-            </div>
-          )}
         </motion.div>
 
         {/* Background Atmosphere Simulation */}
@@ -651,129 +664,158 @@ export default function Home() {
         </motion.div>
       </section>
 
-
 {/* ----------------------------------------------------------------------------------------------------------------- */}
 
 
       {/* The Games Section */}
       <section id="games" className="py-24 px-4 relative z-10">
-        <div className="max-w-6xl mx-auto">
+      <div className="max-w-6xl mx-auto">
+        <div className="text-center mb-16">
+          <h2 className="text-4xl md:text-6xl font-black mb-4 text-white tracking-[0.2em] font-orbitron">THE TRIALS</h2>
+          <div className="w-32 h-1 bg-primary mx-auto mb-6 shadow-[0_0_10px_#ff003c]" />
+          <p className="font-mono text-white/50 max-w-2xl mx-auto uppercase tracking-[0.3em] text-xs">
+            Three Rounds. Three Eliminations. One Placement.
+          </p>
+        </div>
+
+        <div className="space-y-16">
+          {/* Round 1: THE ENTRY GAME */}
+          <motion.div 
+            initial={{ opacity: 0, x: -50 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            className="group relative flex flex-col md:flex-row gap-8 bg-neutral-900/50 border-l-4 border-primary p-10 hover:bg-neutral-800 transition-all duration-500"
+          >
+            <div className="md:w-1/3 space-y-4">
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 rounded-full border-2 border-primary flex items-center justify-center font-orbitron font-bold text-primary">○</div>
+                <h3 className="text-2xl font-black text-white uppercase tracking-tighter">The Entry Game</h3>
+              </div>
+              <p className="font-mono text-gray-400 text-xs leading-relaxed">
+                {"[1v1 MCQ ELIMINATION]"} A head-to-head battle across Aptitude, Pseudocode, and Puzzles. 
+                One coordinator per pair tracks every bonus and penalty live. 
+                Survival depends on your final score: {"Final = MCQ + Bonus - Penalty"}.
+              </p>
+              <div className="flex flex-wrap gap-2 pt-2">
+                <span className="text-[10px] bg-primary/20 text-primary px-2 py-1 font-mono">15 QUESTIONS</span>
+                <span className="text-[10px] bg-primary/20 text-primary px-2 py-1 font-mono">30 MINUTES</span>
+              </div>
+            </div>
+            
+            <div className="flex-1 h-56 bg-black/60 relative overflow-hidden flex items-center justify-center border border-white/5">
+              {/* Red Light / Green Light Visual Simulation */}
+              <div className="absolute top-4 left-4 font-mono text-[10px] text-white/40 uppercase tracking-[0.3em]">Status: Monitoring Pair</div>
+              <div className="flex gap-8 items-center">
+                <motion.div 
+                  animate={{ scale: [1, 1.1, 1], opacity: [0.5, 1, 0.5] }}
+                  transition={{ repeat: Infinity, duration: 2 }}
+                  className="w-16 h-16 rounded-full border-4 border-green-500 flex items-center justify-center text-green-500 font-bold"
+                >GO</motion.div>
+                <div className="h-px w-12 bg-white/20" />
+                <motion.div 
+                  animate={{ scale: [1, 1.2, 1], backgroundColor: ["#000", "#ff003c", "#000"] }}
+                  transition={{ repeat: Infinity, duration: 3, delay: 1 }}
+                  className="w-16 h-16 rounded-full border-4 border-primary flex items-center justify-center text-white font-bold text-[10px]"
+                >STOP</motion.div>
+              </div>
+              <div className="absolute bottom-4 right-4 text-[10px] font-mono text-primary animate-pulse tracking-widest">PENALTY: -6 PTS</div>
+            </div>
+          </motion.div>
+
+          {/* Round 2: THE GLASS BRIDGE */}
+          <motion.div 
+            initial={{ opacity: 0, x: 50 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            className="group relative flex flex-col md:flex-row-reverse gap-8 bg-neutral-900/50 border-r-4 border-secondary p-10 hover:bg-neutral-800 transition-all duration-500"
+          >
+            <div className="md:w-1/3 space-y-4">
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 border-2 border-secondary flex items-center justify-center font-orbitron font-bold text-secondary rotate-45"><span className="-rotate-45">△</span></div>
+                <h3 className="text-2xl font-black text-white uppercase tracking-tighter">The Glass Bridge</h3>
+              </div>
+              <p className="font-mono text-gray-400 text-xs leading-relaxed">
+                {"[COMPETITIVE CODING]"} Navigate the tracks. Juniors (1st/2nd Yr) and Seniors (3rd/4th Yr) compete separately. 
+                Rankings are automated based on accuracy, speed, and difficulty. One wrong step leads to elimination.
+              </p>
+              <div className="flex gap-2 pt-2">
+                <span className="text-[10px] bg-secondary/20 text-secondary px-2 py-1 font-mono">TRACK-WISE RANKING</span>
+              </div>
+            </div>
+
+            <div className="flex-1 h-56 bg-black/60 font-mono p-6 text-[11px] border border-white/5 relative group">
+              <div className="text-secondary opacity-80 space-y-2">
+                <p className="">&gt; EXECUTING BRIDGE_TRAVERSAL.sh</p>
+                <p className="">&gt; VALIDATING TEST_CASES... [8/10]</p>
+                <p className="text-red-500 animate-pulse">&gt; CRITICAL: TIME_PENALTY_APPLIED</p>
+                <p className="">&gt; ACCESSING SENIOR_TRACK_DB...</p>
+                <div className="mt-4 grid grid-cols-4 gap-2">
+                  {[...Array(8)].map((_, i) => (
+                    <div key={i} className={`h-8 border ${i < 4 ? 'border-secondary bg-secondary/20' : 'border-white/10'}`} />
+                  ))}
+                </div>
+              </div>
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent pointer-events-none" />
+            </div>
+          </motion.div>
+
+          {/* Round 3: THE FINAL STAND */}
+          <motion.div 
+            initial={{ opacity: 0, y: 50 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="group relative flex flex-col md:flex-row gap-8 bg-neutral-900/50 border-b-4 border-white/20 p-10 hover:bg-neutral-800 transition-all duration-500"
+          >
+            <div className="md:w-1/3 space-y-4">
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 border-2 border-white flex items-center justify-center font-orbitron font-bold text-white">□</div>
+                <h3 className="text-2xl font-black text-white uppercase tracking-tighter">The Final Stand</h3>
+              </div>
+              <p className="font-mono text-gray-400 text-xs leading-relaxed">
+                {"[TECHNICAL + HR INTERVIEW]"} The ultimate selection. Senior tracks face DSA depth and project design, 
+                while Juniors are tested on fundamentals and learning attitude. 
+                Professional behavior is non-negotiable.
+              </p>
+            </div>
+            
+            <div className="flex-1 h-56 bg-black relative flex items-center justify-center overflow-hidden border border-white/5">
+              {/* Interview Spotlight Effect */}
+              <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(255,255,255,0.05)_0%,transparent_70%)]" />
+              <div className="z-10 text-center">
+                <motion.div 
+                  animate={{ opacity: [0.3, 0.6, 0.3] }}
+                  transition={{ repeat: Infinity, duration: 4 }}
+                  className="text-[10px] font-mono text-white/40 tracking-[0.5em] mb-4 uppercase"
+                >Front Man Is Watching</motion.div>
+                <div className="flex justify-center gap-8">
+                  <div className="w-16 h-1 bg-white/10" />
+                  <div className="w-16 h-1 bg-primary shadow-[0_0_10px_#ff003c]" />
+                  <div className="w-16 h-1 bg-white/10" />
+                </div>
+              </div>
+              <div className="absolute inset-0 border-[20px] border-black z-20 pointer-events-none" />
+            </div>
+          </motion.div>
+        </div>
+      </div>
+    </section>
+
+{/* ----------------------------------------------------------------------------------------------------------------- */}
+
+
+{/* Registration Section */}
+      <section id="register" className="py-24 px-4 relative z-10">
+        <div className="max-w-4xl mx-auto">
           <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-6xl font-black mb-4 text-white tracking-widest">THE GAMES</h2>
+            <h2 className="text-4xl md:text-6xl font-black mb-4 text-white tracking-widest drop-shadow-[0_0_15px_rgba(255,0,96,0.3)]">PLAYER ENROLLMENT</h2>
             <div className="w-32 h-1 bg-primary mx-auto mb-6" />
-            <p className="font-montserrat text-white/50 max-w-2xl mx-auto uppercase tracking-widest text-sm">
-              Three Days. Three Games. One Winner.
+            <p className="font-montserrat text-white/40 max-w-2xl mx-auto uppercase tracking-widest text-xs font-bold leading-relaxed">
+              By submitting this form, you consent to all terms and conditions of the game. 
+              Once the game begins, it cannot be stopped.
             </p>
           </div>
 
-          <div className="space-y-12">
-            {/* Game 1 */}
-            <motion.div 
-              initial={{ opacity: 0, x: -50 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              className="group relative flex flex-col md:flex-row gap-8 bg-white/5 border-l-4 border-primary p-8 hover:bg-white/10 transition-all duration-500"
-            >
-              <div className="md:w-1/3 space-y-4">
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-full border-2 border-primary flex items-center justify-center font-orbitron font-bold text-primary">01</div>
-                  <h3 className="text-2xl font-black text-white">THE FIRST SELECTION</h3>
-                </div>
-                <p className="font-montserrat text-gray-400 text-sm leading-relaxed">
-                  Inspired by Red Light Green Light. A test of absolute discipline and reflex. 
-                  Movement during a red signal results in immediate elimination.
-                </p>
-              </div>
-              <div className="flex-1 h-48 bg-black/40 relative overflow-hidden flex items-center justify-center">
-                {/* Silhouette Animation Simulation */}
-                <div className="flex gap-4">
-                  {[1, 2, 3, 4, 5].map((i) => (
-                    <motion.div
-                      key={i}
-                      animate={{ 
-                        opacity: [1, 1, 0.2, 1],
-                        backgroundColor: i === 3 ? ["#fff", "#fff", "#ff003c", "#ff003c"] : ["#fff", "#fff", "#fff", "#fff"]
-                      }}
-                      transition={{ repeat: Infinity, duration: 4, delay: i * 0.5 }}
-                      className="w-8 h-20 bg-white opacity-40 rounded-t-lg"
-                    />
-                  ))}
-                </div>
-                <div className="absolute top-4 right-4 text-[10px] font-mono text-red-500 animate-pulse">ELIMINATION DETECTED</div>
-              </div>
-            </motion.div>
-
-            {/* Game 2 */}
-            <motion.div 
-              initial={{ opacity: 0, x: 50 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              className="group relative flex flex-col md:flex-row-reverse gap-8 bg-white/5 border-r-4 border-secondary p-8 hover:bg-white/10 transition-all duration-500"
-            >
-              <div className="md:w-1/3 space-y-4">
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 border-2 border-secondary flex items-center justify-center font-orbitron font-bold text-secondary rotate-45"><span className="-rotate-45">02</span></div>
-                  <h3 className="text-2xl font-black text-white">THE TEST</h3>
-                </div>
-                <p className="font-montserrat text-gray-400 text-sm leading-relaxed">
-                  Technical aptitude and problem-solving under extreme duress. 
-                  Navigate the terminal. Decrypt the sequence. Survive the system.
-                </p>
-                <div className="pt-4">
-                   <p className="text-[10px] font-mono text-secondary mb-1 uppercase tracking-widest">Survival Rate</p>
-                   <div className="w-full h-2 bg-white/10">
-                     <motion.div 
-                       initial={{ width: 0 }}
-                       whileInView={{ width: "32%" }}
-                       transition={{ duration: 2 }}
-                       className="h-full bg-secondary shadow-[0_0_10px_rgba(36,159,156,0.5)]" 
-                     />
-                   </div>
-                   <p className="text-[10px] font-mono text-secondary text-right mt-1">32.4%</p>
-                </div>
-              </div>
-              <div className="flex-1 h-48 bg-black/60 font-mono p-4 text-[10px] overflow-hidden relative">
-                <div className="text-secondary opacity-70 space-y-1">
-                  <p>&gt; INITIALIZING SURVIVAL_PROTOCOL...</p>
-                  <p>&gt; DECRYPTING SEED_067...</p>
-                  <p>&gt; [WARNING] BUFFER OVERFLOW DETECTED</p>
-                  <p>&gt; ATTEMPTING RECOVERY [45%]</p>
-                  <p className="animate-pulse">_</p>
-                </div>
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent pointer-events-none" />
-              </div>
-            </motion.div>
-
-            {/* Game 3 */}
-            <motion.div 
-              initial={{ opacity: 0, y: 50 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className="group relative flex flex-col md:flex-row gap-8 bg-white/5 border-b-4 border-white/20 p-8 hover:bg-white/10 transition-all duration-500"
-            >
-              <div className="md:w-1/3 space-y-4">
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 border-2 border-white flex items-center justify-center font-orbitron font-bold text-white">03</div>
-                  <h3 className="text-2xl font-black text-white">THE FINAL DECISION</h3>
-                </div>
-                <p className="font-montserrat text-gray-400 text-sm leading-relaxed">
-                  An interrogation of character. The spotlight is on you. 
-                  The Front Man watches. Every word could be your last.
-                </p>
-              </div>
-              <div className="flex-1 h-48 bg-black relative flex items-center justify-center overflow-hidden">
-                {/* Interrogation Spotlight Effect */}
-                <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(255,255,255,0.1)_0%,transparent_50%)]" />
-                <motion.div 
-                   animate={{ opacity: [0.1, 0.3, 0.1] }}
-                   transition={{ repeat: Infinity, duration: 3 }}
-                   className="w-24 h-40 bg-white/10 rounded-full blur-xl"
-                />
-                <div className="absolute top-0 left-0 w-full h-full border border-white/5 pointer-events-none" />
-                <div className="font-orbitron text-white/20 text-4xl font-black">?</div>
-              </div>
-            </motion.div>
-          </div>
+          <RegistrationForm />
         </div>
       </section>
 
@@ -782,100 +824,120 @@ export default function Home() {
 
 
       {/* Info Cards Section */}
-      <section id="rules" className="py-24 px-4 relative z-10">
-        <div className="max-w-6xl mx-auto">
+      <section
+        id="rules"
+        className="relative py-32 px-6 bg-transparent overflow-hidden"
+      >
+        {/* Background Glow */}
+        <div className="absolute inset-0 bg-black/40 backdrop-blur-[2px]" />
 
-          {/* Section Header */}
-          <div className="text-center mb-20">
-            <h2 className="text-4xl md:text-6xl font-black text-white tracking-widest uppercase">
-              The Rules
+        <div className="relative max-w-7xl mx-auto z-10">
+
+          {/* Header */}
+          <div className="text-center mb-24">
+            <h2 className="text-5xl md:text-7xl font-extrabold tracking-widest uppercase text-white">
+              Event Rules
             </h2>
-            <div className="w-24 h-[2px] bg-primary mx-auto mt-6" />
-            <p className="mt-6 text-white/ font-mono text-xs tracking-[0.4em] uppercase">
-              Compliance is Mandatory
+            <p className="mt-4 text-xs font-mono tracking-[0.5em] text-white/50 uppercase">
+              Mandatory Compliance
             </p>
           </div>
 
-          {/* Cards Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-10 items-start">
+          {/* Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-10 items-stretch">
 
-            {/* Left Card – Prize */}
-            <div className="arena-card-green p-8 group hover:scale-[1.015] transition-all duration-500">
-              <div className="flex justify-between items-start mb-6">
-                <Trophy className="w-10 h-10 text-black/40" />
-                <Circle size={28} color="#000" opacity={0.3} />
-              </div>
-
-              <h3 className="text-2xl font-black mb-4 text-black uppercase tracking-wide">
-                The Prize
-              </h3>
-
-              <p className="font-montserrat text-black/70 leading-relaxed font-medium text-sm">
-                45.6 Billion Won awaits the winner. Everything you desire is within reach.
-                Only one survives.
-              </p>
-            </div>
-
-            {/* Center Card – Rules (Primary) */}
-            <div className="arena-card p-10 relative overflow-hidden border-2 border-black/10 hover:scale-[1.02] transition-all duration-500">
-
-              <div className="absolute top-3 right-4 font-mono text-[9px] opacity-20 tracking-widest">
-                RULE_BOARD_V1
-              </div>
-
-              <div className="flex justify-between items-start mb-8">
-                <ShieldAlert className="w-14 h-14 text-red-700 animate-pulse" />
-                <Triangle size={42} color="#000" opacity={0.4} />
-              </div>
-
-              <h3 className="text-3xl font-black mb-6 text-black tracking-tight border-b border-black/10 pb-3">
-                Rules of the Game
-              </h3>
-
-              <ul className="font-montserrat text-black/80 space-y-5 font-bold uppercase tracking-wide text-sm">
-                <li className="flex gap-3">
-                  <span className="text-red-700">●</span>
-                  <span>Players must follow instructions without exception.</span>
-                </li>
-                <li className="flex gap-3">
-                  <span className="text-red-700">●</span>
-                  <span>Failure in any round results in elimination.</span>
-                </li>
-                <li className="flex gap-3">
-                  <span className="text-red-700">●</span>
-                  <span>Fair play is mandatory. Cheating results in removal.</span>
-                </li>
+            {/* PARTICIPATION & AUTHORITY */}
+            <div className="arena-card p-8">
+              <h3 className="card-title">Participation & Authority</h3>
+              <ul className="rule-list">
+                <li>Participation implies full acceptance of all ASCENT rules</li>
+                <li>The Organising Committee’s decision is final and binding</li>
+                <li>No appeals, objections, or re-evaluations are permitted</li>
+                <li>Valid college ID is mandatory for participation</li>
               </ul>
-
-              <div className="mt-8 pt-5 border-t border-black/10 flex items-center gap-3">
-                <div className="w-2.5 h-2.5 bg-red-700 rounded-full animate-ping" />
-                <span className="text-[10px] text-red-800 font-black tracking-widest">
-                  FRONT MAN ANNOUNCEMENT
-                </span>
-              </div>
             </div>
 
-            {/* Right Card – Surveillance */}
-            <div className="arena-card-green p-8 group hover:scale-[1.015] transition-all duration-500">
-              <div className="flex justify-between items-start mb-6">
-                <Video className="w-10 h-10 text-black/40" />
-                <Square size={28} color="#000" opacity={0.3} />
-              </div>
+            {/* CONDUCT & DISCIPLINE */}
+            <div className="arena-card arena-card--primary p-9">
+              <h3 className="card-title">Conduct & Discipline</h3>
+              <ul className="rule-list">
+                <li>Cheating, misconduct, or misrepresentation leads to disqualification</li>
+                <li>Arguing with coordinators or judges is strictly prohibited</li>
+                <li>Unauthorized tools, assistance, or unfair practices are banned</li>
+                <li>All instructions must be followed without exception</li>
+              </ul>
+            </div>
 
-              <h3 className="text-2xl font-black mb-4 text-black uppercase tracking-wide">
-                Surveillance
-              </h3>
+            {/* ATTENDANCE & INTEGRITY */}
+            <div className="arena-card p-8">
+              <h3 className="card-title">Attendance & Integrity</h3>
+              <ul className="rule-list">
+                <li>Presence is mandatory on the day(s) of qualification</li>
+                <li>Failure to report on time results in immediate elimination</li>
+                <li>Pairings, monitoring, and evaluations are final</li>
+                <li>Any violation at any stage leads to disqualification</li>
+              </ul>
+            </div>
 
-              <p className="font-montserrat text-black/70 leading-relaxed font-medium text-sm">
-                We are always watching. Any attempt to cheat or subvert the system
-                results in immediate termination.
-              </p>
+          </div>
+
+          {/* Command Bar */}
+          <div className="mt-24 flex flex-col items-center gap-6">
+            <div className="flex items-center gap-3 text-red-600 text-xs font-mono tracking-widest uppercase">
+              <span className="w-2 h-2 bg-red-600 rounded-full animate-pulse" />
+              Mandatory Notice
+            </div>
+
+            <button
+              onClick={() => setOpen(true)}
+              className="rulebook-btn"
+            >
+              Access Official Rulebook
+            </button>
+          </div>
+
+        </div>
+      </section>
+
+      {/* Rulebook Modal */}
+      {open && (
+        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center px-4">
+
+          <div className="bg-neutral-900 w-full max-w-4xl rounded-xl p-6 relative">
+
+            <button
+              onClick={() => setOpen(false)}
+              className="absolute top-4 right-4 text-white/60 hover:text-white"
+            >
+              ✕
+            </button>
+
+            <h3 className="text-red-600 font-black tracking-widest uppercase mb-2">
+              Official Rulebook
+            </h3>
+
+            <p className="text-white/60 text-sm mb-4">
+              The organising committee’s decision is final and non-negotiable.
+            </p>
+
+            <iframe
+              src="/ASCENT_RULEBOOK.pdf"
+              className="w-full h-[60vh] rounded-md border border-white/10"
+            />
+
+            <div className="mt-6 flex justify-end">
+              <a
+                href="/ASCENT_RULEBOOK.pdf"
+                download
+                className="download-btn"
+              >
+                Download Rulebook
+              </a>
             </div>
 
           </div>
         </div>
-      </section>
-
+      )}
 
 
 {/* ----------------------------------------------------------------------------------------------------------------- */}
@@ -883,7 +945,6 @@ export default function Home() {
 
       {/* Prize Section */}
       <section className="py-32 px-4 relative z-10 overflow-hidden">
-
         {/* Ambient glow */}
         <div className="absolute inset-0 -z-10 flex justify-center">
           <div className="w-[700px] h-[500px] bg-primary/15 blur-[180px]" />
@@ -894,60 +955,59 @@ export default function Home() {
             initial={{ opacity: 0, scale: 0.92 }}
             whileInView={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.8, ease: "easeOut" }}
-            className="relative p-14 md:p-20
-            border border-primary/30
-            bg-black/50 backdrop-blur-xl
-            overflow-hidden group"
+            className="relative p-14 md:p-20 border border-primary/30 bg-black/50 backdrop-blur-xl overflow-hidden group"
           >
-
             {/* Subtle pulse */}
             <div className="absolute inset-0 bg-primary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-1000" />
 
-            <Trophy className="w-20 h-20 text-primary mx-auto mb-10
-              drop-shadow-[0_0_30px_rgba(255,0,96,0.6)]" />
+            <Trophy className="w-20 h-20 text-primary mx-auto mb-10 drop-shadow-[0_0_30px_rgba(255,0,96,0.6)]" />
 
-            <p className="text-[15px] font-mono tracking-[0.5em] text-white/40 mb-3">
-              FINAL REWARD
+            <p className="text-[15px] font-mono tracking-[0.5em] text-white/40 mb-3 uppercase">
+              Placement Simulation Rewards
             </p>
 
             <h2 className="text-4xl md:text-6xl font-orbitron font-black text-white tracking-[0.4em] mb-10">
-              THE PRIZE
+              THE REWARDS
             </h2>
 
             <div className="flex justify-center mb-10">
               <div className="w-32 h-[2px] bg-primary/80" />
             </div>
 
-            <p className="text-3xl md:text-5xl font-black text-white font-orbitron tracking-tight italic mb-6">
-              45.6 BILLION WON
-            </p>
-
-            <p className="text-white/60 text-xs md:text-sm uppercase tracking-[0.35em] font-mono">
-              The reward justifies the risk.
-            </p>
-
-            {/* Divider */}
-            <div className="my-14 flex justify-center">
-              <div className="w-48 h-px bg-white/10" />
+            {/* Dual Track Winners */}
+            <div className="grid md:grid-cols-2 gap-8 mb-12">
+              <div className="p-6 border border-white/10 bg-white/5">
+                <p className="text-primary font-orbitron text-sm tracking-widest mb-2">CHAMPION</p>
+                <p className="text-2xl font-black text-white font-orbitron">JUNIOR TRACK</p>
+                <p className="text-white/40 text-[10px] mt-2 font-mono uppercase">1st & 2nd Year Excellence</p>
+              </div>
+              <div className="p-6 border border-white/10 bg-white/5">
+                <p className="text-primary font-orbitron text-sm tracking-widest mb-2">CHAMPION</p>
+                <p className="text-2xl font-black text-white font-orbitron">SENIOR TRACK</p>
+                <p className="text-white/40 text-[10px] mt-2 font-mono uppercase">3rd & 4th Year Mastery</p>
+              </div>
             </div>
 
+            <p className="text-white/60 text-xs md:text-sm uppercase tracking-[0.35em] font-mono mb-14">
+              The decision of the organizing committee is final.
+            </p>
+
+            {/* Official Benefits Grid */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-[10px] font-mono uppercase tracking-widest">
               {[
                 "Winner Recognition",
                 "Official Certificates",
-                "Interview Exposure",
-                "Career Advancement",
+                "Technical & HR Feedback",
+                "Placement Readiness",
               ].map((item) => (
                 <div
                   key={item}
-                  className="p-4 border border-white/15 bg-white/5
-                  text-white/50 hover:text-white transition-colors duration-300"
+                  className="p-4 border border-white/15 bg-white/5 text-white/50 hover:text-white hover:border-primary/50 transition-all duration-300"
                 >
                   {item}
                 </div>
               ))}
             </div>
-
           </motion.div>
         </div>
       </section>
@@ -956,43 +1016,94 @@ export default function Home() {
 {/* ----------------------------------------------------------------------------------------------------------------- */}
 
 
-      {/* Schedule Section */}
-      <section className="py-24 px-4 relative z-10 bg-[#050505] border-y border-white/5">
+      {/*Schedule Section */}
+      <section className="py-24 px-4 relative z-10 bg-transparent border-y border-white/5">
         <div className="max-w-4xl mx-auto">
+          
+          {/* Header with Cinematic Glow */}
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-black text-white tracking-widest">MISSION SCHEDULE</h2>
+            <motion.p 
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              className="text-primary font-mono text-[10px] tracking-[0.8em] mb-4 uppercase"
+            >
+              {"[ MISSION_LOG_S2 ]"}
+            </motion.p>
+            <h2 className="text-4xl md:text-6xl font-black text-white tracking-widest font-orbitron">
+              MISSION <span className="text-primary drop-shadow-[0_0_10px_rgba(255,0,96,0.5)]">SCHEDULE</span>
+            </h2>
             <div className="w-16 h-1 bg-secondary mx-auto mt-4" />
           </div>
 
-          <div className="space-y-8">
+          {/* Schedule Cards */}
+          <div className="space-y-6">
             {[
-              { game: "Game 1", date: "Jan 15, 2026", time: "09:00 AM", desc: "The First Selection" },
-              { game: "Game 2", date: "Jan 16, 2026", time: "10:30 AM", desc: "The Test" },
-              { game: "Final Game", date: "Jan 20, 2026", time: "12:00 PM", desc: "The Final Decision" }
+              { round: "Round 1", title: "THE ENTRY GAME", date: "Jan 30, 2026", time: "TO BE DETERMINED", symbol: "○" },
+              { round: "Round 2", title: "THE GLASS BRIDGE", date: "Jan 30, 2026", time: "TO BE DETERMINED", symbol: "△" },
+              { round: "Round 3", title: "THE FINAL STAND", date: "Jan 31, 2026", time: "TO BE DETERMINED", symbol: "□" }
             ].map((item, idx) => (
               <motion.div 
                 key={idx}
-                initial={{ opacity: 0, x: -20 }}
+                initial={{ opacity: 0, x: -30 }}
                 whileInView={{ opacity: 1, x: 0 }}
-                className="flex items-center gap-6 p-6 bg-white/5 border border-white/10 hover:border-secondary/50 transition-colors group"
+                viewport={{ once: true }}
+                transition={{ delay: idx * 0.1 }}
+                className="group relative flex items-center gap-6 p-8 bg-black/20 backdrop-blur-xl border border-white/10 hover:border-primary/50 hover:bg-black/40 transition-all duration-500 rounded-sm"
               >
-                <div className="w-16 h-16 flex items-center justify-center border-2 border-white/20 font-orbitron font-black text-white/40 group-hover:border-secondary group-hover:text-secondary transition-colors">
-                  {idx + 1}
+                {/* Geometric Symbol & Number */}
+                <div className="w-16 h-16 flex flex-col items-center justify-center border border-white/10 font-orbitron group-hover:border-primary transition-colors">
+                  <span className="text-xs text-white/30 group-hover:text-primary transition-colors">
+                    {item.symbol}
+                  </span>
+                  <span className="text-xl font-black text-white">
+                    0{idx + 1}
+                  </span>
                 </div>
+
                 <div className="flex-1">
-                  <h4 className="font-orbitron font-black text-xl text-white tracking-wide">{item.game}: {item.desc}</h4>
-                  <p className="font-mono text-xs text-white/40 mt-1 uppercase tracking-widest">{item.date} // {item.time}</p>
+                  <div className="flex flex-col md:flex-row md:items-center gap-2 md:gap-4 mb-2">
+                    <h4 className="font-orbitron font-black text-xl text-white tracking-widest uppercase group-hover:text-primary transition-colors">
+                      {item.title}
+                    </h4>
+                    <span className="hidden md:block text-white/10">{"|"}</span>
+                    <span className="text-primary font-mono text-[10px] font-bold tracking-widest">
+                      {item.round}
+                    </span>
+                  </div>
+                  
+                  <div className="flex items-center gap-4">
+                    <p className="font-mono text-xs text-white/40 uppercase tracking-widest">
+                      {item.date} <span className="mx-2 text-white/10">{"//"}</span> {item.time}
+                    </p>
+                  </div>
                 </div>
-                <div className="w-3 h-3 rounded-full bg-white/10 group-hover:bg-secondary group-hover:shadow-[0_0_10px_rgba(36,159,156,0.8)]" />
+
+                {/* Glowing Status Dot */}
+                <div className="flex flex-col items-end gap-2">
+                  <div className="w-2 h-2 rounded-full bg-primary animate-pulse shadow-[0_0_10px_#ff003c]" />
+                  <span className="text-[8px] font-mono text-white/20 uppercase tracking-[0.3em] [writing-mode:vertical-lr]">
+                    SECURED
+                  </span>
+                </div>
+
+                {/* Subtle Scanning Light Overlay */}
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 pointer-events-none" />
               </motion.div>
             ))}
+          </div>
+
+          {/* Mandatory Attendance Notice - Rulebook Aligned */}
+          <div className="mt-16 text-center opacity-150">
+            <p className="text-[13px] font-mono text-white uppercase tracking-[0.5em]">
+              {"[ FAILURE TO REPORT ON ASSIGNED DAY RESULTS IN ELIMINATION ]"}
+            </p>
           </div>
         </div>
       </section>
 
 
 {/* ----------------------------------------------------------------------------------------------------------------- */}
-
+            
 
       {/* VIP Partners Section */}
       <section className="py-32 px-4 relative z-10 overflow-hidden">
@@ -1043,81 +1154,114 @@ export default function Home() {
 {/* ----------------------------------------------------------------------------------------------------------------- */}
 
 
-      {/* Registration Section */}
-      <section id="register" className="py-24 px-4 relative z-10">
-        <div className="max-w-4xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-6xl font-black mb-4 text-white tracking-widest drop-shadow-[0_0_15px_rgba(255,0,96,0.3)]">PLAYER ENROLLMENT</h2>
-            <div className="w-32 h-1 bg-primary mx-auto mb-6" />
-            <p className="font-montserrat text-white/40 max-w-2xl mx-auto uppercase tracking-widest text-xs font-bold leading-relaxed">
-              By submitting this form, you consent to all terms and conditions of the game. 
-              Once the game begins, it cannot be stopped.
-            </p>
-          </div>
-
-          <RegistrationForm />
-        </div>
-      </section>
-
-
-{/* ----------------------------------------------------------------------------------------------------------------- */}
-
-
       {/* Control Room Section */}
-      <section className="py-32 px-4 relative z-10">
-        <div className="max-w-2xl mx-auto text-center relative">
+    <section className="py-32 px-4 relative z-10 overflow-hidden">
+      <div className="max-w-3xl mx-auto text-center relative">
+        
+        {/* Cinematic Ambient Glow */}
+        <div className="absolute inset-0 -z-10 flex items-center justify-center">
+          <div className="w-[600px] h-[300px] bg-primary/10 blur-[120px] animate-pulse" />
+        </div>
 
-          {/* Ambient glow */}
-          <div className="absolute inset-0 -z-10 flex items-center justify-center">
-            <div className="w-[600px] h-[300px] bg-red-600/10 blur-[120px]" />
-          </div>
-
-          {/* Glass panel */}
-          <div className="relative p-1 border border-white/10 bg-black/40 backdrop-blur-md shadow-[0_0_60px_rgba(0,0,0,0.8)]">
-            <div className="p-10 border border-white/20 flex flex-col items-center gap-8">
-
-              <Video className="w-12 h-12 text-primary animate-pulse" />
-
-              <h3 className="font-orbitron font-black text-2xl tracking-widest">
-                CONTROL ROOM
-              </h3>
-
-              {/* Action buttons */}
-              <div className="flex flex-col md:flex-row gap-4 w-full">
-                <button className="flex-1 bg-white/5 border border-white/20 py-4 
-                  font-orbitron font-bold text-xs tracking-widest
-                  hover:bg-white hover:text-black transition-all duration-300">
-                  CALL SUPPORT
-                </button>
-
-                <button className="flex-1 bg-white/5 border border-white/20 py-4 
-                  font-orbitron font-bold text-xs tracking-widest
-                  hover:bg-white hover:text-black transition-all duration-300">
-                  MESSAGE CONTROL
-                </button>
-              </div>
-
-              {/* Emergency terminal */}
-              <div className="pt-10 flex flex-col items-center">
-                <button
-                  className="w-16 h-16 rounded-full bg-red-600/20 border-4 border-red-600
-                  shadow-[0_0_40px_rgba(220,38,38,0.7)]
-                  animate-pulse flex items-center justify-center
-                  relative overflow-hidden group"
-                >
-                  <div className="absolute inset-0 bg-red-600/30 group-active:scale-90 transition-transform" />
-                  <div className="w-8 h-8 rounded-full bg-red-600 shadow-[0_0_25px_rgba(220,38,38,0.9)]" />
-                </button>
-
-                <p className="text-[10px] font-mono text-red-600 mt-4 tracking-[0.35em] font-black">
-                  EMERGENCY TERMINAL
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          className="relative p-[1px] bg-gradient-to-b from-white/20 to-transparent backdrop-blur-2xl shadow-2xl"
+        >
+          <div className="p-8 md:p-12 bg-black/60 border border-white/5 relative overflow-hidden">
+            
+            {/* CCTV Style Header */}
+            <div className="flex justify-between items-center mb-10 border-b border-white/10 pb-6">
+              <div className="text-left">
+                <h3 className="font-orbitron font-black text-2xl tracking-[0.2em] text-white">
+                  CONTROL <span className="text-primary">ROOM</span>
+                </h3>
+                <p className="text-[9px] font-mono text-white/40 uppercase tracking-widest mt-1">
+                  {"Secure Channel // CAM_04 // Dormitory_H1"}
                 </p>
               </div>
-
+              <Video className="w-8 h-8 text-primary animate-pulse drop-shadow-[0_0_8px_#FF0060]" />
             </div>
+
+            {/* Improved Action Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full mb-8">
+              <button 
+                onClick={() => setActiveAction(activeAction === 'call' ? null : 'call')}
+                className={`group relative overflow-hidden border py-5 font-orbitron font-bold text-xs tracking-[0.3em] transition-all duration-500 ${
+                  activeAction === 'call' ? 'bg-white text-black border-white' : 'bg-white/5 border-white/10 text-white hover:border-primary'
+                }`}
+              >
+                <span className="relative z-10">CALL SUPPORT</span>
+                <div className="absolute inset-0 bg-primary/20 translate-y-full group-hover:translate-y-0 transition-transform" />
+              </button>
+
+              <button 
+                onClick={() => setActiveAction(activeAction === 'message' ? null : 'message')}
+                className={`group relative overflow-hidden border py-5 font-orbitron font-bold text-xs tracking-[0.3em] transition-all duration-500 ${
+                  activeAction === 'message' ? 'bg-white text-black border-white' : 'bg-white/5 border-white/10 text-white hover:border-primary'
+                }`}
+              >
+                <span className="relative z-10">MESSAGE CONTROL</span>
+                <div className="absolute inset-0 bg-primary/20 translate-y-full group-hover:translate-y-0 transition-transform" />
+              </button>
+            </div>
+
+            {/* Contact List Interface */}
+            <AnimatePresence>
+              {activeAction && (
+                <motion.div 
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: 'auto' }}
+                  exit={{ opacity: 0, height: 0 }}
+                  className="space-y-3 mb-10 overflow-hidden"
+                >
+                  <div className="bg-white/5 p-4 border border-white/10">
+                    <p className="text-[10px] font-mono text-primary mb-4 tracking-[0.4em] uppercase">
+                      {"[ Select_Frequency ]"}
+                    </p>
+                    <div className="grid gap-2">
+                      {contacts.map((contact, idx) => (
+                        <a
+                          key={idx}
+                          href={activeAction === 'call' ? `tel:${contact.phone}` : `https://wa.me/${contact.wa}`}
+                          target={activeAction === 'message' ? "_blank" : "_self"}
+                          rel="noreferrer"
+                          className="flex items-center justify-between p-4 bg-black/40 border border-white/5 hover:border-primary group transition-all"
+                        >
+                          <div className="text-left">
+                            <p className="text-xs font-bold text-white tracking-widest uppercase group-hover:text-primary transition-colors">
+                              {contact.name}
+                            </p>
+                            <p className="text-[10px] font-mono text-white/30">{contact.phone}</p>
+                          </div>
+                          <div className="text-primary font-mono text-[9px] opacity-0 group-hover:opacity-100 transition-opacity">
+                            {"CONNECTING >>"}
+                          </div>
+                        </a>
+                      ))}
+                    </div>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+
+            {/* Bottom Emergency Console */}
+            <div className="pt-8 border-t border-white/10 flex flex-col items-center">
+              <div className="relative group">
+                <div className="absolute inset-0 bg-red-600 blur-2xl opacity-20 group-hover:opacity-40 transition-opacity" />
+                <div className="w-14 h-14 rounded-full bg-red-600/20 border-2 border-red-600 flex items-center justify-center relative z-10">
+                  <div className="w-6 h-6 rounded-full bg-red-600 shadow-[0_0_15px_#ef4444] animate-pulse" />
+                </div>
+              </div>
+              <p className="text-[9px] font-mono text-red-600 mt-4 tracking-[0.5em] font-black uppercase">
+                Emergency Link Secure
+              </p>
+            </div>
+
           </div>
-        </div>
-      </section>
+        </motion.div>
+      </div>
+    </section>
 
 
 {/* ----------------------------------------------------------------------------------------------------------------- */}
