@@ -529,7 +529,7 @@ export default function Home() {
           </h1>
 
           <p className="font-montserrat text-lg md:text-3xl text-gray-400 tracking-widest uppercase font-bold">
-            A Game Where Only the Best Survive
+            A Game Where Only the Best Survives
           </p>
 
           <p className="font-montserrat text-sm md:text-lg text-white/60 max-w-2xl mx-auto leading-relaxed tracking-wide">

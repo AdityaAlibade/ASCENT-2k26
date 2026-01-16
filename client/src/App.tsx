@@ -7,6 +7,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 
 // UI Components
 import Navbar from "@/components/Navbar";
+import CharacterCursor from "./components/CharacterCursor";
 
 // Pages
 import Home from "@/pages/Home";
@@ -75,6 +76,7 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <AudioProvider>
         <TooltipProvider>
+          <CharacterCursor />
           {/* Navbar is placed outside Router so it persists across all pages */}
           <Navbar />
 
