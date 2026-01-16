@@ -177,27 +177,31 @@ const DdakjiTransition = ({ onComplete }: { onComplete: () => void }) => {
 const IntroOverlay = ({ onComplete }: { onComplete: () => void }) => {
   const [phase, setPhase] = useState<'loader' | 'video' | 'welcome' | 'frontman' | 'conditions'>('loader');
   const [step, setStep] = useState(0);
-  const [isMuted, setIsMuted] = useState(false); // Start unmuted for better autoplay
+  const [isMuted, setIsMuted] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const [audioInitialized, setAudioInitialized] = useState(false);
 
-  // Initialize audio on component mount
-  useEffect(() => {
-    if (audioRef.current) {
-      // Set volume and try to play immediately
+  // Initialize audio with user interaction
+  const initializeAudio = async () => {
+    if (audioRef.current && !audioInitialized) {
       audioRef.current.volume = 0.3;
       audioRef.current.muted = false;
+      setAudioInitialized(true);
       
-      // Try to play audio when component mounts
-      const playAudio = async () => {
-        try {
-          await audioRef.current?.play();
-          console.log("Intro audio autoplay successful");
-        } catch (error) {
-          console.log("Intro audio autoplay blocked, will play after user interaction");
-        }
-      };
-      
-      playAudio();
+      try {
+        await audioRef.current.play();
+        console.log("Intro audio autoplay successful");
+      } catch (error) {
+        console.log("Intro audio autoplay blocked, will play after user interaction");
+      }
+    }
+  };
+
+  // Try to autoplay when component mounts (may fail due to browser policy)
+  useEffect(() => {
+    if (audioRef.current) {
+      audioRef.current.volume = 0.3;
+      audioRef.current.muted = false;
     }
   }, []);
 
@@ -217,9 +221,16 @@ const IntroOverlay = ({ onComplete }: { onComplete: () => void }) => {
     }
   }, [phase]);
 
-  const handleStart = () => {
-    if (audioRef.current) {
-      audioRef.current.play().catch(e => console.error("Audio playback failed:", e));
+  const handleStart = async () => {
+    // Ensure audio is initialized before playing
+    if (!audioInitialized && audioRef.current) {
+      await initializeAudio();
+    } else if (audioRef.current) {
+      try {
+        await audioRef.current.play();
+      } catch (error) {
+        console.error("Audio playback failed:", error);
+      }
     }
     setPhase('frontman');
   };
@@ -233,6 +244,7 @@ const IntroOverlay = ({ onComplete }: { onComplete: () => void }) => {
       initial={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 1.5, ease: "easeInOut" }}
+      onClick={initializeAudio} // Add click anywhere to initialize audio
     >
       <audio ref={audioRef} src={audioFile} loop />
       
@@ -504,26 +516,113 @@ const ConditionsAccept = ({ onComplete }: { onComplete: () => void }) => {
 };
 
 export default function Home() {
-  const [showIntro, setShowIntro] = useState(true); // ALWAYS start with true for fresh load
-  const [isMuted, setIsMuted] = useState(false); // Default to UNMUTED for autoplay
+  const [showIntro, setShowIntro] = useState(true);
+  const [isMuted, setIsMuted] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const [audioReady, setAudioReady] = useState(false);
   const { data: stats } = useGameStats();
   const [open, setOpen] = useState(false);
   const [activeAction, setActiveAction] = useState<string | null>(null);
   
+  // Store audio state globally to persist across page loads
+  const [globalAudioState, setGlobalAudioState] = useState({
+    volume: 0.3,
+    muted: false,
+    ready: false
+  });
+
   const handleIntroComplete = () => {
     sessionStorage.setItem("introCompleted", "true");
     setShowIntro(false);
     window.dispatchEvent(new CustomEvent('introComplete'));
     
-    // Auto-play main audio after intro
+    // Initialize audio after intro completes
     setTimeout(() => {
-      if (audioRef.current) {
-        audioRef.current.volume = 0.3;
-        audioRef.current.muted = false;
-        audioRef.current.play().catch(e => console.error("Main audio playback failed:", e));
-      }
+      initializeMainAudio();
     }, 500);
+  };
+
+  // Initialize main audio with proper user interaction handling
+  const initializeMainAudio = async () => {
+    if (audioRef.current) {
+      audioRef.current.volume = globalAudioState.volume;
+      audioRef.current.muted = globalAudioState.muted;
+      
+      try {
+        // First, try to play the audio
+        await audioRef.current.play();
+        setAudioReady(true);
+        console.log("Main audio autoplay successful");
+        
+        // Store audio state
+        setGlobalAudioState(prev => ({ ...prev, ready: true }));
+      } catch (error) {
+        console.log("Main audio autoplay blocked, will require user interaction");
+        setAudioReady(false);
+      }
+    }
+  };
+
+  // Force audio play on user interaction
+  const forceAudioPlay = async () => {
+    if (audioRef.current && !audioReady) {
+      try {
+        await audioRef.current.play();
+        setAudioReady(true);
+        setGlobalAudioState(prev => ({ ...prev, ready: true }));
+        console.log("Audio unblocked by user interaction");
+      } catch (error) {
+        console.log("Audio still blocked:", error);
+      }
+    }
+  };
+
+  // Initialize on component mount
+  useEffect(() => {
+    const introCompleted = sessionStorage.getItem("introCompleted") === "true";
+    if (introCompleted) {
+      setShowIntro(false);
+      // Initialize audio after a short delay when intro is already completed
+      setTimeout(() => {
+        initializeMainAudio();
+      }, 1000);
+    }
+
+    // Add global click handler to unblock audio
+    const handleUserInteraction = async () => {
+      if (!audioReady) {
+        await forceAudioPlay();
+      }
+    };
+
+    // Add multiple interaction listeners
+    document.addEventListener('click', handleUserInteraction);
+    document.addEventListener('touchstart', handleUserInteraction);
+    document.addEventListener('keydown', handleUserInteraction);
+
+    return () => {
+      document.removeEventListener('click', handleUserInteraction);
+      document.removeEventListener('touchstart', handleUserInteraction);
+      document.removeEventListener('keydown', handleUserInteraction);
+    };
+  }, [audioReady]);
+
+  // Handle music toggle
+  const toggleMusic = () => {
+    const newMutedState = !isMuted;
+    setIsMuted(newMutedState);
+    
+    // Update global state
+    setGlobalAudioState(prev => ({ ...prev, muted: newMutedState }));
+    
+    if (audioRef.current) {
+      audioRef.current.muted = newMutedState;
+      
+      // If unmuting and audio was blocked, try to play it
+      if (!newMutedState && !audioReady) {
+        forceAudioPlay();
+      }
+    }
   };
 
   const contacts = [
@@ -532,82 +631,26 @@ export default function Home() {
     { name: "Prathamesh Kshirsagar (Vice President)", phone: "8767745753", wa: "8767745753" }
   ];
 
-  // Initialize audio on component mount
-  useEffect(() => {
-    const initializeAudio = async () => {
-      if (audioRef.current) {
-        audioRef.current.volume = 0.3;
-        audioRef.current.muted = false;
-        
-        // Try to preload and play
-        audioRef.current.load();
-        
-        // Only try to play if intro is already completed
-        const introCompleted = sessionStorage.getItem("introCompleted") === "true";
-        if (introCompleted) {
-          try {
-            await audioRef.current.play();
-            console.log("Main audio autoplay successful");
-          } catch (error) {
-            console.log("Main audio autoplay blocked, will play after user interaction");
-          }
-        }
-      }
-    };
-
-    initializeAudio();
-    
-    // Check if user previously completed intro in this session
-    const introCompleted = sessionStorage.getItem("introCompleted") === "true";
-    if (introCompleted) {
-      setShowIntro(false);
-    }
-  }, []);
-
-  // Add global click handler to unblock audio
-  useEffect(() => {
-    const handleUserInteraction = async () => {
-      if (audioRef.current) {
-        try {
-          await audioRef.current.play();
-          console.log("Audio unblocked by user interaction");
-        } catch (error) {
-          console.log("Audio still blocked");
-        }
-      }
-    };
-
-    // Add event listeners for user interaction
-    document.addEventListener('click', handleUserInteraction, { once: true });
-    document.addEventListener('touchstart', handleUserInteraction, { once: true });
-    document.addEventListener('keydown', handleUserInteraction, { once: true });
-
-    return () => {
-      document.removeEventListener('click', handleUserInteraction);
-      document.removeEventListener('touchstart', handleUserInteraction);
-      document.removeEventListener('keydown', handleUserInteraction);
-    };
-  }, []);
-
-  // Handle music toggle
-  const toggleMusic = () => {
-    setIsMuted(!isMuted);
-    if (audioRef.current) {
-      audioRef.current.muted = !isMuted;
-    }
-  };
-
   if (showIntro) {
     return <AnimatePresence><IntroOverlay onComplete={handleIntroComplete} /></AnimatePresence>;
   }
 
   return (
-    <div className="min-h-screen bg-black text-white selection:bg-primary selection:text-white overflow-hidden relative font-montserrat">
+    <div 
+      className="min-h-screen bg-black text-white selection:bg-primary selection:text-white overflow-hidden relative font-montserrat"
+      onClick={forceAudioPlay} // Click anywhere to trigger audio
+    >
       <audio 
         ref={audioRef} 
         src={audioFile} 
         loop 
         preload="auto"
+        onCanPlayThrough={() => {
+          // When audio is ready to play, try to play it
+          if (!audioReady) {
+            forceAudioPlay();
+          }
+        }}
       />
       
       {/* Background Image with Dark Wash */}
@@ -625,9 +668,17 @@ export default function Home() {
         {isMuted ? (
           <VolumeX size={20} className="group-hover:scale-110 transition-transform" />
         ) : (
-          <Volume2 size={20} className="group-hover:scale-110 transition-transform animate-pulse" />
+          <Volume2 size={20} className="group-hover:scale-110 transition-transform" />
+        )}
+        {!audioReady && (
+          <span className="absolute -top-1 -right-1 w-3 h-3 bg-red-600 rounded-full animate-pulse" />
         )}
       </button>
+
+      {/* Audio Status Indicator (debug) */}
+      <div className="fixed bottom-24 left-10 z-[100] font-mono text-[8px] text-white/30">
+        {audioReady ? "AUDIO: ACTIVE" : "AUDIO: PENDING INTERACTION"}
+      </div>
 
       <div className="scanline z-10" />
       <div className="vignette z-10" />
@@ -675,12 +726,7 @@ export default function Home() {
               href="Registration"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              onClick={() => {
-                // Ensure audio plays on any user interaction
-                if (audioRef.current && audioRef.current.paused) {
-                  audioRef.current.play().catch(e => console.error("Audio playback failed:", e));
-                }
-              }}
+              onClick={forceAudioPlay} // Ensure audio plays on any user interaction
               className="group relative overflow-hidden bg-primary px-12 py-5 font-orbitron font-black text-xl tracking-[0.2em] text-white transition-all hover:shadow-[0_0_30px_rgba(255,0,96,0.6)]"
             >
               <div className="absolute inset-0 bg-white/10 -translate-x-full group-hover:translate-x-0 transition-transform duration-300 ease-out skew-x-12" />
@@ -691,12 +737,7 @@ export default function Home() {
               href="Rules"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              onClick={() => {
-                // Ensure audio plays on any user interaction
-                if (audioRef.current && audioRef.current.paused) {
-                  audioRef.current.play().catch(e => console.error("Audio playback failed:", e));
-                }
-              }}
+              onClick={forceAudioPlay}
               className="group relative overflow-hidden bg-transparent border-2 border-white/20 px-12 py-5 font-orbitron font-black text-xl tracking-[0.2em] text-white transition-all hover:border-white hover:bg-white/5"
             >
               <span className="relative z-10">VIEW RULES</span>
@@ -706,12 +747,7 @@ export default function Home() {
               href="About"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              onClick={() => {
-                // Ensure audio plays on any user interaction
-                if (audioRef.current && audioRef.current.paused) {
-                  audioRef.current.play().catch(e => console.error("Audio playback failed:", e));
-                }
-              }}
+              onClick={forceAudioPlay}
               className="group relative overflow-hidden bg-transparent border-2 border-secondary/30 px-12 py-5 font-orbitron font-black text-xl tracking-[0.2em] text-secondary transition-all hover:border-secondary hover:bg-secondary/5"
             >
               <span className="relative z-10">THE TRIALS</span>
@@ -920,7 +956,10 @@ export default function Home() {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full mb-8">
                 <button 
-                  onClick={() => setActiveAction(activeAction === 'call' ? null : 'call')}
+                  onClick={() => {
+                    setActiveAction(activeAction === 'call' ? null : 'call');
+                    forceAudioPlay();
+                  }}
                   className={`group relative overflow-hidden border py-5 font-orbitron font-bold text-xs tracking-[0.3em] transition-all duration-500 ${
                     activeAction === 'call' ? 'bg-white text-black border-white' : 'bg-white/5 border-white/10 text-white hover:border-primary'
                   }`}
@@ -930,7 +969,10 @@ export default function Home() {
                 </button>
 
                 <button 
-                  onClick={() => setActiveAction(activeAction === 'message' ? null : 'message')}
+                  onClick={() => {
+                    setActiveAction(activeAction === 'message' ? null : 'message');
+                    forceAudioPlay();
+                  }}
                   className={`group relative overflow-hidden border py-5 font-orbitron font-bold text-xs tracking-[0.3em] transition-all duration-500 ${
                     activeAction === 'message' ? 'bg-white text-black border-white' : 'bg-white/5 border-white/10 text-white hover:border-primary'
                   }`}
