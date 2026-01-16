@@ -7,13 +7,15 @@ import { ChevronDown, AlertTriangle, Clock, Trophy, ShieldAlert, Video, Volume2,
 import audioFile from "@assets/Round_And_Round_Mingle_1767983924508.mp3";
 import frontManTheme from "@assets/squid_game_1768071980984.mp3";
 import frontManImg from "@assets/FM_1768130131807.png"
+import mainBg from "@assets/MAin_background_1768146583042.jpg";
 
+// Store in sessionStorage instead of localStorage for single session only
+let introHasPlayed = sessionStorage.getItem("introHasPlayed") === "true";
 
 const CountdownTimer = () => {
   const [time, setTime] = useState("00:00:00:00");
 
   useEffect(() => {
-    // Define the static target date: January 29, 2026, 23:59:00
     const targetDate = new Date("2026-01-29T23:59:00").getTime();
 
     const interval = setInterval(() => {
@@ -26,13 +28,11 @@ const CountdownTimer = () => {
         return;
       }
 
-      // Calculate time components
       const days = Math.floor(difference / (1000 * 60 * 60 * 24));
       const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
       const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
       const seconds = Math.floor((difference % (1000 * 60)) / 1000);
 
-      // Format with padding and include days for a long-term countdown
       setTime(
         `${days.toString().padStart(2, '0')}:${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`
       );
@@ -60,7 +60,6 @@ const SystemLoader = ({ onComplete }: { onComplete: () => void }) => {
       <div className="scanline opacity-10" />
       
       <div className="flex gap-16 md:gap-24 items-center mb-24">
-        {/* Circle */}
         <div className="relative">
           <svg className="w-16 h-16 md:w-24 md:h-24">
             <motion.circle
@@ -79,7 +78,6 @@ const SystemLoader = ({ onComplete }: { onComplete: () => void }) => {
           />
         </div>
 
-        {/* Triangle */}
         <div className="relative">
           <svg className="w-16 h-16 md:w-24 md:h-24" viewBox="0 0 100 100">
             <motion.path
@@ -98,7 +96,6 @@ const SystemLoader = ({ onComplete }: { onComplete: () => void }) => {
           />
         </div>
 
-        {/* Square */}
         <div className="relative">
           <svg className="w-16 h-16 md:w-24 md:h-24">
             <motion.rect
@@ -125,18 +122,11 @@ const SystemLoader = ({ onComplete }: { onComplete: () => void }) => {
   );
 };
 
-
-{/* ----------------------------------------------------------------------------------------------------------------- */}
-
-
-{/* Ddakji Flip Transition Component */}
 const DdakjiTransition = ({ onComplete }: { onComplete: () => void }) => {
   const [isFlipped, setIsFlipped] = useState(false);
 
   const handlePlay = () => {
     setIsFlipped(true);
-    
-    // Transition after flip animation
     setTimeout(() => {
       onComplete();
     }, 1500);
@@ -161,15 +151,15 @@ const DdakjiTransition = ({ onComplete }: { onComplete: () => void }) => {
             className="w-48 h-48 shadow-2xl relative"
             style={{ transformStyle: "preserve-3d" }}
           >
-            {/* Front side (Blue) */}
             <div className="absolute inset-0 bg-blue-600 backface-hidden" />
-            {/* Back side (Red) */}
             <div className="absolute inset-0 bg-red-600" style={{ transform: "rotateY(180deg)", backfaceVisibility: "hidden" }} />
           </motion.div>
         </div>
         
         <div className="space-y-8">
-          <p className="font-orbitron text-white/10 uppercase tracking-[0.5em] text-xs">SLAP... SLAP... SLAP...</p>
+          <p className="font-orbitron text-white/10 uppercase tracking-[0.5em] text-xs">
+            SLAP... SLAP... SLAP...
+          </p>
           
           {!isFlipped && (
             <motion.button
@@ -187,10 +177,6 @@ const DdakjiTransition = ({ onComplete }: { onComplete: () => void }) => {
   );
 };
 
-
-{/* ----------------------------------------------------------------------------------------------------------------- */}
-
-{/* Welcome Intro Overlay Component */}
 const IntroOverlay = ({ onComplete }: { onComplete: () => void }) => {
   const [phase, setPhase] = useState<'loader' | 'video' | 'welcome' | 'frontman' | 'conditions'>('loader');
   const [step, setStep] = useState(0);
@@ -208,7 +194,6 @@ const IntroOverlay = ({ onComplete }: { onComplete: () => void }) => {
         clearTimeout(timer3);
       };
     }
-    // Pause main intro audio during Front Man phase
     if (phase === 'frontman' && audioRef.current) {
       audioRef.current.pause();
     }
@@ -240,11 +225,6 @@ const IntroOverlay = ({ onComplete }: { onComplete: () => void }) => {
         {isMuted ? <VolumeX size={24} /> : <Volume2 size={24} />}
       </button>
 
-
-{/* ----------------------------------------------------------------------------------------------------------------- */}
-
-
-      {/* Cinematic Background Elements */}
       <AnimatePresence>
         {phase === 'frontman' && (
           <motion.div 
@@ -352,7 +332,6 @@ const IntroOverlay = ({ onComplete }: { onComplete: () => void }) => {
         )}
       </div>
       
-      {/* Surveillance scanline and grain */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden opacity-40">
         <div className="scanline" />
         <div className="vignette" />
@@ -399,7 +378,6 @@ const FrontManDialogue = ({ onComplete }: { onComplete: () => void }) => {
             if (lineIndex < lines.length - 1) {
               setLineIndex(prev => prev + 1);
             } else {
-              // Trigger button show after a brief pause following the last line
               setShowButton(true);
             }
           }, pauseDuration);
@@ -412,7 +390,6 @@ const FrontManDialogue = ({ onComplete }: { onComplete: () => void }) => {
 
   return (
     <div className="flex flex-col items-center justify-end w-full h-full pb-32 px-4 relative">
-      {/* Cinematic Subtitles with consistent typewriter animation */}
       <div className="min-h-[160px] flex items-center justify-center w-full text-center">
         <AnimatePresence mode="wait">
           {!showButton && (
@@ -430,11 +407,6 @@ const FrontManDialogue = ({ onComplete }: { onComplete: () => void }) => {
         </AnimatePresence>
       </div>
 
-
-{/* ----------------------------------------------------------------------------------------------------------------- */}
-
-
-      {/* Acceptance Button with cinematic reveal animation */}
       <AnimatePresence>
         {showButton && (
           <motion.div
@@ -507,19 +479,46 @@ const ConditionsAccept = ({ onComplete }: { onComplete: () => void }) => {
   );
 };
 
-
-{/* ----------------------------------------------------------------------------------------------------------------- */}
-
-{/* Main Home Component */}
-import mainBg from "@assets/MAin_background_1768146583042.jpg";
-
 export default function Home() {
-  const [showIntro, setShowIntro] = useState(true);
+  const [showIntro, setShowIntro] = useState(() => {
+    // Only show intro if it hasn't been played in this session
+    const shouldSkip = sessionStorage.getItem("skipIntro") === "true";
+    const introCompleted = sessionStorage.getItem("introCompleted") === "true";
+    
+    if (shouldSkip || introCompleted) {
+      introHasPlayed = true;
+      sessionStorage.removeItem("skipIntro");
+      return false;
+    }
+    
+    return !introHasPlayed;
+  });
+  
   const [isMuted, setIsMuted] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const { data: stats } = useGameStats();
   const [open, setOpen] = useState(false);
   const [activeAction, setActiveAction] = useState<string | null>(null);
+  
+  const handleIntroComplete = () => {
+    introHasPlayed = true;
+    setShowIntro(false);
+    sessionStorage.setItem("introCompleted", "true");
+    sessionStorage.setItem("introHasPlayed", "true");
+    window.dispatchEvent(new CustomEvent('introComplete'));
+    sessionStorage.removeItem("skipIntro");
+    
+    const scrollToSection = sessionStorage.getItem("scrollToSection");
+    if (scrollToSection) {
+      setTimeout(() => {
+        const element = document.getElementById(scrollToSection);
+        if (element) {
+          element.scrollIntoView({ behavior: "smooth" });
+        }
+        sessionStorage.removeItem("scrollToSection");
+      }, 500);
+    }
+  };
 
   const contacts = [
     { name: "Patel Abdul Rahman (President)", phone: "989038583", wa: "989038583" },
@@ -534,23 +533,23 @@ export default function Home() {
   }, [showIntro]);
 
   if (showIntro) {
-    return <AnimatePresence><IntroOverlay onComplete={() => setShowIntro(false)} /></AnimatePresence>;
+    return <AnimatePresence><IntroOverlay onComplete={handleIntroComplete} /></AnimatePresence>;
   }
 
   return (
     <div className="min-h-screen bg-black text-white selection:bg-primary selection:text-white overflow-hidden relative font-montserrat">
       <audio ref={audioRef} src={audioFile} loop muted={isMuted} />
       
-      {/* Background Image with Dark Wash */}
+      {/* Enhanced Background */}
       <div 
-        className="fixed inset-0 z-0 bg-cover bg-center bg-no-repeat opacity-60 grayscale-[0.3]"
+        className="fixed inset-0 z-0 bg-cover bg-center bg-no-repeat opacity-70 grayscale-[0.3]"
         style={{ backgroundImage: `url(${mainBg})` }}
       />
-      <div className="fixed inset-0 z-1 bg-black/40 pointer-events-none" />
+      <div className="fixed inset-0 z-1 bg-gradient-to-b from-black/90 via-black/60 to-black/80 pointer-events-none" />
       
       <button 
         onClick={() => setIsMuted(!isMuted)}
-        className="fixed top-8 right-8 z-[100] p-2 text-white/40 hover:text-white transition-colors bg-black/20 backdrop-blur-sm"
+        className="fixed top-8 right-8 z-[100] p-2 text-white/40 hover:text-white transition-colors bg-black/40 backdrop-blur-sm rounded-full border border-white/10"
       >
         {isMuted ? <VolumeX size={20} /> : <Volume2 size={20} />}
       </button>
@@ -564,48 +563,69 @@ export default function Home() {
       </div>
       <FloatingShapes />
 
-
-{/* ----------------------------------------------------------------------------------------------------------------- */}
-
-
       {/* Hero Section */}
-      <section className="relative h-screen flex flex-col items-center justify-center px-4 z-20">
+      <section id="hero" className="relative h-screen flex flex-col items-center justify-center px-4 z-20">
         <motion.div 
           initial={{ opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1 }}
+          transition={{ duration: 1.5, ease: "easeOut" }}
           className="text-center space-y-6"
         >
           <div className="flex justify-center gap-4 md:gap-8 mb-8">
-            <Circle className="w-12 h-12 md:w-20 md:h-20 stroke-white" size={80} />
-            <Triangle className="w-12 h-12 md:w-20 md:h-20 stroke-white" size={80} />
-            <Square className="w-12 h-12 md:w-20 md:h-20 stroke-white" size={80} />
+            <Circle className="w-12 h-12 md:w-20 md:h-20 stroke-white animate-pulse" size={80} />
+            <Triangle className="w-12 h-12 md:w-20 md:h-20 stroke-white animate-pulse delay-300" size={80} />
+            <Square className="w-12 h-12 md:w-20 md:h-20 stroke-white animate-pulse delay-600" size={80} />
           </div>
 
-          <h1 className="font-orbitron text-5xl md:text-9xl font-black tracking-tighter text-white mb-2 text-glow">
-            ASCENT 2k26
-          </h1>
+          <motion.h1 
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.3, duration: 1 }}
+            className="font-orbitron text-5xl md:text-9xl font-black tracking-tighter text-white mb-2 text-glow"
+          >
+            ASCENT <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary">2k26</span>
+          </motion.h1>
           
-          <p className="font-montserrat text-lg md:text-3xl text-gray-400 tracking-widest uppercase font-bold">
+          <motion.p 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.5, duration: 1 }}
+            className="font-montserrat text-lg md:text-3xl text-gray-300 tracking-widest uppercase font-bold"
+          >
             A Game Where Only the Best Survive
-          </p>
+          </motion.p>
 
-          <p className="font-montserrat text-sm md:text-lg text-white/60 max-w-2xl mx-auto leading-relaxed tracking-wide">
+          <motion.p 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.7, duration: 1 }}
+            className="font-montserrat text-sm md:text-lg text-white/70 max-w-2xl mx-auto leading-relaxed tracking-wide"
+          >
             This competition will test your intelligence, discipline, and composure
-            under pressure.
-          </p>
+            under pressure. Every decision matters, every second counts.
+          </motion.p>
 
-          <div className="py-12">
-            <p className="text-primary font-black tracking-[0.4em] mb-4 font-orbitron text-sm">REGISTRATIONS CLOSE IN</p>
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.9, duration: 1 }}
+            className="py-12"
+          >
+            <p className="text-primary font-black tracking-[0.4em] mb-4 font-orbitron text-sm drop-shadow-[0_0_10px_rgba(255,0,96,0.5)]">REGISTRATIONS CLOSE IN</p>
             <CountdownTimer />
-          </div>
+          </motion.div>
 
-          <div className="flex flex-col md:flex-row items-center justify-center gap-6 mt-8">
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 1.1, duration: 1 }}
+            className="flex flex-col md:flex-row items-center justify-center gap-6 mt-8"
+          >
             <motion.a 
               href="#register"
-              whileHover={{ scale: 1.05 }}
+              whileHover={{ scale: 1.05, boxShadow: "0 0 40px rgba(255, 0, 96, 0.6)" }}
               whileTap={{ scale: 0.95 }}
-              className="group relative overflow-hidden bg-primary px-12 py-5 font-orbitron font-black text-xl tracking-[0.2em] text-white transition-all hover:shadow-[0_0_30px_rgba(255,0,96,0.6)]"
+              className="group relative overflow-hidden bg-primary px-12 py-5 font-orbitron font-black text-xl tracking-[0.2em] text-white transition-all"
             >
               <div className="absolute inset-0 bg-white/10 -translate-x-full group-hover:translate-x-0 transition-transform duration-300 ease-out skew-x-12" />
               <span className="relative z-10">ENTER THE GAME</span>
@@ -613,29 +633,26 @@ export default function Home() {
 
             <motion.a 
               href="#rules"
-              whileHover={{ scale: 1.05 }}
+              whileHover={{ scale: 1.05, borderColor: "white", backgroundColor: "rgba(255,255,255,0.1)" }}
               whileTap={{ scale: 0.95 }}
-              className="group relative overflow-hidden bg-transparent border-2 border-white/20 px-12 py-5 font-orbitron font-black text-xl tracking-[0.2em] text-white transition-all hover:border-white hover:bg-white/5"
+              className="group relative overflow-hidden bg-transparent border-2 border-white/20 px-12 py-5 font-orbitron font-black text-xl tracking-[0.2em] text-white transition-all"
             >
               <span className="relative z-10">VIEW RULES</span>
             </motion.a>
 
             <motion.a 
               href="#games"
-              whileHover={{ scale: 1.05 }}
+              whileHover={{ scale: 1.05, borderColor: "rgb(36, 159, 156)", backgroundColor: "rgba(36, 159, 156, 0.1)" }}
               whileTap={{ scale: 0.95 }}
-              className="group relative overflow-hidden bg-transparent border-2 border-secondary/30 px-12 py-5 font-orbitron font-black text-xl tracking-[0.2em] text-secondary transition-all hover:border-secondary hover:bg-secondary/5"
+              className="group relative overflow-hidden bg-transparent border-2 border-secondary/30 px-12 py-5 font-orbitron font-black text-xl tracking-[0.2em] text-secondary transition-all"
             >
               <span className="relative z-10">THE TRIALS</span>
             </motion.a>
-          </div>
-
+          </motion.div>
         </motion.div>
 
-        {/* Background Atmosphere Simulation */}
         <div className="absolute inset-0 -z-10 overflow-hidden pointer-events-none opacity-40">
           <div className="absolute inset-0 bg-gradient-to-b from-black via-black/80 to-black" />
-          {/* Simulated dormitory corridor pan */}
           <motion.div 
             animate={{ x: [-20, 20] }}
             transition={{ repeat: Infinity, duration: 20, ease: "linear", repeatType: "mirror" }}
@@ -644,7 +661,6 @@ export default function Home() {
              <div className="w-full h-full bg-[linear-gradient(90deg,transparent_0%,rgba(36,159,156,0.05)_50%,transparent_100%)] opacity-30" />
           </motion.div>
           
-          {/* Simulated guards walking in distance */}
           <motion.div
             animate={{ x: ["-100%", "200%"] }}
             transition={{ repeat: Infinity, duration: 40, ease: "linear" }}
@@ -664,15 +680,10 @@ export default function Home() {
         </motion.div>
       </section>
 
-
-{/* ----------------------------------------------------------------------------------------------------------------- */}
-
-
       {/* Prize Section */}
-      <section className="py-32 px-4 relative z-10 overflow-hidden">
-        {/* Ambient glow */}
+      <section id="prizes" className="py-32 px-4 relative z-10 overflow-hidden">
         <div className="absolute inset-0 -z-10 flex justify-center">
-          <div className="w-[700px] h-[500px] bg-primary/15 blur-[180px]" />
+          <div className="w-[700px] h-[500px] bg-primary/20 blur-[180px]" />
         </div>
 
         <div className="max-w-5xl mx-auto text-center">
@@ -680,44 +691,47 @@ export default function Home() {
             initial={{ opacity: 0, scale: 0.92 }}
             whileInView={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.8, ease: "easeOut" }}
-            className="relative p-14 md:p-20 border border-primary/30 bg-black/50 backdrop-blur-xl overflow-hidden group"
+            className="relative p-14 md:p-20 border border-primary/30 bg-black/60 backdrop-blur-xl overflow-hidden group"
           >
-            {/* Subtle pulse */}
             <div className="absolute inset-0 bg-primary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-1000" />
 
-            <Trophy className="w-20 h-20 text-primary mx-auto mb-10 drop-shadow-[0_0_30px_rgba(255,0,96,0.6)]" />
+            <Trophy className="w-20 h-20 text-primary mx-auto mb-10 drop-shadow-[0_0_30px_rgba(255,0,96,0.6)] animate-bounce" />
 
             <p className="text-[15px] font-mono tracking-[0.5em] text-white/40 mb-3 uppercase">
               Placement Simulation Rewards
             </p>
 
             <h2 className="text-4xl md:text-6xl font-orbitron font-black text-white tracking-[0.4em] mb-10">
-              THE REWARDS
+              THE <span className="text-primary">REWARDS</span>
             </h2>
 
             <div className="flex justify-center mb-10">
               <div className="w-32 h-[2px] bg-primary/80" />
             </div>
 
-            {/* Dual Track Winners */}
             <div className="grid md:grid-cols-2 gap-8 mb-12">
-              <div className="p-6 border border-white/10 bg-white/5">
+              <motion.div 
+                whileHover={{ scale: 1.05, borderColor: "rgb(255, 0, 96)" }}
+                className="p-6 border border-white/10 bg-black/40 backdrop-blur-sm"
+              >
                 <p className="text-primary font-orbitron text-sm tracking-widest mb-2">CHAMPION</p>
                 <p className="text-2xl font-black text-white font-orbitron">JUNIOR TRACK</p>
                 <p className="text-white/40 text-[10px] mt-2 font-mono uppercase">1st & 2nd Year Excellence</p>
-              </div>
-              <div className="p-6 border border-white/10 bg-white/5">
+              </motion.div>
+              <motion.div 
+                whileHover={{ scale: 1.05, borderColor: "rgb(255, 0, 96)" }}
+                className="p-6 border border-white/10 bg-black/40 backdrop-blur-sm"
+              >
                 <p className="text-primary font-orbitron text-sm tracking-widest mb-2">CHAMPION</p>
                 <p className="text-2xl font-black text-white font-orbitron">SENIOR TRACK</p>
                 <p className="text-white/40 text-[10px] mt-2 font-mono uppercase">3rd & 4th Year Mastery</p>
-              </div>
+              </motion.div>
             </div>
 
             <p className="text-white/60 text-xs md:text-sm uppercase tracking-[0.35em] font-mono mb-14">
               The decision of the organizing committee is final.
             </p>
 
-            {/* Official Benefits Grid */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-[10px] font-mono uppercase tracking-widest">
               {[
                 "Winner Recognition",
@@ -725,27 +739,22 @@ export default function Home() {
                 "Technical & HR Feedback",
                 "Placement Readiness",
               ].map((item) => (
-                <div
+                <motion.div
                   key={item}
+                  whileHover={{ scale: 1.05, backgroundColor: "rgba(255,255,255,0.1)" }}
                   className="p-4 border border-white/15 bg-white/5 text-white/50 hover:text-white hover:border-primary/50 transition-all duration-300"
                 >
                   {item}
-                </div>
+                </motion.div>
               ))}
             </div>
           </motion.div>
         </div>
       </section>
 
-
-{/* ----------------------------------------------------------------------------------------------------------------- */}
-
-
-      {/*Schedule Section */}
-      <section className="py-24 px-4 relative z-10 bg-transparent border-y border-white/5">
+      {/* Schedule Section */}
+      <section id="schedule" className="py-24 px-4 relative z-10 bg-transparent border-y border-white/5">
         <div className="max-w-4xl mx-auto">
-          
-          {/* Header with Cinematic Glow */}
           <div className="text-center mb-16">
             <motion.p 
               initial={{ opacity: 0 }}
@@ -760,7 +769,6 @@ export default function Home() {
             <div className="w-16 h-1 bg-secondary mx-auto mt-4" />
           </div>
 
-          {/* Schedule Cards */}
           <div className="space-y-6">
             {[
               { round: "Round 1", title: "THE ENTRY GAME", date: "Jan 30, 2026", time: "TO BE DETERMINED", symbol: "○" },
@@ -773,9 +781,9 @@ export default function Home() {
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: idx * 0.1 }}
-                className="group relative flex items-center gap-6 p-8 bg-black/20 backdrop-blur-xl border border-white/10 hover:border-primary/50 hover:bg-black/40 transition-all duration-500 rounded-sm"
+                whileHover={{ scale: 1.02, borderColor: "rgba(255, 0, 96, 0.5)" }}
+                className="group relative flex items-center gap-6 p-8 bg-black/40 backdrop-blur-xl border border-white/10 hover:border-primary/50 transition-all duration-500 rounded-sm"
               >
-                {/* Geometric Symbol & Number */}
                 <div className="w-16 h-16 flex flex-col items-center justify-center border border-white/10 font-orbitron group-hover:border-primary transition-colors">
                   <span className="text-xs text-white/30 group-hover:text-primary transition-colors">
                     {item.symbol}
@@ -803,7 +811,6 @@ export default function Home() {
                   </div>
                 </div>
 
-                {/* Glowing Status Dot */}
                 <div className="flex flex-col items-end gap-2">
                   <div className="w-2 h-2 rounded-full bg-primary animate-pulse shadow-[0_0_10px_#ff003c]" />
                   <span className="text-[8px] font-mono text-white/20 uppercase tracking-[0.3em] [writing-mode:vertical-lr]">
@@ -811,13 +818,11 @@ export default function Home() {
                   </span>
                 </div>
 
-                {/* Subtle Scanning Light Overlay */}
                 <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 pointer-events-none" />
               </motion.div>
             ))}
           </div>
 
-          {/* Mandatory Attendance Notice - Rulebook Aligned */}
           <div className="mt-16 text-center opacity-150">
             <p className="text-[13px] font-mono text-white uppercase tracking-[0.5em]">
               {"[ FAILURE TO REPORT ON ASSIGNED DAY RESULTS IN ELIMINATION ]"}
@@ -826,148 +831,127 @@ export default function Home() {
         </div>
       </section>
 
-
-{/* ----------------------------------------------------------------------------------------------------------------- */}
-
-
       {/* Control Room Section */}
-    <section className="py-32 px-4 relative z-10 overflow-hidden">
-      <div className="max-w-3xl mx-auto text-center relative">
-        
-        {/* Cinematic Ambient Glow */}
-        <div className="absolute inset-0 -z-10 flex items-center justify-center">
-          <div className="w-[600px] h-[300px] bg-primary/10 blur-[120px] animate-pulse" />
-        </div>
+      <section id="control-room" className="py-32 px-4 relative z-10 overflow-hidden">
+        <div className="max-w-3xl mx-auto text-center relative">
+          <div className="absolute inset-0 -z-10 flex items-center justify-center">
+            <div className="w-[600px] h-[300px] bg-primary/10 blur-[120px] animate-pulse" />
+          </div>
 
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          className="relative p-[1px] bg-gradient-to-b from-white/20 to-transparent backdrop-blur-2xl shadow-2xl"
-        >
-          <div className="p-8 md:p-12 bg-black/60 border border-white/5 relative overflow-hidden">
-            
-            {/* CCTV Style Header */}
-            <div className="flex justify-between items-center mb-10 border-b border-white/10 pb-6">
-              <div className="text-left">
-                <h3 className="font-orbitron font-black text-2xl tracking-[0.2em] text-white">
-                  CONTROL <span className="text-primary">ROOM</span>
-                </h3>
-                <p className="text-[9px] font-mono text-white/40 uppercase tracking-widest mt-1">
-                  {"Secure Channel // CAM_04 // Dormitory_H1"}
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            className="relative p-[1px] bg-gradient-to-b from-white/20 to-transparent backdrop-blur-2xl shadow-2xl"
+          >
+            <div className="p-8 md:p-12 bg-black/60 border border-white/5 relative overflow-hidden">
+              <div className="flex justify-between items-center mb-10 border-b border-white/10 pb-6">
+                <div className="text-left">
+                  <h3 className="font-orbitron font-black text-2xl tracking-[0.2em] text-white">
+                    CONTROL <span className="text-primary">ROOM</span>
+                  </h3>
+                  <p className="text-[9px] font-mono text-white/40 uppercase tracking-widest mt-1">
+                    {"Secure Channel // CAM_04 // Dormitory_H1"}
+                  </p>
+                </div>
+                <Video className="w-8 h-8 text-primary animate-pulse drop-shadow-[0_0_8px_#FF0060]" />
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full mb-8">
+                <motion.button 
+                  whileHover={{ scale: 1.05 }}
+                  onClick={() => setActiveAction(activeAction === 'call' ? null : 'call')}
+                  className={`group relative overflow-hidden border py-5 font-orbitron font-bold text-xs tracking-[0.3em] transition-all duration-500 ${
+                    activeAction === 'call' ? 'bg-white text-black border-white' : 'bg-white/5 border-white/10 text-white hover:border-primary'
+                  }`}
+                >
+                  <span className="relative z-10">CALL SUPPORT</span>
+                  <div className="absolute inset-0 bg-primary/20 translate-y-full group-hover:translate-y-0 transition-transform" />
+                </motion.button>
+
+                <motion.button 
+                  whileHover={{ scale: 1.05 }}
+                  onClick={() => setActiveAction(activeAction === 'message' ? null : 'message')}
+                  className={`group relative overflow-hidden border py-5 font-orbitron font-bold text-xs tracking-[0.3em] transition-all duration-500 ${
+                    activeAction === 'message' ? 'bg-white text-black border-white' : 'bg-white/5 border-white/10 text-white hover:border-primary'
+                  }`}
+                >
+                  <span className="relative z-10">MESSAGE CONTROL</span>
+                  <div className="absolute inset-0 bg-primary/20 translate-y-full group-hover:translate-y-0 transition-transform" />
+                </motion.button>
+              </div>
+
+              <AnimatePresence>
+                {activeAction && (
+                  <motion.div 
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: 'auto' }}
+                    exit={{ opacity: 0, height: 0 }}
+                    className="space-y-3 mb-10 overflow-hidden"
+                  >
+                    <div className="bg-white/5 p-4 border border-white/10">
+                      <p className="text-[10px] font-mono text-primary mb-4 tracking-[0.4em] uppercase">
+                        {"[ Select_Frequency ]"}
+                      </p>
+                      <div className="grid gap-2">
+                        {contacts.map((contact, idx) => (
+                          <a
+                            key={idx}
+                            href={activeAction === 'call' ? `tel:${contact.phone}` : `https://wa.me/${contact.wa}`}
+                            target={activeAction === 'message' ? "_blank" : "_self"}
+                            rel="noreferrer"
+                            className="flex items-center justify-between p-4 bg-black/40 border border-white/5 hover:border-primary group transition-all"
+                          >
+                            <div className="text-left">
+                              <p className="text-xs font-bold text-white tracking-widest uppercase group-hover:text-primary transition-colors">
+                                {contact.name}
+                              </p>
+                              <p className="text-[10px] font-mono text-white/30">{contact.phone}</p>
+                            </div>
+                            <div className="text-primary font-mono text-[9px] opacity-0 group-hover:opacity-100 transition-opacity">
+                              {"CONNECTING >>"}
+                            </div>
+                          </a>
+                        ))}
+                      </div>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+
+              <div className="pt-8 border-t border-white/10 flex flex-col items-center">
+                <div className="relative group">
+                  <div className="absolute inset-0 bg-red-600 blur-2xl opacity-20 group-hover:opacity-40 transition-opacity" />
+                  <div className="w-14 h-14 rounded-full bg-red-600/20 border-2 border-red-600 flex items-center justify-center relative z-10">
+                    <div className="w-6 h-6 rounded-full bg-red-600 shadow-[0_0_15px_#ef4444] animate-pulse" />
+                  </div>
+                </div>
+                <p className="text-[9px] font-mono text-red-600 mt-4 tracking-[0.5em] font-black uppercase">
+                  Emergency Link Secure
                 </p>
               </div>
-              <Video className="w-8 h-8 text-primary animate-pulse drop-shadow-[0_0_8px_#FF0060]" />
             </div>
+          </motion.div>
+        </div>
+      </section>
 
-            {/* Improved Action Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full mb-8">
-              <button 
-                onClick={() => setActiveAction(activeAction === 'call' ? null : 'call')}
-                className={`group relative overflow-hidden border py-5 font-orbitron font-bold text-xs tracking-[0.3em] transition-all duration-500 ${
-                  activeAction === 'call' ? 'bg-white text-black border-white' : 'bg-white/5 border-white/10 text-white hover:border-primary'
-                }`}
-              >
-                <span className="relative z-10">CALL SUPPORT</span>
-                <div className="absolute inset-0 bg-primary/20 translate-y-full group-hover:translate-y-0 transition-transform" />
-              </button>
-
-              <button 
-                onClick={() => setActiveAction(activeAction === 'message' ? null : 'message')}
-                className={`group relative overflow-hidden border py-5 font-orbitron font-bold text-xs tracking-[0.3em] transition-all duration-500 ${
-                  activeAction === 'message' ? 'bg-white text-black border-white' : 'bg-white/5 border-white/10 text-white hover:border-primary'
-                }`}
-              >
-                <span className="relative z-10">MESSAGE CONTROL</span>
-                <div className="absolute inset-0 bg-primary/20 translate-y-full group-hover:translate-y-0 transition-transform" />
-              </button>
-            </div>
-
-            {/* Contact List Interface */}
-            <AnimatePresence>
-              {activeAction && (
-                <motion.div 
-                  initial={{ opacity: 0, height: 0 }}
-                  animate={{ opacity: 1, height: 'auto' }}
-                  exit={{ opacity: 0, height: 0 }}
-                  className="space-y-3 mb-10 overflow-hidden"
-                >
-                  <div className="bg-white/5 p-4 border border-white/10">
-                    <p className="text-[10px] font-mono text-primary mb-4 tracking-[0.4em] uppercase">
-                      {"[ Select_Frequency ]"}
-                    </p>
-                    <div className="grid gap-2">
-                      {contacts.map((contact, idx) => (
-                        <a
-                          key={idx}
-                          href={activeAction === 'call' ? `tel:${contact.phone}` : `https://wa.me/${contact.wa}`}
-                          target={activeAction === 'message' ? "_blank" : "_self"}
-                          rel="noreferrer"
-                          className="flex items-center justify-between p-4 bg-black/40 border border-white/5 hover:border-primary group transition-all"
-                        >
-                          <div className="text-left">
-                            <p className="text-xs font-bold text-white tracking-widest uppercase group-hover:text-primary transition-colors">
-                              {contact.name}
-                            </p>
-                            <p className="text-[10px] font-mono text-white/30">{contact.phone}</p>
-                          </div>
-                          <div className="text-primary font-mono text-[9px] opacity-0 group-hover:opacity-100 transition-opacity">
-                            {"CONNECTING >>"}
-                          </div>
-                        </a>
-                      ))}
-                    </div>
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
-
-            {/* Bottom Emergency Console */}
-            <div className="pt-8 border-t border-white/10 flex flex-col items-center">
-              <div className="relative group">
-                <div className="absolute inset-0 bg-red-600 blur-2xl opacity-20 group-hover:opacity-40 transition-opacity" />
-                <div className="w-14 h-14 rounded-full bg-red-600/20 border-2 border-red-600 flex items-center justify-center relative z-10">
-                  <div className="w-6 h-6 rounded-full bg-red-600 shadow-[0_0_15px_#ef4444] animate-pulse" />
-                </div>
-              </div>
-              <p className="text-[9px] font-mono text-red-600 mt-4 tracking-[0.5em] font-black uppercase">
-                Emergency Link Secure
-              </p>
-            </div>
-
-          </div>
-        </motion.div>
-      </div>
-    </section>
-
-
-{/* ----------------------------------------------------------------------------------------------------------------- */}
-
-
-      {/* Footer */}
+      {/* Enhanced Footer */}
       <footer className="relative z-10 mt-24 border-t border-red-500/20 bg-black/60 backdrop-blur-sm">
-        <div className="max-w-6xl mx-auto px-6 py-10 text-center font-mono text-xs tracking-widest text-gray-500">
-
-          <p className="text-red-500/80">
+        <div className="max-w-6xl mx-auto px-6 py-12 text-center font-mono text-xs tracking-widest">
+          <p className="text-red-500/80 mb-2">
             OFFICIAL INVITATION • ASCENT 2K26
           </p>
-
-          <p className="mt-2 text-white-600">
+          <p className="text-white/60 mb-2">
             CONTROLLED ACCESS • AUTHORIZATION REQUIRED
           </p>
-
           <div className="my-4 h-px w-32 mx-auto bg-gradient-to-r from-transparent via-red-500/40 to-transparent" />
-
-          <p className="text-white-700">
+          <p className="text-white/40 mb-2">
             UNAUTHORIZED DISTRIBUTION STRICTLY PROHIBITED
           </p>
-
-          <p className="mt-3 text-[10px] text-white-700">
-            SYSTEM STATUS: <span className="text-red-500">ACTIVE</span>
+          <p className="mt-3 text-[10px] text-white/40">
+            SYSTEM STATUS: <span className="text-red-500 font-bold">ACTIVE</span>
           </p>
-
         </div>
       </footer>
-
     </div>
   );
 }

@@ -1,6 +1,17 @@
 import { useRef, useState, useEffect } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
-import { Terminal, Activity, Eye, ShieldCheck, Volume2, VolumeX, Zap, Lock } from "lucide-react";
+import { 
+  Terminal, 
+  Activity, 
+  Eye, 
+  ShieldCheck, 
+  Volume2, 
+  VolumeX, 
+  Zap, 
+  Lock, 
+  ShieldAlert,
+  Video
+} from "lucide-react";
 import AboutBg from "@assets/Merry go round.jpg";
 import audioFile from "@assets/Round_And_Round_Mingle_1767983924508.mp3";
 
@@ -17,8 +28,15 @@ export default function TrialsSection() {
 
   const contentY = useTransform(scrollYProgress, [0, 1], [50, -50]);
 
+  // Audio Configuration
+  useEffect(() => {
+    if (audioRef.current) {
+      audioRef.current.volume = 0.4;
+    }
+  }, []);
+
   return (
-    <section ref={containerRef} id="games" className="relative min-h-screen w-full overflow-hidden bg-black py-32 px-6">
+    <section ref={containerRef} id="games" className="relative min-h-screen w-full overflow-hidden bg-black pt-32 px-6">
       
       {/* 1. FIXED BACKGROUND LAYER */}
       <div className="fixed inset-0 z-0">
@@ -35,12 +53,13 @@ export default function TrialsSection() {
           transition={{
             duration: 30,
             repeat: Infinity,
+            repeatType: "mirror",
             ease: "linear"
           }}
         />
-        {/* Cinematic Vignette & Radial Glow */}
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,rgba(0,0,0,0.9)_100%)]" />
         <div className="absolute inset-0 bg-black/50 backdrop-blur-[2px]" />
+        <div className="scanline opacity-[0.03]" />
       </div>
 
       {/* 2. AUDIO ENGINE */}
@@ -79,9 +98,7 @@ export default function TrialsSection() {
         </header>
 
         {/* CARDS CONTAINER */}
-        <div className="space-y-40">
-          
-          {/* ROUND 01 */}
+        <div className="space-y-40 mb-32">
           <TrialCard 
             number="○" 
             title="The Entry Game" 
@@ -91,7 +108,6 @@ export default function TrialsSection() {
             stats={["15 Q'S", "30 MINS", "1v1"]}
           />
 
-          {/* ROUND 02 */}
           <TrialCard 
             number="△" 
             title="The Glass Bridge" 
@@ -102,7 +118,6 @@ export default function TrialsSection() {
             reversed
           />
 
-          {/* ROUND 03 */}
           <TrialCard 
             number="□" 
             title="The Final Stand" 
@@ -111,14 +126,40 @@ export default function TrialsSection() {
             color="white"
             stats={["DSA", "SYSTEMS", "HR"]}
           />
-
         </div>
       </motion.div>
+
+      {/* 4. CINEMATIC FOOTER */}
+      <footer className="w-full bg-black/90 backdrop-blur-md border-t border-red-500/20 py-16 px-6 relative overflow-hidden z-20">
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-1/2 h-px bg-gradient-to-r from-transparent via-red-600/50 to-transparent" />
+        
+        <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-10">
+          <div className="flex items-center gap-5 group">
+            <div className="relative">
+              <ShieldAlert size={28} className="text-red-600 animate-pulse" />
+              <div className="absolute inset-0 bg-red-600 blur-lg opacity-20 group-hover:opacity-40 transition-opacity" />
+            </div>
+            <div className="text-left space-y-1">
+              <p className="font-orbitron font-black text-white tracking-[0.2em] text-sm">
+                OFFICIAL PROTOCOL <span className="text-red-600">//</span> ASCENT 2K26
+              </p>
+              <p className="font-mono text-[10px] text-white/40 tracking-[0.3em] uppercase">
+                System Status: <span className="text-green-500 animate-pulse">● SECURE_ACTIVE</span>
+              </p>
+            </div>
+          </div>
+
+          <div className="text-center md:text-right font-mono text-[9px] tracking-[0.2em] uppercase text-white/30 space-y-1">
+            <p className="text-white/50">Location: 21.1458° N // 79.0882° E</p>
+            <p>Terminal: {new Date().getHours()}:{new Date().getMinutes().toString().padStart(2, '0')} // GMT+5:30</p>
+            <p className="text-[8px] opacity-50">© {new Date().getFullYear()} ASCENT ADMIN PANEL. ALL RIGHTS RESERVED.</p>
+          </div>
+        </div>
+      </footer>
     </section>
   );
 }
 
-// Sub-component for clean trial rows
 function TrialCard({ number, title, subtitle, description, color, stats, reversed = false }: any) {
   const colors: any = {
     red: "border-red-600 text-red-600 bg-red-600/10 shadow-[0_0_20px_rgba(220,38,38,0.3)]",
@@ -133,7 +174,6 @@ function TrialCard({ number, title, subtitle, description, color, stats, reverse
       viewport={{ once: true }}
       className={`flex flex-col ${reversed ? 'md:flex-row-reverse' : 'md:flex-row'} items-center gap-12 group`}
     >
-      {/* Visual Identity */}
       <div className="flex-1 space-y-6">
         <div className="flex items-center gap-4">
           <div className={`w-20 h-20 border-2 flex items-center justify-center font-orbitron text-3xl font-bold ${colors[color]}`}>
@@ -158,7 +198,6 @@ function TrialCard({ number, title, subtitle, description, color, stats, reverse
         </div>
       </div>
 
-      {/* Decorative Visual Box */}
       <div className="w-full md:w-[400px] h-64 bg-black/40 border border-white/10 relative overflow-hidden backdrop-blur-sm group-hover:border-red-500/40 transition-all">
         <div className="absolute top-2 left-2 font-mono text-[8px] opacity-20 uppercase tracking-widest">
           Auth_Node_0{number === '○' ? '1' : number === '△' ? '2' : '3'}
@@ -167,7 +206,6 @@ function TrialCard({ number, title, subtitle, description, color, stats, reverse
           <div className={`w-32 h-32 rounded-full border-dashed border-2 animate-spin-slow opacity-10 ${colors[color]}`} />
           <Eye size={40} className="absolute opacity-20 text-white" />
         </div>
-        {/* Scanning Line Effect */}
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-red-500/5 to-transparent h-20 w-full animate-scan pointer-events-none" />
       </div>
     </motion.div>

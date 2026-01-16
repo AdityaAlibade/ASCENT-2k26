@@ -25,7 +25,7 @@ export default function Registration() {
           className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-50 scale-110 transition-transform duration-[30s] animate-pulse-slow"
           style={{ 
             backgroundImage: `url(${RegiBg})`, 
-            filter: 'grayscale(20%) contrast(150%) brightness(0.6)' 
+            filter: 'grayscale(0%) contrast(150%) brightness(100%)' 
           }}
         />
         {/* CRT Scanline & Grain Effect */}

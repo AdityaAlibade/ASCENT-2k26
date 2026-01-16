@@ -1,15 +1,51 @@
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { FileText, Download, X, AlertTriangle, ShieldAlert, CheckCircle2, Volume2, VolumeX } from "lucide-react";
+import { 
+  FileText, 
+  Download, 
+  X, 
+  AlertTriangle, 
+  ShieldAlert, 
+  CheckCircle2, 
+  Volume2, 
+  VolumeX,
+  Video 
+} from "lucide-react";
 import RulesBg from "@assets/Rules_bg.jpg";
 import audioFile from "@assets/Round_And_Round_Mingle_1767983924508.mp3";
+
+// Sub-component for individual Rule Cards
+function RuleCard({ title, rules, isPrimary, variants, icon }: any) {
+  return (
+    <motion.div variants={variants} className="relative p-1 transition-all duration-500 group">
+      <div className={`h-full p-8 md:p-10 border ${isPrimary ? 'border-red-600 bg-red-600/10 shadow-[0_0_30px_rgba(220,38,38,0.2)]' : 'border-white/10 bg-white/[0.02]'} backdrop-blur-md`}>
+        <div className="flex items-center gap-4 mb-8">
+          {icon}
+          <h3 className={`text-xl font-bold tracking-tighter uppercase ${isPrimary ? 'text-white' : 'text-white/80'}`}>
+            {title}
+          </h3>
+        </div>
+        <ul className="space-y-6">
+          {rules.map((rule: string, i: number) => (
+            <li key={i} className="flex gap-4 items-start group/li">
+              <span className={`mt-1.5 w-1.5 h-1.5 shrink-0 rotate-45 ${isPrimary ? 'bg-red-500' : 'bg-white/20 group-hover/li:bg-red-500'} transition-colors`} />
+              <p className="text-xs font-mono text-gray-400 leading-relaxed group-hover/li:text-white transition-colors">
+                {rule}
+              </p>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </motion.div>
+  );
+}
 
 export default function Rules() {
   const [open, setOpen] = useState(false);
   const [isMuted, setIsMuted] = useState(true);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
-  // Sync audio state
+  // Audio Configuration
   useEffect(() => {
     if (audioRef.current) {
       audioRef.current.volume = 0.4;
@@ -30,7 +66,7 @@ export default function Rules() {
   };
 
   return (
-    <div className="min-h-screen bg-black pt-32 pb-20 px-6 relative overflow-hidden font-montserrat">
+    <div className="min-h-screen bg-black pt-32 pb-0 px-6 relative overflow-hidden font-montserrat">
       
       {/* 1. CINEMATIC BACKGROUND LAYER */}
       <div className="fixed inset-0 z-0">
@@ -44,7 +80,6 @@ export default function Rules() {
             filter: 'grayscale(30%) contrast(120%) brightness(0.7)' 
           }}
         />
-        {/* Cinematic Overlays */}
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,rgba(0,0,0,0.8)_100%)]" />
         <div className="absolute inset-0 bg-black/40" />
         <div className="scanline opacity-[0.03]" />
@@ -91,7 +126,7 @@ export default function Rules() {
             icon={<CheckCircle2 className="text-red-500" size={20} />}
             rules={[
               "Participation implies full acceptance of all ASCENT rules",
-              "The Organising Committee’s decision is final and binding",
+              "The Organising Committee's decision is final and binding",
               "No appeals, objections, or re-evaluations permitted",
               "Valid college ID is mandatory for participation"
             ]} 
@@ -136,6 +171,36 @@ export default function Rules() {
         </div>
       </div>
 
+      {/* 3. CORRECTED CINEMATIC FOOTER */}
+      <footer className="w-full bg-black/90 backdrop-blur-md border-t border-red-500/20 py-16 px-6 mt-32 relative overflow-hidden z-20">
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-1/2 h-px bg-gradient-to-r from-transparent via-red-600/50 to-transparent" />
+        
+        <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-10">
+          {/* Identity */}
+          <div className="flex items-center gap-5 group">
+            <div className="relative">
+              <ShieldAlert size={28} className="text-red-600 animate-pulse" />
+              <div className="absolute inset-0 bg-red-600 blur-lg opacity-20 group-hover:opacity-40 transition-opacity" />
+            </div>
+            <div className="text-left space-y-1">
+              <p className="font-orbitron font-black text-white tracking-[0.2em] text-sm">
+                OFFICIAL PROTOCOL <span className="text-red-600">//</span> ASCENT 2K26
+              </p>
+              <p className="font-mono text-[10px] text-white/40 tracking-[0.3em] uppercase">
+                System Status: <span className="text-green-500 animate-pulse">● SECURE_ACTIVE</span>
+              </p>
+            </div>
+          </div>
+
+          {/* Metadata */}
+          <div className="text-center md:text-right font-mono text-[9px] tracking-[0.2em] uppercase text-white/30 space-y-1">
+            <p className="text-white/50">Location: 21.1458° N // 79.0882° E</p>
+            <p>Terminal: {new Date().getHours()}:{new Date().getMinutes().toString().padStart(2, '0')} // GMT+5:30</p>
+            <p className="text-[8px] opacity-50">© {new Date().getFullYear()} ASCENT ADMIN PANEL. ALL RIGHTS RESERVED.</p>
+          </div>
+        </div>
+      </footer>
+
       {/* RULEBOOK MODAL */}
       <AnimatePresence>
         {open && (
@@ -175,8 +240,8 @@ export default function Rules() {
                 <iframe
                   src="/ASCENT_RULEBOOK.pdf"
                   className="w-full h-[65vh] bg-neutral-900/50 border border-white/5 rounded-sm"
+                  title="ASCENT Rulebook PDF"
                 />
-                <div className="absolute inset-0 pointer-events-none border border-white/5 group-hover:border-white/10 transition-colors" />
               </div>
 
               <div className="mt-8 flex justify-between items-center">
@@ -197,30 +262,5 @@ export default function Rules() {
         )}
       </AnimatePresence>
     </div>
-  );
-}
-
-function RuleCard({ title, rules, isPrimary, variants, icon }: any) {
-  return (
-    <motion.div variants={variants} className="relative p-1 transition-all duration-500 group">
-      <div className={`h-full p-8 md:p-10 border ${isPrimary ? 'border-red-600 bg-red-600/10 shadow-[0_0_30px_rgba(220,38,38,0.2)]' : 'border-white/10 bg-white/[0.02]'} backdrop-blur-md`}>
-        <div className="flex items-center gap-4 mb-8">
-          {icon}
-          <h3 className={`text-xl font-bold tracking-tighter uppercase ${isPrimary ? 'text-white' : 'text-white/80'}`}>
-            {title}
-          </h3>
-        </div>
-        <ul className="space-y-6">
-          {rules.map((rule: string, i: number) => (
-            <li key={i} className="flex gap-4 items-start group/li">
-              <span className={`mt-1.5 w-1.5 h-1.5 shrink-0 rotate-45 ${isPrimary ? 'bg-red-500' : 'bg-white/20 group-hover/li:bg-red-500'} transition-colors`} />
-              <p className="text-xs font-mono text-gray-400 leading-relaxed group-hover/li:text-white transition-colors">
-                {rule}
-              </p>
-            </li>
-          ))}
-        </ul>
-      </div>
-    </motion.div>
   );
 }
