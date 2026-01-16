@@ -1,5 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { api, type InsertPlayer } from "@shared/routes";
+import { api } from "@shared/routes";
+import { type InsertPlayer } from "@shared/schema";
 
 // GET /api/stats
 export function useGameStats() {
@@ -17,7 +18,7 @@ export function useGameStats() {
 // POST /api/players
 export function useCreatePlayer() {
   const queryClient = useQueryClient();
-  
+
   return useMutation({
     mutationFn: async (data: InsertPlayer) => {
       const validated = api.players.create.input.parse(data);
