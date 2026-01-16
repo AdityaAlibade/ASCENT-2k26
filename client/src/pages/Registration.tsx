@@ -16,7 +16,7 @@ export default function Registration() {
       {/* 1. CINEMATIC BACKGROUND LAYER */}
       <div className="fixed inset-0 z-0">
         <div
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-50 scale-110 transition-transform [transition-duration:30000ms] animate-pulse-slow"
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-50 scale-110 animate-[pulse_30s_cubic-bezier(0.4,0,0.6,1)_infinite]"
           style={{
             backgroundImage: `url(${RegiBg})`,
             filter: 'grayscale(0%) contrast(150%) brightness(100%)'
