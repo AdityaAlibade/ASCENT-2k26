@@ -8,20 +8,93 @@ import { motion } from "framer-motion";
 
 export default function Registration() {
   const audioRef = useRef<HTMLAudioElement | null>(null);
-  const [isMuted, setIsMuted] = useState(true);
+  const [isMuted, setIsMuted] = useState(false); // Changed to false for better autoplay
+  const [audioReady, setAudioReady] = useState(false);
 
+  // Initialize audio with autoplay
   useEffect(() => {
-    if (audioRef.current) {
-      audioRef.current.volume = 0.4;
-    }
+    const initializeAudio = async () => {
+      if (audioRef.current) {
+        try {
+          // Set audio properties
+          audioRef.current.volume = 0.4;
+          audioRef.current.muted = false;
+          audioRef.current.preload = "auto";
+          
+          // Load the audio
+          audioRef.current.load();
+          
+          // Try to play automatically
+          const playPromise = audioRef.current.play();
+          
+          if (playPromise !== undefined) {
+            await playPromise;
+            console.log("Registration audio autoplay successful");
+            setAudioReady(true);
+          }
+        } catch (error) {
+          console.log("Registration audio autoplay blocked:", error);
+          
+          // Add event listeners to unblock audio on user interaction
+          const handleUserInteraction = async () => {
+            if (audioRef.current && audioRef.current.paused) {
+              try {
+                await audioRef.current.play();
+                console.log("Registration audio started after user interaction");
+                setAudioReady(true);
+              } catch (e) {
+                console.error("Failed to play registration audio:", e);
+              }
+            }
+          };
+
+          // Add multiple event listeners
+          const events = ['click', 'touchstart', 'keydown', 'mousemove', 'scroll'];
+          
+          events.forEach(eventType => {
+            document.addEventListener(eventType, handleUserInteraction, { 
+              once: true,
+              passive: true 
+            });
+          });
+
+          return () => {
+            events.forEach(eventType => {
+              document.removeEventListener(eventType, handleUserInteraction);
+            });
+          };
+        }
+      }
+    };
+
+    initializeAudio();
   }, []);
 
+  // Toggle mute function
   const toggleAudio = () => {
     setIsMuted(!isMuted);
+    if (audioRef.current) {
+      audioRef.current.muted = !isMuted;
+    }
+  };
+
+  // Handle user interaction to unblock audio
+  const handleUserInteraction = async () => {
+    if (audioRef.current && audioRef.current.paused) {
+      try {
+        await audioRef.current.play();
+        setAudioReady(true);
+      } catch (error) {
+        console.log("Audio play failed on interaction:", error);
+      }
+    }
   };
 
   return (
-    <main className="min-h-screen bg-black text-white relative font-montserrat overflow-x-hidden selection:bg-red-500 selection:text-white">
+    <main 
+      className="min-h-screen bg-black text-white relative font-montserrat overflow-x-hidden selection:bg-red-500 selection:text-white"
+      onClick={handleUserInteraction}
+    >
       
       {/* 1. CINEMATIC BACKGROUND LAYER */}
       <div className="fixed inset-0 z-0">
@@ -56,6 +129,18 @@ export default function Registration() {
           </div>
           <div className="opacity-50">Dormitory_H1 // {new Date().toISOString().split('T')[0]}</div>
         </div>
+
+        {/* Audio Status Indicator */}
+        {!audioReady && (
+          <div className="absolute top-10 right-12 animate-pulse">
+            <div className="flex items-center gap-2 px-3 py-1 bg-red-900/30 border border-red-700/50 rounded-full">
+              <div className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
+              <span className="text-[10px] font-mono text-red-300 tracking-wider">
+                AUDIO PENDING...
+              </span>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* 3. FLOATING AUDIO CONTROL - LEFT BOTTOM CORNER */}
@@ -77,7 +162,7 @@ export default function Registration() {
           )}
           
           {/* Audio wave animation when playing */}
-          {!isMuted && (
+          {!isMuted && audioReady && (
             <div className="absolute -inset-1 flex items-center justify-center">
               <div className="flex items-end justify-center space-x-[2px]">
                 {[1, 2, 3, 2, 1].map((height, index) => (
@@ -97,7 +182,7 @@ export default function Registration() {
         </div>
         
         {/* Pulsing ring when audio is playing */}
-        {!isMuted && (
+        {!isMuted && audioReady && (
           <div className="absolute inset-0 rounded-full border border-red-500/30 animate-ping" />
         )}
 
@@ -108,7 +193,11 @@ export default function Registration() {
         </div>
 
         {/* Status indicator */}
-        <div className={`absolute -top-1 -right-1 w-3 h-3 rounded-full border border-white/20 ${!isMuted ? 'bg-red-500 animate-pulse' : 'bg-white/10'}`} />
+        <div className={`absolute -top-1 -right-1 w-3 h-3 rounded-full border border-white/20 ${
+          !isMuted && audioReady ? 'bg-red-500 animate-pulse' : 
+          !isMuted && !audioReady ? 'bg-yellow-500 animate-pulse' : 
+          'bg-white/10'
+        }`} />
       </motion.button>
 
       {/* 4. CONTENT WRAPPER */}
@@ -120,11 +209,15 @@ export default function Registration() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             className="inline-flex items-center gap-2 px-3 py-1 mb-6 border border-red-500/30 bg-red-500/5 rounded-sm"
+            onClick={handleUserInteraction}
           >
             <Lock size={12} className="text-red-500" />
             <span className="text-red-500 font-mono text-[10px] tracking-[0.4em] uppercase">Secured Enlistment</span>
           </motion.div>
-          <h1 className="text-6xl md:text-8xl font-orbitron tracking-tighter font-black text-white mb-4">
+          <h1 
+            className="text-6xl md:text-8xl font-orbitron tracking-tighter font-black text-white mb-4 cursor-pointer"
+            onClick={handleUserInteraction}
+          >
             REGISTRA<span className="text-red-600">TION</span>
           </h1>
           <p className="font-mono text-[10px] text-white/40 uppercase tracking-[0.6em]">
@@ -138,7 +231,10 @@ export default function Registration() {
             {/* Animated Glow Border */}
             <div className="absolute -inset-[1px] bg-gradient-to-r from-transparent via-red-500/40 to-transparent blur-sm opacity-50" />
             
-            <div className="relative bg-neutral-950/40 backdrop-blur-3xl border border-white/10 p-8 md:p-16 rounded-sm shadow-2xl">
+            <div 
+              className="relative bg-neutral-950/40 backdrop-blur-3xl border border-white/10 p-8 md:p-16 rounded-sm shadow-2xl"
+              onClick={handleUserInteraction}
+            >
               <div className="mb-12 space-y-4">
                 <div className="flex items-center gap-4">
                   <Activity size={20} className="text-red-600" />
@@ -176,7 +272,19 @@ export default function Registration() {
       </div>
 
       {/* PERSISTENT ELEMENTS */}
-      <audio ref={audioRef} src={audioFile} loop muted={isMuted} autoPlay />
+      <audio 
+        ref={audioRef} 
+        src={audioFile} 
+        loop 
+        autoPlay 
+        preload="auto"
+        onCanPlayThrough={() => console.log("Registration audio loaded and ready")}
+        onError={(e) => console.error("Registration audio error:", e)}
+        onPlay={() => {
+          console.log("Registration audio started playing");
+          setAudioReady(true);
+        }}
+      />
       <FloatingShapes />
     </main>
   );

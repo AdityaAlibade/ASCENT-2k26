@@ -18,7 +18,8 @@ import audioFile from "@assets/Round_And_Round_Mingle_1767983924508.mp3";
 export default function TrialsSection() {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const containerRef = useRef<HTMLElement | null>(null);
-  const [isMuted, setIsMuted] = useState(true);
+  const [isMuted, setIsMuted] = useState(false); // Changed to false for autoplay
+  const [audioReady, setAudioReady] = useState(false);
 
   // Parallax logic for the content over the fixed background
   const { scrollYProgress } = useScroll({
@@ -28,15 +29,82 @@ export default function TrialsSection() {
 
   const contentY = useTransform(scrollYProgress, [0, 1], [50, -50]);
 
-  // Audio Configuration
+  // Audio Configuration with autoplay
   useEffect(() => {
-    if (audioRef.current) {
-      audioRef.current.volume = 0.4;
-    }
+    const initializeAudio = async () => {
+      if (audioRef.current) {
+        try {
+          // Set audio properties
+          audioRef.current.volume = 0.4;
+          audioRef.current.muted = false;
+          audioRef.current.preload = "auto";
+          
+          // Load the audio
+          audioRef.current.load();
+          
+          // Try to play automatically
+          await audioRef.current.play();
+          console.log("Audio autoplay successful");
+          setAudioReady(true);
+        } catch (error) {
+          console.log("Audio autoplay blocked, waiting for user interaction:", error);
+          // Add event listeners to unblock audio on user interaction
+          const handleUserInteraction = async () => {
+            if (audioRef.current && audioRef.current.paused) {
+              try {
+                await audioRef.current.play();
+                console.log("Audio started after user interaction");
+                setAudioReady(true);
+              } catch (e) {
+                console.error("Failed to play audio:", e);
+              }
+            }
+          };
+
+          // Add multiple event listeners for better coverage
+          document.addEventListener('click', handleUserInteraction, { once: true });
+          document.addEventListener('touchstart', handleUserInteraction, { once: true });
+          document.addEventListener('keydown', handleUserInteraction, { once: true });
+
+          return () => {
+            document.removeEventListener('click', handleUserInteraction);
+            document.removeEventListener('touchstart', handleUserInteraction);
+            document.removeEventListener('keydown', handleUserInteraction);
+          };
+        }
+      }
+    };
+
+    initializeAudio();
   }, []);
 
+  // Toggle mute function
+  const toggleMute = () => {
+    setIsMuted(!isMuted);
+    if (audioRef.current) {
+      audioRef.current.muted = !isMuted;
+    }
+  };
+
+  // Add autoplay attribute to buttons for better user interaction
+  const handleUserInteraction = async () => {
+    if (audioRef.current && audioRef.current.paused) {
+      try {
+        await audioRef.current.play();
+        setAudioReady(true);
+      } catch (error) {
+        console.log("Audio play failed on interaction:", error);
+      }
+    }
+  };
+
   return (
-    <section ref={containerRef} id="games" className="relative min-h-screen w-full overflow-hidden bg-black pt-32 px-6">
+    <section 
+      ref={containerRef} 
+      id="games" 
+      className="relative min-h-screen w-full overflow-hidden bg-black pt-32 px-6"
+      onClick={handleUserInteraction}
+    >
       
       {/* 1. FIXED BACKGROUND LAYER */}
       <div className="fixed inset-0 z-0">
@@ -63,13 +131,34 @@ export default function TrialsSection() {
       </div>
 
       {/* 2. AUDIO ENGINE */}
-      <audio ref={audioRef} src={audioFile} loop muted={isMuted} autoPlay />
+      <audio 
+        ref={audioRef} 
+        src={audioFile} 
+        loop 
+        autoPlay 
+        preload="auto"
+        onCanPlayThrough={() => console.log("Audio ready to play")}
+        onError={(e) => console.error("Audio error:", e)}
+      />
+      
       <button
-        onClick={() => setIsMuted(!isMuted)}
+        onClick={toggleMute}
         className="fixed bottom-10 left-10 z-50 p-4 rounded-full border border-red-500/30 bg-black/60 backdrop-blur-xl text-red-500 hover:scale-110 transition-all shadow-[0_0_15px_rgba(220,38,38,0.3)]"
       >
         {isMuted ? <VolumeX size={20} /> : <Volume2 size={20} className="animate-pulse" />}
       </button>
+
+      {/* Audio ready indicator (hidden) */}
+      {!audioReady && (
+        <div className="fixed top-4 left-4 z-50">
+          <div className="flex items-center gap-2 px-3 py-1 bg-red-900/30 border border-red-700/50 rounded-full">
+            <div className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
+            <span className="text-[10px] font-mono text-red-300 tracking-wider">
+              AUDIO PENDING...
+            </span>
+          </div>
+        </div>
+      )}
 
       {/* 3. SCROLLABLE CONTENT */}
       <motion.div style={{ y: contentY }} className="max-w-6xl mx-auto relative z-10">
@@ -106,6 +195,7 @@ export default function TrialsSection() {
             description="A high-pressure 1v1 MCQ simulation. Aptitude, Pseudocode, and Logic. Every second spent adds to your latency penalty."
             color="red"
             stats={["15 Q'S", "30 MINS", "1v1"]}
+            onClick={handleUserInteraction}
           />
 
           <TrialCard 
@@ -116,6 +206,7 @@ export default function TrialsSection() {
             color="cyan"
             stats={["TRACKS", "ALGO", "STRESS"]}
             reversed
+            onClick={handleUserInteraction}
           />
 
           <TrialCard 
@@ -125,6 +216,7 @@ export default function TrialsSection() {
             description="The Board of Directors awaits. Defend your architecture and survive the psychological pressure of the Front Man."
             color="white"
             stats={["DSA", "SYSTEMS", "HR"]}
+            onClick={handleUserInteraction}
           />
         </div>
       </motion.div>
@@ -160,7 +252,7 @@ export default function TrialsSection() {
   );
 }
 
-function TrialCard({ number, title, subtitle, description, color, stats, reversed = false }: any) {
+function TrialCard({ number, title, subtitle, description, color, stats, reversed = false, onClick }: any) {
   const colors: any = {
     red: "border-red-600 text-red-600 bg-red-600/10 shadow-[0_0_20px_rgba(220,38,38,0.3)]",
     cyan: "border-cyan-500 text-cyan-500 bg-cyan-500/10 shadow-[0_0_20px_rgba(6,182,212,0.3)]",
@@ -173,6 +265,7 @@ function TrialCard({ number, title, subtitle, description, color, stats, reverse
       whileInView={{ opacity: 1, x: 0 }}
       viewport={{ once: true }}
       className={`flex flex-col ${reversed ? 'md:flex-row-reverse' : 'md:flex-row'} items-center gap-12 group`}
+      onClick={onClick}
     >
       <div className="flex-1 space-y-6">
         <div className="flex items-center gap-4">
@@ -191,14 +284,24 @@ function TrialCard({ number, title, subtitle, description, color, stats, reverse
 
         <div className="flex gap-4">
           {stats.map((s: string) => (
-            <span key={s} className="text-[10px] font-mono border border-white/10 px-3 py-1 bg-white/5 text-white/40 uppercase">
+            <span 
+              key={s} 
+              className="text-[10px] font-mono border border-white/10 px-3 py-1 bg-white/5 text-white/40 uppercase cursor-pointer hover:border-red-500/50 hover:text-white/70 transition-all"
+              onClick={(e) => {
+                e.stopPropagation();
+                onClick?.();
+              }}
+            >
               {s}
             </span>
           ))}
         </div>
       </div>
 
-      <div className="w-full md:w-[400px] h-64 bg-black/40 border border-white/10 relative overflow-hidden backdrop-blur-sm group-hover:border-red-500/40 transition-all">
+      <div 
+        className="w-full md:w-[400px] h-64 bg-black/40 border border-white/10 relative overflow-hidden backdrop-blur-sm group-hover:border-red-500/40 transition-all cursor-pointer"
+        onClick={onClick}
+      >
         <div className="absolute top-2 left-2 font-mono text-[8px] opacity-20 uppercase tracking-widest">
           Auth_Node_0{number === '○' ? '1' : number === '△' ? '2' : '3'}
         </div>

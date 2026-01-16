@@ -8,10 +8,10 @@ export default function Navbar() {
 
   // Memoized navigation items
   const navItems = useMemo(() => [
-    { id: "home", label: "Home", action: () => scrollToSection('hero') },
-    { id: "trials", label: "The Trials", href: "/about" },
-    { id: "enlist", label: "Enlist", href: "/registration" },
-    { id: "rules", label: "Rule Book", href: "/rules" },
+    { id: "home", label: "Home", href: "/", type: "link" },
+    { id: "trials", label: "The Trials", href: "/about", type: "link" },
+    { id: "enlist", label: "Enlist", href: "/registration", type: "link" },
+    { id: "rules", label: "Rule Book", href: "/rules", type: "link" },
   ], []);
 
   // Handle intro completion
@@ -54,30 +54,16 @@ export default function Navbar() {
     };
   }, []);
 
-  const handleHomeClick = useCallback(() => {
-    sessionStorage.setItem("introCompleted", "true");
-    setLocation("/");
-  }, [setLocation]);
-
-  const scrollToSection = useCallback((id: string) => {
-    if (location !== "/") {
-      setLocation("/");
-      // Use requestAnimationFrame for better timing
-      requestAnimationFrame(() => {
-        requestAnimationFrame(() => {
-          const element = document.getElementById(id);
-          if (element) {
-            element.scrollIntoView({ behavior: "smooth" });
-          }
-        });
-      });
-    } else {
-      const element = document.getElementById(id);
-      if (element) {
-        element.scrollIntoView({ behavior: "smooth" });
-      }
-    }
-  }, [location, setLocation]);
+  const handleASCENTClick = useCallback(() => {
+    // Clear the intro completion to restart animation
+    sessionStorage.removeItem("introCompleted");
+    
+    // Clear any other session storage items if needed
+    sessionStorage.clear();
+    
+    // Reload the page to restart from animation
+    window.location.href = "/";
+  }, []);
 
   // Do not render the navbar at all if the intro is still playing
   if (!showNavbar) return null;
@@ -98,11 +84,12 @@ export default function Navbar() {
       
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-4 flex items-center justify-between">
         
-        {/* Logo with enhanced interactivity */}
+        {/* Logo/ASCENT Button - Restarts intro */}
         <button
-          onClick={handleHomeClick}
-          className="font-orbitron text-xl sm:text-2xl font-black tracking-[0.2em] sm:tracking-[0.3em] text-white flex items-center gap-2 sm:gap-3 group relative py-2 px-3 sm:px-4 border border-white/10 hover:border-red-500/40 transition-all duration-300 hover:shadow-[0_0_20px_rgba(239,68,68,0.3)]"
-          aria-label="Return to homepage"
+          onClick={handleASCENTClick}
+          className="font-orbitron text-xl sm:text-2xl font-black tracking-[0.2em] sm:tracking-[0.3em] text-white flex items-center gap-2 sm:gap-3 group relative py-2 px-3 sm:px-4 border border-white/10 hover:border-red-500/40 transition-all duration-300 hover:shadow-[0_0_20px_rgba(239,68,68,0.3)] bg-black/50 backdrop-blur-sm"
+          aria-label="Restart ASCENT intro animation"
+          title="Restart ASCENT intro"
         >
           {/* Animated logo elements */}
           <div className="flex gap-1 sm:gap-1.5">
@@ -116,44 +103,44 @@ export default function Navbar() {
             ASCENT
           </span>
           
-          {/* Live indicator */}
+          {/* Restart indicator */}
           <div className="relative">
             <span className="absolute inset-0 animate-ping bg-red-600 rounded-full opacity-75" />
             <span className="relative block w-1.5 h-1.5 bg-red-600 rounded-full shadow-[0_0_8px_#ef4444]" />
           </div>
+
+          {/* Tooltip */}
+          <div className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 px-3 py-1 bg-black/90 backdrop-blur-sm border border-red-500/20 text-xs font-mono text-white opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap pointer-events-none">
+            RESTART INTRO ANIMATION
+            <div className="absolute top-full left-1/2 -translate-x-1/2 w-0 h-0 border-l-[6px] border-l-transparent border-t-[6px] border-t-black/90 border-r-[6px] border-r-transparent" />
+          </div>
         </button>
 
         {/* Desktop Navigation */}
-        <div className="hidden md:flex items-center gap-4 lg:gap-6">
+        <div className="hidden md:flex items-center gap-4 lg:gap-8">
           {navItems.map((item) => (
             <div key={item.id} className="relative group">
-              {item.action ? (
-                <button
-                  onClick={item.action}
-                  className="px-4 py-2 text-sm font-mono uppercase tracking-[0.3em] text-white/70 hover:text-white transition-all hover:bg-white/5 relative overflow-hidden group"
-                >
+              <Link href={item.href!}>
+                <a className={`px-4 py-2 text-sm font-mono uppercase tracking-[0.3em] transition-all relative overflow-hidden group ${
+                  location === item.href 
+                    ? "text-red-500 font-bold" 
+                    : "text-white/70 hover:text-white hover:bg-white/5"
+                }`}>
                   <span className="relative z-10">{item.label}</span>
-                  <span className="absolute inset-0 bg-gradient-to-r from-transparent via-red-500/10 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
-                </button>
-              ) : (
-                <Link href={item.href!}>
-                  <a className={`px-4 py-2 text-sm font-mono uppercase tracking-[0.3em] transition-all relative overflow-hidden group ${
-                    location === item.href 
-                      ? "text-red-500 font-bold" 
-                      : "text-white/70 hover:text-white hover:bg-white/5"
-                  }`}>
-                    <span className="relative z-10">{item.label}</span>
-                    <span className="absolute bottom-0 left-1/2 w-0 h-[1px] bg-red-600 group-hover:w-full group-hover:left-0 transition-all duration-300" />
-                  </a>
-                </Link>
-              )}
+                  <span className="absolute bottom-0 left-1/2 w-0 h-[1px] bg-red-600 group-hover:w-full group-hover:left-0 transition-all duration-300" />
+                  
+                  {/* Active page indicator */}
+                  {location === item.href && (
+                    <span className="absolute -top-1 left-1/2 -translate-x-1/2 w-1.5 h-1.5 bg-red-600 rounded-full animate-pulse shadow-[0_0_8px_#ef4444]" />
+                  )}
+                </a>
+              </Link>
             </div>
           ))}
         </div>
 
-        {/* System Status & Mobile Menu Button */}
+        {/* System Status Indicators */}
         <div className="flex items-center gap-3 sm:gap-4">
-          {/* System Status Indicators */}
           <div className="flex items-center gap-2 sm:gap-3 font-mono text-[8px] sm:text-[9px]">
             <div className="flex items-center gap-1.5 sm:gap-2">
               <div className="relative flex h-1.5 w-1.5 sm:h-2 sm:w-2">
@@ -174,7 +161,7 @@ export default function Navbar() {
             )}
           </div>
 
-          {/* Mobile Menu Button - Optional */}
+          {/* Mobile Menu Button */}
           <button 
             className="md:hidden p-2 border border-white/10 hover:border-red-500/30 transition-colors"
             aria-label="Open menu"

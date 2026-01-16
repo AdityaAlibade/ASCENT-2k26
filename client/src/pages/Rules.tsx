@@ -8,8 +8,7 @@ import {
   ShieldAlert, 
   CheckCircle2, 
   Volume2, 
-  VolumeX,
-  Video 
+  VolumeX 
 } from "lucide-react";
 import RulesBg from "@assets/Rules_bg.jpg";
 import audioFile from "@assets/Round_And_Round_Mingle_1767983924508.mp3";
@@ -42,15 +41,88 @@ function RuleCard({ title, rules, isPrimary, variants, icon }: any) {
 
 export default function Rules() {
   const [open, setOpen] = useState(false);
-  const [isMuted, setIsMuted] = useState(true);
+  const [isMuted, setIsMuted] = useState(false);
+  const [audioReady, setAudioReady] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
-  // Audio Configuration
+  // Audio Configuration with autoplay
   useEffect(() => {
-    if (audioRef.current) {
-      audioRef.current.volume = 0.4;
-    }
+    const initializeAudio = async () => {
+      if (audioRef.current) {
+        try {
+          // Set audio properties
+          audioRef.current.volume = 0.4;
+          audioRef.current.muted = false;
+          audioRef.current.preload = "auto";
+          
+          // Load the audio
+          audioRef.current.load();
+          
+          // Try to play automatically
+          const playPromise = audioRef.current.play();
+          
+          if (playPromise !== undefined) {
+            await playPromise;
+            console.log("Rules audio autoplay successful");
+            setAudioReady(true);
+          }
+        } catch (error) {
+          console.log("Rules audio autoplay blocked:", error);
+          
+          // Add event listeners to unblock audio on user interaction
+          const handleUserInteraction = async () => {
+            if (audioRef.current && audioRef.current.paused) {
+              try {
+                await audioRef.current.play();
+                console.log("Rules audio started after user interaction");
+                setAudioReady(true);
+              } catch (e) {
+                console.error("Failed to play rules audio:", e);
+              }
+            }
+          };
+
+          // Add multiple event listeners
+          const events = ['click', 'touchstart', 'keydown', 'mousemove', 'scroll'];
+          
+          events.forEach(eventType => {
+            document.addEventListener(eventType, handleUserInteraction, { 
+              once: true,
+              passive: true 
+            });
+          });
+
+          return () => {
+            events.forEach(eventType => {
+              document.removeEventListener(eventType, handleUserInteraction);
+            });
+          };
+        }
+      }
+    };
+
+    initializeAudio();
   }, []);
+
+  // Toggle mute function
+  const toggleAudio = () => {
+    setIsMuted(!isMuted);
+    if (audioRef.current) {
+      audioRef.current.muted = !isMuted;
+    }
+  };
+
+  // Handle user interaction to unblock audio
+  const handleUserInteraction = async () => {
+    if (audioRef.current && audioRef.current.paused) {
+      try {
+        await audioRef.current.play();
+        setAudioReady(true);
+      } catch (error) {
+        console.log("Audio play failed on interaction:", error);
+      }
+    }
+  };
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -66,7 +138,10 @@ export default function Rules() {
   };
 
   return (
-    <div className="min-h-screen bg-black pt-32 pb-0 px-6 relative overflow-hidden font-montserrat">
+    <div 
+      className="min-h-screen bg-black pt-32 pb-0 px-6 relative overflow-hidden font-montserrat"
+      onClick={handleUserInteraction}
+    >
       
       {/* 1. CINEMATIC BACKGROUND LAYER */}
       <div className="fixed inset-0 z-0">
@@ -86,12 +161,42 @@ export default function Rules() {
       </div>
 
       {/* 2. AUDIO ENGINE */}
-      <audio ref={audioRef} src={audioFile} loop muted={isMuted} autoPlay />
+      <audio 
+        ref={audioRef} 
+        src={audioFile} 
+        loop 
+        autoPlay 
+        preload="auto"
+        onCanPlayThrough={() => console.log("Rules audio loaded and ready")}
+        onError={(e) => console.error("Rules audio error:", e)}
+        onPlay={() => {
+          console.log("Rules audio started playing");
+          setAudioReady(true);
+        }}
+      />
+      
+      {/* Audio Status Indicator */}
+      {!audioReady && (
+        <div className="fixed top-4 right-4 z-50 animate-pulse">
+          <div className="flex items-center gap-2 px-3 py-1 bg-red-900/30 border border-red-700/50 rounded-full">
+            <div className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
+            <span className="text-[10px] font-mono text-red-300 tracking-wider">
+              AUDIO PENDING...
+            </span>
+          </div>
+        </div>
+      )}
+
       <button
-        onClick={() => setIsMuted(!isMuted)}
-        className="fixed bottom-10 left-10 z-50 p-3 rounded-full border border-red-500/30 bg-black/60 backdrop-blur-md text-red-500 hover:scale-110 transition-all shadow-[0_0_15px_rgba(220,38,38,0.3)]"
+        onClick={toggleAudio}
+        className="fixed bottom-10 left-10 z-50 p-3 rounded-full border border-red-500/30 bg-black/60 backdrop-blur-md text-red-500 hover:scale-110 transition-all shadow-[0_0_15px_rgba(220,38,38,0.3)] group"
       >
         {isMuted ? <VolumeX size={18} /> : <Volume2 size={18} className="animate-pulse" />}
+        
+        {/* Tooltip */}
+        <div className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 px-2 py-1 bg-black/90 backdrop-blur-sm border border-red-500/20 text-[10px] font-mono text-white opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap pointer-events-none">
+          {isMuted ? "UNMUTE AUDIO" : "MUTE AUDIO"}
+        </div>
       </button>
 
       <div className="relative max-w-7xl mx-auto z-10">
@@ -102,11 +207,15 @@ export default function Rules() {
             initial={{ scale: 0.9, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             className="inline-flex items-center gap-2 mb-4 px-3 py-1 border border-red-500/30 bg-red-500/5 rounded-sm"
+            onClick={handleUserInteraction}
           >
             <ShieldAlert size={14} className="text-red-500 animate-pulse" />
             <span className="text-red-500 font-mono text-[10px] tracking-[0.4em] uppercase">Security Protocol 101</span>
           </motion.div>
-          <h1 className="text-6xl md:text-8xl font-black tracking-tighter text-white font-orbitron italic">
+          <h1 
+            className="text-6xl md:text-8xl font-black tracking-tighter text-white font-orbitron italic cursor-pointer"
+            onClick={handleUserInteraction}
+          >
             EVENT <span className="text-transparent bg-clip-text bg-gradient-to-b from-white to-white/20">RULES</span>
           </h1>
           <div className="h-1 w-24 bg-red-600 mx-auto mt-4 shadow-[0_0_15px_#dc2626]" />
@@ -201,64 +310,75 @@ export default function Rules() {
         </div>
       </footer>
 
-      {/* RULEBOOK MODAL */}
+      {/* RULEBOOK MODAL - FIXED TO APPEAR ABOVE NAVBAR */}
       <AnimatePresence>
         {open && (
-          <motion.div 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[100] bg-black/90 backdrop-blur-xl flex items-center justify-center p-4"
-          >
-            <motion.div 
-              initial={{ scale: 0.9, y: 20 }}
-              animate={{ scale: 1, y: 0 }}
-              className="bg-neutral-950 w-full max-w-5xl rounded-sm border border-white/10 p-8 relative shadow-2xl"
+          <>
+            {/* Backdrop */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 z-[9998] bg-black/90 backdrop-blur-xl"
+              onClick={() => setOpen(false)}
+            />
+            
+            {/* Modal Content */}
+            <motion.div
+              initial={{ scale: 0.9, y: 20, opacity: 0 }}
+              animate={{ scale: 1, y: 0, opacity: 1 }}
+              exit={{ scale: 0.9, y: 20, opacity: 0 }}
+              className="fixed inset-0 z-[9999] flex items-center justify-center p-4 pointer-events-none"
             >
-              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-red-600 to-transparent" />
-              
-              <button
-                onClick={() => setOpen(false)}
-                className="absolute top-6 right-6 text-white/40 hover:text-white transition-colors"
-              >
-                <X size={24} />
-              </button>
+              <div className="bg-neutral-950 w-full max-w-5xl max-h-[90vh] rounded-sm border border-white/10 relative shadow-2xl overflow-y-auto pointer-events-auto">
+                <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-red-600 to-transparent" />
+                
+                <button
+                  onClick={() => setOpen(false)}
+                  className="absolute top-6 right-6 z-50 text-white/40 hover:text-white transition-colors p-2 hover:bg-white/10 rounded-sm"
+                >
+                  <X size={24} />
+                </button>
 
-              <div className="flex items-center gap-4 mb-8">
-                <FileText className="text-red-600" />
-                <div>
-                  <h3 className="text-white font-orbitron font-bold tracking-widest uppercase">
-                    ASCENT_PROTOCOL_v2.0.pdf
-                  </h3>
-                  <p className="text-white/30 text-[9px] font-mono tracking-widest uppercase">
-                    Security Level: Restricted Access // {new Date().getFullYear()}
-                  </p>
+                <div className="flex items-center gap-4 mb-8 p-8 pb-0">
+                  <FileText className="text-red-600" />
+                  <div>
+                    <h3 className="text-white font-orbitron font-bold tracking-widest uppercase">
+                      ASCENT_PROTOCOL_v2.0.pdf
+                    </h3>
+                    <p className="text-white/30 text-[9px] font-mono tracking-widest uppercase">
+                      Security Level: Restricted Access // {new Date().getFullYear()}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="p-8 pt-4">
+                  <div className="relative group">
+                    <iframe
+                      src="/ASCENT_RULEBOOK.pdf"
+                      className="w-full h-[65vh] bg-neutral-900/50 border border-white/5 rounded-sm"
+                      title="ASCENT Rulebook PDF"
+                    />
+                  </div>
+
+                  <div className="mt-8 flex justify-between items-center">
+                    <p className="text-[10px] font-mono text-white/20 italic">
+                      Decision of the front man is final.
+                    </p>
+                    <a
+                      href="/ASCENT_RULEBOOK.pdf"
+                      download
+                      className="flex items-center gap-3 bg-white/5 hover:bg-white/10 border border-white/10 px-6 py-3 rounded-sm text-white font-mono text-[10px] tracking-widest transition-all"
+                      onClick={handleUserInteraction}
+                    >
+                      <Download size={14} />
+                      DOWNLOAD_PDF
+                    </a>
+                  </div>
                 </div>
               </div>
-
-              <div className="relative group">
-                <iframe
-                  src="/ASCENT_RULEBOOK.pdf"
-                  className="w-full h-[65vh] bg-neutral-900/50 border border-white/5 rounded-sm"
-                  title="ASCENT Rulebook PDF"
-                />
-              </div>
-
-              <div className="mt-8 flex justify-between items-center">
-                <p className="text-[10px] font-mono text-white/20 italic">
-                  Decision of the front man is final.
-                </p>
-                <a
-                  href="/ASCENT_RULEBOOK.pdf"
-                  download
-                  className="flex items-center gap-3 bg-white/5 hover:bg-white/10 border border-white/10 px-6 py-3 rounded-sm text-white font-mono text-[10px] tracking-widest transition-all"
-                >
-                  <Download size={14} />
-                  DOWNLOAD_PDF
-                </a>
-              </div>
             </motion.div>
-          </motion.div>
+          </>
         )}
       </AnimatePresence>
     </div>

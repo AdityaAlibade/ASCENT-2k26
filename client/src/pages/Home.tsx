@@ -9,8 +9,6 @@ import frontManTheme from "@assets/squid_game_1768071980984.mp3";
 import frontManImg from "@assets/FM_1768130131807.png"
 import mainBg from "@assets/MAin_background_1768146583042.jpg";
 
-// REMOVED: let introHasPlayed = false; - We'll use sessionStorage only
-
 const CountdownTimer = () => {
   const [time, setTime] = useState("00:00:00:00");
 
@@ -179,8 +177,29 @@ const DdakjiTransition = ({ onComplete }: { onComplete: () => void }) => {
 const IntroOverlay = ({ onComplete }: { onComplete: () => void }) => {
   const [phase, setPhase] = useState<'loader' | 'video' | 'welcome' | 'frontman' | 'conditions'>('loader');
   const [step, setStep] = useState(0);
-  const [isMuted, setIsMuted] = useState(true); // Default to muted
+  const [isMuted, setIsMuted] = useState(false); // Start unmuted for better autoplay
   const audioRef = useRef<HTMLAudioElement | null>(null);
+
+  // Initialize audio on component mount
+  useEffect(() => {
+    if (audioRef.current) {
+      // Set volume and try to play immediately
+      audioRef.current.volume = 0.3;
+      audioRef.current.muted = false;
+      
+      // Try to play audio when component mounts
+      const playAudio = async () => {
+        try {
+          await audioRef.current?.play();
+          console.log("Intro audio autoplay successful");
+        } catch (error) {
+          console.log("Intro audio autoplay blocked, will play after user interaction");
+        }
+      };
+      
+      playAudio();
+    }
+  }, []);
 
   useEffect(() => {
     if (phase === 'welcome') {
@@ -215,11 +234,16 @@ const IntroOverlay = ({ onComplete }: { onComplete: () => void }) => {
       exit={{ opacity: 0 }}
       transition={{ duration: 1.5, ease: "easeInOut" }}
     >
-      <audio ref={audioRef} src={audioFile} loop muted={isMuted} />
+      <audio ref={audioRef} src={audioFile} loop />
       
       {/* Mute button in intro - top right */}
       <button 
-        onClick={() => setIsMuted(!isMuted)}
+        onClick={() => {
+          setIsMuted(!isMuted);
+          if (audioRef.current) {
+            audioRef.current.muted = !isMuted;
+          }
+        }}
         className="absolute top-8 right-8 z-50 p-2 text-white/40 hover:text-white transition-colors"
       >
         {isMuted ? <VolumeX size={24} /> : <Volume2 size={24} />}
@@ -481,7 +505,7 @@ const ConditionsAccept = ({ onComplete }: { onComplete: () => void }) => {
 
 export default function Home() {
   const [showIntro, setShowIntro] = useState(true); // ALWAYS start with true for fresh load
-  const [isMuted, setIsMuted] = useState(true); // Default to muted
+  const [isMuted, setIsMuted] = useState(false); // Default to UNMUTED for autoplay
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const { data: stats } = useGameStats();
   const [open, setOpen] = useState(false);
@@ -495,7 +519,9 @@ export default function Home() {
     // Auto-play main audio after intro
     setTimeout(() => {
       if (audioRef.current) {
-        audioRef.current.play().catch(e => console.error("Audio playback failed:", e));
+        audioRef.current.volume = 0.3;
+        audioRef.current.muted = false;
+        audioRef.current.play().catch(e => console.error("Main audio playback failed:", e));
       }
     }, 500);
   };
@@ -506,18 +532,62 @@ export default function Home() {
     { name: "Prathamesh Kshirsagar (Vice President)", phone: "8767745753", wa: "8767745753" }
   ];
 
+  // Initialize audio on component mount
   useEffect(() => {
+    const initializeAudio = async () => {
+      if (audioRef.current) {
+        audioRef.current.volume = 0.3;
+        audioRef.current.muted = false;
+        
+        // Try to preload and play
+        audioRef.current.load();
+        
+        // Only try to play if intro is already completed
+        const introCompleted = sessionStorage.getItem("introCompleted") === "true";
+        if (introCompleted) {
+          try {
+            await audioRef.current.play();
+            console.log("Main audio autoplay successful");
+          } catch (error) {
+            console.log("Main audio autoplay blocked, will play after user interaction");
+          }
+        }
+      }
+    };
+
+    initializeAudio();
+    
     // Check if user previously completed intro in this session
     const introCompleted = sessionStorage.getItem("introCompleted") === "true";
     if (introCompleted) {
       setShowIntro(false);
     }
-    
-    // Start playing audio if intro is skipped
-    if (!showIntro && audioRef.current) {
-      audioRef.current.play().catch(e => console.error("Audio playback failed:", e));
-    }
-  }, [showIntro]);
+  }, []);
+
+  // Add global click handler to unblock audio
+  useEffect(() => {
+    const handleUserInteraction = async () => {
+      if (audioRef.current) {
+        try {
+          await audioRef.current.play();
+          console.log("Audio unblocked by user interaction");
+        } catch (error) {
+          console.log("Audio still blocked");
+        }
+      }
+    };
+
+    // Add event listeners for user interaction
+    document.addEventListener('click', handleUserInteraction, { once: true });
+    document.addEventListener('touchstart', handleUserInteraction, { once: true });
+    document.addEventListener('keydown', handleUserInteraction, { once: true });
+
+    return () => {
+      document.removeEventListener('click', handleUserInteraction);
+      document.removeEventListener('touchstart', handleUserInteraction);
+      document.removeEventListener('keydown', handleUserInteraction);
+    };
+  }, []);
 
   // Handle music toggle
   const toggleMusic = () => {
@@ -533,7 +603,12 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-black text-white selection:bg-primary selection:text-white overflow-hidden relative font-montserrat">
-      <audio ref={audioRef} src={audioFile} loop muted={isMuted} />
+      <audio 
+        ref={audioRef} 
+        src={audioFile} 
+        loop 
+        preload="auto"
+      />
       
       {/* Background Image with Dark Wash */}
       <div 
@@ -557,14 +632,14 @@ export default function Home() {
       <div className="scanline z-10" />
       <div className="vignette z-10" />
       <div className="cctv-overlay z-10" />
-      <div className="absolute top-8 left-8 z-50 font-mono text-[10px] opacity-40 uppercase tracking-[0.2em] pointer-events-none">
+      <div className="absolute top-24 left-8 z-50 font-mono text-[10px] opacity-40 uppercase tracking-[0.2em] pointer-events-none">
         REC ● LIVE // CAM_01<br/>
         SQ_DORMITORY_H1
       </div>
       <FloatingShapes />
 
       {/* Hero Section */}
-      <section id="hero" className="relative h-screen flex flex-col items-center justify-center px-4 z-20">
+      <section id="hero" className="relative min-h-screen flex flex-col items-center justify-center px-4 z-20 pt-24 md:pt-28">
         <motion.div 
           initial={{ opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}
@@ -597,9 +672,15 @@ export default function Home() {
 
           <div className="flex flex-col md:flex-row items-center justify-center gap-6 mt-8">
             <motion.a 
-              href="#register"
+              href="Registration"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
+              onClick={() => {
+                // Ensure audio plays on any user interaction
+                if (audioRef.current && audioRef.current.paused) {
+                  audioRef.current.play().catch(e => console.error("Audio playback failed:", e));
+                }
+              }}
               className="group relative overflow-hidden bg-primary px-12 py-5 font-orbitron font-black text-xl tracking-[0.2em] text-white transition-all hover:shadow-[0_0_30px_rgba(255,0,96,0.6)]"
             >
               <div className="absolute inset-0 bg-white/10 -translate-x-full group-hover:translate-x-0 transition-transform duration-300 ease-out skew-x-12" />
@@ -607,18 +688,30 @@ export default function Home() {
             </motion.a>
 
             <motion.a 
-              href="#rules"
+              href="Rules"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
+              onClick={() => {
+                // Ensure audio plays on any user interaction
+                if (audioRef.current && audioRef.current.paused) {
+                  audioRef.current.play().catch(e => console.error("Audio playback failed:", e));
+                }
+              }}
               className="group relative overflow-hidden bg-transparent border-2 border-white/20 px-12 py-5 font-orbitron font-black text-xl tracking-[0.2em] text-white transition-all hover:border-white hover:bg-white/5"
             >
               <span className="relative z-10">VIEW RULES</span>
             </motion.a>
 
             <motion.a 
-              href="#games"
+              href="About"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
+              onClick={() => {
+                // Ensure audio plays on any user interaction
+                if (audioRef.current && audioRef.current.paused) {
+                  audioRef.current.play().catch(e => console.error("Audio playback failed:", e));
+                }
+              }}
               className="group relative overflow-hidden bg-transparent border-2 border-secondary/30 px-12 py-5 font-orbitron font-black text-xl tracking-[0.2em] text-secondary transition-all hover:border-secondary hover:bg-secondary/5"
             >
               <span className="relative z-10">THE TRIALS</span>
@@ -658,7 +751,7 @@ export default function Home() {
       </section>
 
       {/* Prize Section */}
-      <section id="prizes" className="py-32 px-4 relative z-10 overflow-hidden">
+      <section id="prizes" className="py-32 px-4 relative z-10 overflow-hidden mt-10">
         <div className="absolute inset-0 -z-10 flex justify-center">
           <div className="w-[700px] h-[500px] bg-primary/15 blur-[180px]" />
         </div>
@@ -723,7 +816,7 @@ export default function Home() {
       </section>
 
       {/* Schedule Section */}
-      <section id="schedule" className="py-24 px-4 relative z-10 bg-transparent border-y border-white/5">
+      <section id="schedule" className="py-24 px-4 relative z-10 bg-transparent border-y border-white/5 mt-10">
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-16">
             <motion.p 
@@ -801,7 +894,7 @@ export default function Home() {
       </section>
 
       {/* Control Room Section */}
-      <section id="control-room" className="py-32 px-4 relative z-10 overflow-hidden">
+      <section id="control-room" className="py-32 px-4 relative z-10 overflow-hidden mt-10">
         <div className="max-w-3xl mx-auto text-center relative">
           <div className="absolute inset-0 -z-10 flex items-center justify-center">
             <div className="w-[600px] h-[300px] bg-primary/10 blur-[120px] animate-pulse" />
@@ -902,7 +995,7 @@ export default function Home() {
       </section>
 
       {/* Footer */}
-      <footer className="relative z-10 mt-24 border-t border-red-500/20 bg-black/60 backdrop-blur-sm">
+      <footer className="relative z-10 mt-32 border-t border-red-500/20 bg-black/60 backdrop-blur-sm">
         <div className="max-w-6xl mx-auto px-6 py-10 text-center font-mono text-xs tracking-widest text-gray-500">
           <p className="text-red-500/80">
             OFFICIAL INVITATION • ASCENT 2K26
