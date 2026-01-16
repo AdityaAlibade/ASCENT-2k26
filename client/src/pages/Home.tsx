@@ -497,10 +497,7 @@ export default function Home() {
         backgroundRepeat: 'no-repeat'
       }}
     >
-      {/* Dark overlay for better text readability */}
-      <div className="absolute inset-0 bg-black/60 z-0" />
-
-      {/* Background effects */}
+      {/* Background effects - NO BLACK OVERLAY */}
       <div className="scanline z-10" />
       <div className="vignette z-10" />
       <div className="cctv-overlay z-10" />
@@ -510,13 +507,16 @@ export default function Home() {
       </div>
       <FloatingShapes />
 
-      {/* Hero Section */}
+      {/* Hero Section - Added dark overlay only to this section */}
       <section id="hero" className="relative min-h-screen flex flex-col items-center justify-center px-4 z-20 pt-24 md:pt-28">
+        {/* Dark overlay only for hero section */}
+        <div className="absolute inset-0 bg-black/40 z-0" />
+        
         <motion.div
           initial={{ opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1 }}
-          className="text-center space-y-6"
+          className="text-center space-y-6 relative z-10"
         >
           <div className="flex justify-center gap-4 md:gap-8 mb-8">
             <Circle className="w-12 h-12 md:w-20 md:h-20 stroke-white" size={80} />
@@ -528,11 +528,11 @@ export default function Home() {
             ASCENT 2k26
           </h1>
 
-          <p className="font-montserrat text-lg md:text-3xl text-gray-400 tracking-widest uppercase font-bold">
+          <p className="font-montserrat text-lg md:text-3xl text-gray-300 tracking-widest uppercase font-bold">
             A Game Where Only the Best Survives
           </p>
 
-          <p className="font-montserrat text-sm md:text-lg text-white/80 max-w-2xl mx-auto leading-relaxed tracking-wide backdrop-blur-sm bg-black/30 p-6 rounded-lg">
+          <p className="font-montserrat text-sm md:text-lg text-white/90 max-w-2xl mx-auto leading-relaxed tracking-wide backdrop-blur-sm bg-black/40 p-6 rounded-lg">
             This competition will test your intelligence, discipline, and composure
             under pressure. Only those who prove their worth will advance to the final round.
           </p>
@@ -559,7 +559,7 @@ export default function Home() {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => startMusic()}
-              className="group relative overflow-hidden bg-transparent border-2 border-white/20 px-12 py-5 font-orbitron font-black text-xl tracking-[0.2em] text-white transition-all hover:border-white hover:bg-white/5"
+              className="group relative overflow-hidden bg-transparent border-2 border-white/30 px-12 py-5 font-orbitron font-black text-xl tracking-[0.2em] text-white transition-all hover:border-white hover:bg-white/10"
             >
               <span className="relative z-10">VIEW RULES</span>
             </motion.a>
@@ -569,7 +569,7 @@ export default function Home() {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => startMusic()}
-              className="group relative overflow-hidden bg-transparent border-2 border-secondary/30 px-12 py-5 font-orbitron font-black text-xl tracking-[0.2em] text-secondary transition-all hover:border-secondary hover:bg-secondary/5"
+              className="group relative overflow-hidden bg-transparent border-2 border-secondary/40 px-12 py-5 font-orbitron font-black text-xl tracking-[0.2em] text-secondary transition-all hover:border-secondary hover:bg-secondary/10"
             >
               <span className="relative z-10">THE TRIALS</span>
             </motion.a>
@@ -579,7 +579,7 @@ export default function Home() {
 
         {/* Additional background elements */}
         <div className="absolute inset-0 -z-10 overflow-hidden pointer-events-none opacity-20">
-          <div className="absolute inset-0 bg-gradient-radial from-transparent via-black/50 to-black" />
+          <div className="absolute inset-0 bg-gradient-radial from-transparent via-black/30 to-transparent" />
           <motion.div
             animate={{ x: [-20, 20] }}
             transition={{ repeat: Infinity, duration: 20, ease: "linear", repeatType: "mirror" }}
@@ -592,33 +592,28 @@ export default function Home() {
         <motion.div
           animate={{ y: [0, 10, 0] }}
           transition={{ repeat: Infinity, duration: 2 }}
-          className="absolute bottom-10 left-1/2 -translate-x-1/2 opacity-50"
+          className="absolute bottom-10 left-1/2 -translate-x-1/2 opacity-50 z-10"
         >
           <ChevronDown className="w-8 h-8" />
         </motion.div>
       </section>
 
-      {/* Prize Section */}
+      {/* Prize Section - Added dark overlay only to this section */}
       <section id="prizes" className="py-32 px-4 relative z-10 overflow-hidden mt-10">
-        <div className="absolute inset-0 -z-10">
-          <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" />
-          <div className="absolute inset-0 flex justify-center">
-            <div className="w-[700px] h-[500px] bg-primary/10 blur-[180px]" />
-          </div>
-        </div>
-
-        <div className="max-w-5xl mx-auto text-center">
+        <div className="absolute inset-0 bg-black/50 z-0" />
+        
+        <div className="max-w-5xl mx-auto text-center relative z-10">
           <motion.div
             initial={{ opacity: 0, scale: 0.92 }}
             whileInView={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.8, ease: "easeOut" }}
-            className="relative p-14 md:p-20 border border-primary/30 bg-black/60 backdrop-blur-xl overflow-hidden group"
+            className="relative p-14 md:p-20 border border-primary/40 bg-black/70 backdrop-blur-xl overflow-hidden group"
           >
             <div className="absolute inset-0 bg-primary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-1000" />
 
             <Trophy className="w-20 h-20 text-primary mx-auto mb-10 drop-shadow-[0_0_30px_rgba(255,0,96,0.6)]" />
 
-            <p className="text-[15px] font-mono tracking-[0.5em] text-white/60 mb-3 uppercase">
+            <p className="text-[15px] font-mono tracking-[0.5em] text-white/80 mb-3 uppercase">
               Placement Simulation Rewards
             </p>
 
@@ -631,19 +626,19 @@ export default function Home() {
             </div>
 
             <div className="grid md:grid-cols-2 gap-8 mb-12">
-              <div className="p-6 border border-white/20 bg-black/40 backdrop-blur-sm">
+              <div className="p-6 border border-white/30 bg-black/60 backdrop-blur-sm">
                 <p className="text-primary font-orbitron text-sm tracking-widest mb-2">CHAMPION</p>
                 <p className="text-2xl font-black text-white font-orbitron">JUNIOR TRACK</p>
-                <p className="text-white/60 text-[10px] mt-2 font-mono uppercase">1st & 2nd Year Excellence</p>
+                <p className="text-white/80 text-[10px] mt-2 font-mono uppercase">1st & 2nd Year Excellence</p>
               </div>
-              <div className="p-6 border border-white/20 bg-black/40 backdrop-blur-sm">
+              <div className="p-6 border border-white/30 bg-black/60 backdrop-blur-sm">
                 <p className="text-primary font-orbitron text-sm tracking-widest mb-2">CHAMPION</p>
                 <p className="text-2xl font-black text-white font-orbitron">SENIOR TRACK</p>
-                <p className="text-white/60 text-[10px] mt-2 font-mono uppercase">3rd & 4th Year Mastery</p>
+                <p className="text-white/80 text-[10px] mt-2 font-mono uppercase">3rd & 4th Year Mastery</p>
               </div>
             </div>
 
-            <p className="text-white/80 text-xs md:text-sm uppercase tracking-[0.35em] font-mono mb-14">
+            <p className="text-white/90 text-xs md:text-sm uppercase tracking-[0.35em] font-mono mb-14">
               The decision of the organizing committee is final.
             </p>
 
@@ -656,7 +651,7 @@ export default function Home() {
               ].map((item) => (
                 <div
                   key={item}
-                  className="p-4 border border-white/20 bg-black/30 hover:bg-black/50 text-white/80 hover:text-white hover:border-primary/50 transition-all duration-300"
+                  className="p-4 border border-white/30 bg-black/50 hover:bg-black/70 text-white/90 hover:text-white hover:border-primary/50 transition-all duration-300"
                 >
                   {item}
                 </div>
@@ -666,9 +661,9 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Schedule Section */}
-      <section id="schedule" className="py-24 px-4 relative z-10 overflow-hidden border-y border-white/10 mt-10">
-        <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
+      {/* Schedule Section - Added dark overlay only to this section */}
+      <section id="schedule" className="py-24 px-4 relative z-10 overflow-hidden border-y border-white/20 mt-10">
+        <div className="absolute inset-0 bg-black/50 backdrop-blur-sm z-0" />
         
         <div className="max-w-4xl mx-auto relative z-10">
           <div className="text-center mb-16">
@@ -697,10 +692,10 @@ export default function Home() {
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: idx * 0.1 }}
-                className="group relative flex items-center gap-6 p-8 bg-black/40 backdrop-blur-xl border border-white/10 hover:border-primary/50 hover:bg-black/60 transition-all duration-500 rounded-sm"
+                className="group relative flex items-center gap-6 p-8 bg-black/60 backdrop-blur-xl border border-white/20 hover:border-primary/50 hover:bg-black/70 transition-all duration-500 rounded-sm"
               >
-                <div className="w-16 h-16 flex flex-col items-center justify-center border border-white/20 font-orbitron group-hover:border-primary transition-colors">
-                  <span className="text-xs text-white/30 group-hover:text-primary transition-colors">
+                <div className="w-16 h-16 flex flex-col items-center justify-center border border-white/30 font-orbitron group-hover:border-primary transition-colors">
+                  <span className="text-xs text-white/40 group-hover:text-primary transition-colors">
                     {item.symbol}
                   </span>
                   <span className="text-xl font-black text-white">
@@ -713,32 +708,32 @@ export default function Home() {
                     <h4 className="font-orbitron font-black text-xl text-white tracking-widest uppercase group-hover:text-primary transition-colors">
                       {item.title}
                     </h4>
-                    <span className="hidden md:block text-white/10">{"|"}</span>
+                    <span className="hidden md:block text-white/20">{"|"}</span>
                     <span className="text-primary font-mono text-[10px] font-bold tracking-widest">
                       {item.round}
                     </span>
                   </div>
 
                   <div className="flex items-center gap-4">
-                    <p className="font-mono text-xs text-white/60 uppercase tracking-widest">
-                      {item.date} <span className="mx-2 text-white/10">{"//"}</span> {item.time}
+                    <p className="font-mono text-xs text-white/70 uppercase tracking-widest">
+                      {item.date} <span className="mx-2 text-white/20">{"//"}</span> {item.time}
                     </p>
                   </div>
                 </div>
 
                 <div className="flex flex-col items-end gap-2">
                   <div className="w-2 h-2 rounded-full bg-primary animate-pulse shadow-[0_0_10px_#ff003c]" />
-                  <span className="text-[8px] font-mono text-white/40 uppercase tracking-[0.3em] [writing-mode:vertical-lr]">
+                  <span className="text-[8px] font-mono text-white/50 uppercase tracking-[0.3em] [writing-mode:vertical-lr]">
                     SECURED
                   </span>
                 </div>
 
-                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 pointer-events-none" />
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 pointer-events-none" />
               </motion.div>
             ))}
           </div>
 
-          <div className="mt-16 text-center opacity-80">
+          <div className="mt-16 text-center opacity-90">
             <p className="text-[13px] font-mono text-white uppercase tracking-[0.5em]">
               {"[ FAILURE TO REPORT ON ASSIGNED DAY RESULTS IN ELIMINATION ]"}
             </p>
@@ -746,11 +741,11 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Control Room Section */}
+      {/* Control Room Section - Added dark overlay only to this section */}
       <section id="control-room" className="py-32 px-4 relative z-10 overflow-hidden mt-10">
-        <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
+        <div className="absolute inset-0 bg-black/50 backdrop-blur-sm z-0" />
         
-        <div className="max-w-3xl mx-auto text-center relative">
+        <div className="max-w-3xl mx-auto text-center relative z-10">
           <div className="absolute inset-0 -z-10 flex items-center justify-center">
             <div className="w-[600px] h-[300px] bg-primary/10 blur-[120px] animate-pulse" />
           </div>
@@ -758,15 +753,15 @@ export default function Home() {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            className="relative p-[1px] bg-gradient-to-b from-white/20 to-transparent backdrop-blur-2xl shadow-2xl"
+            className="relative p-[1px] bg-gradient-to-b from-white/30 to-transparent backdrop-blur-2xl shadow-2xl"
           >
-            <div className="p-8 md:p-12 bg-black/60 border border-white/10 relative overflow-hidden">
-              <div className="flex justify-between items-center mb-10 border-b border-white/10 pb-6">
+            <div className="p-8 md:p-12 bg-black/70 border border-white/20 relative overflow-hidden">
+              <div className="flex justify-between items-center mb-10 border-b border-white/20 pb-6">
                 <div className="text-left">
                   <h3 className="font-orbitron font-black text-2xl tracking-[0.2em] text-white">
                     CONTROL <span className="text-primary">ROOM</span>
                   </h3>
-                  <p className="text-[9px] font-mono text-white/60 uppercase tracking-widest mt-1">
+                  <p className="text-[9px] font-mono text-white/70 uppercase tracking-widest mt-1">
                     {"Secure Channel // CAM_04 // Dormitory_H1"}
                   </p>
                 </div>
@@ -779,7 +774,7 @@ export default function Home() {
                     setActiveAction(activeAction === 'call' ? null : 'call');
                     startMusic();
                   }}
-                  className={`group relative overflow-hidden border py-5 font-orbitron font-bold text-xs tracking-[0.3em] transition-all duration-500 ${activeAction === 'call' ? 'bg-white text-black border-white' : 'bg-white/10 border-white/20 text-white hover:border-primary'
+                  className={`group relative overflow-hidden border py-5 font-orbitron font-bold text-xs tracking-[0.3em] transition-all duration-500 ${activeAction === 'call' ? 'bg-white text-black border-white' : 'bg-white/20 border-white/30 text-white hover:border-primary'
                     }`}
                 >
                   <span className="relative z-10">CALL SUPPORT</span>
@@ -791,7 +786,7 @@ export default function Home() {
                     setActiveAction(activeAction === 'message' ? null : 'message');
                     startMusic();
                   }}
-                  className={`group relative overflow-hidden border py-5 font-orbitron font-bold text-xs tracking-[0.3em] transition-all duration-500 ${activeAction === 'message' ? 'bg-white text-black border-white' : 'bg-white/10 border-white/20 text-white hover:border-primary'
+                  className={`group relative overflow-hidden border py-5 font-orbitron font-bold text-xs tracking-[0.3em] transition-all duration-500 ${activeAction === 'message' ? 'bg-white text-black border-white' : 'bg-white/20 border-white/30 text-white hover:border-primary'
                     }`}
                 >
                   <span className="relative z-10">MESSAGE CONTROL</span>
@@ -807,7 +802,7 @@ export default function Home() {
                     exit={{ opacity: 0, height: 0 }}
                     className="space-y-3 mb-10 overflow-hidden"
                   >
-                    <div className="bg-white/10 p-4 border border-white/20">
+                    <div className="bg-white/20 p-4 border border-white/30">
                       <p className="text-[10px] font-mono text-primary mb-4 tracking-[0.4em] uppercase">
                         {"[ Select_Frequency ]"}
                       </p>
@@ -818,13 +813,13 @@ export default function Home() {
                             href={activeAction === 'call' ? `tel:${contact.phone}` : `https://wa.me/${contact.wa}`}
                             target={activeAction === 'message' ? "_blank" : "_self"}
                             rel="noreferrer"
-                            className="flex items-center justify-between p-4 bg-black/40 border border-white/10 hover:border-primary group transition-all"
+                            className="flex items-center justify-between p-4 bg-black/50 border border-white/20 hover:border-primary group transition-all"
                           >
                             <div className="text-left">
                               <p className="text-xs font-bold text-white tracking-widest uppercase group-hover:text-primary transition-colors">
                                 {contact.name}
                               </p>
-                              <p className="text-[10px] font-mono text-white/50">{contact.phone}</p>
+                              <p className="text-[10px] font-mono text-white/60">{contact.phone}</p>
                             </div>
                             <div className="text-primary font-mono text-[9px] opacity-0 group-hover:opacity-100 transition-opacity">
                               {"CONNECTING >>"}
@@ -837,10 +832,10 @@ export default function Home() {
                 )}
               </AnimatePresence>
 
-              <div className="pt-8 border-t border-white/20 flex flex-col items-center">
+              <div className="pt-8 border-t border-white/30 flex flex-col items-center">
                 <div className="relative group">
                   <div className="absolute inset-0 bg-red-600 blur-2xl opacity-20 group-hover:opacity-40 transition-opacity" />
-                  <div className="w-14 h-14 rounded-full bg-red-600/20 border-2 border-red-600 flex items-center justify-center relative z-10">
+                  <div className="w-14 h-14 rounded-full bg-red-600/30 border-2 border-red-600 flex items-center justify-center relative z-10">
                     <div className="w-6 h-6 rounded-full bg-red-600 shadow-[0_0_15px_#ef4444] animate-pulse" />
                   </div>
                 </div>
@@ -854,19 +849,19 @@ export default function Home() {
       </section>
 
       {/* Footer */}
-      <footer className="relative z-10 mt-32 border-t border-red-500/30 bg-black/80 backdrop-blur-sm">
-        <div className="max-w-6xl mx-auto px-6 py-10 text-center font-mono text-xs tracking-widest text-gray-400">
-          <p className="text-red-500/90">
+      <footer className="relative z-10 mt-32 border-t border-red-500/40 bg-black/90 backdrop-blur-sm">
+        <div className="max-w-6xl mx-auto px-6 py-10 text-center font-mono text-xs tracking-widest text-gray-300">
+          <p className="text-red-500">
             OFFICIAL INVITATION • ASCENT 2K26
           </p>
-          <p className="mt-2 text-white-400">
+          <p className="mt-2 text-white">
             CONTROLLED ACCESS • AUTHORIZATION REQUIRED
           </p>
-          <div className="my-4 h-px w-32 mx-auto bg-gradient-to-r from-transparent via-red-500/50 to-transparent" />
-          <p className="text-white-300">
+          <div className="my-4 h-px w-32 mx-auto bg-gradient-to-r from-transparent via-red-500/60 to-transparent" />
+          <p className="text-white">
             UNAUTHORIZED DISTRIBUTION STRICTLY PROHIBITED
           </p>
-          <p className="mt-3 text-[10px] text-white-300">
+          <p className="mt-3 text-[10px] text-white">
             SYSTEM STATUS: <span className="text-red-500 font-bold">ACTIVE</span>
           </p>
         </div>
