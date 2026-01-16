@@ -9,8 +9,7 @@ import frontManTheme from "@assets/squid_game_1768071980984.mp3";
 import frontManImg from "@assets/FM_1768130131807.png"
 import mainBg from "@assets/MAin_background_1768146583042.jpg";
 
-// Store in sessionStorage instead of localStorage for single session only
-let introHasPlayed = sessionStorage.getItem("introHasPlayed") === "true";
+// REMOVED: let introHasPlayed = false; - We'll use sessionStorage only
 
 const CountdownTimer = () => {
   const [time, setTime] = useState("00:00:00:00");
@@ -180,7 +179,7 @@ const DdakjiTransition = ({ onComplete }: { onComplete: () => void }) => {
 const IntroOverlay = ({ onComplete }: { onComplete: () => void }) => {
   const [phase, setPhase] = useState<'loader' | 'video' | 'welcome' | 'frontman' | 'conditions'>('loader');
   const [step, setStep] = useState(0);
-  const [isMuted, setIsMuted] = useState(false);
+  const [isMuted, setIsMuted] = useState(true); // Default to muted
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
@@ -218,6 +217,7 @@ const IntroOverlay = ({ onComplete }: { onComplete: () => void }) => {
     >
       <audio ref={audioRef} src={audioFile} loop muted={isMuted} />
       
+      {/* Mute button in intro - top right */}
       <button 
         onClick={() => setIsMuted(!isMuted)}
         className="absolute top-8 right-8 z-50 p-2 text-white/40 hover:text-white transition-colors"
@@ -480,44 +480,24 @@ const ConditionsAccept = ({ onComplete }: { onComplete: () => void }) => {
 };
 
 export default function Home() {
-  const [showIntro, setShowIntro] = useState(() => {
-    // Only show intro if it hasn't been played in this session
-    const shouldSkip = sessionStorage.getItem("skipIntro") === "true";
-    const introCompleted = sessionStorage.getItem("introCompleted") === "true";
-    
-    if (shouldSkip || introCompleted) {
-      introHasPlayed = true;
-      sessionStorage.removeItem("skipIntro");
-      return false;
-    }
-    
-    return !introHasPlayed;
-  });
-  
-  const [isMuted, setIsMuted] = useState(false);
+  const [showIntro, setShowIntro] = useState(true); // ALWAYS start with true for fresh load
+  const [isMuted, setIsMuted] = useState(true); // Default to muted
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const { data: stats } = useGameStats();
   const [open, setOpen] = useState(false);
   const [activeAction, setActiveAction] = useState<string | null>(null);
   
   const handleIntroComplete = () => {
-    introHasPlayed = true;
-    setShowIntro(false);
     sessionStorage.setItem("introCompleted", "true");
-    sessionStorage.setItem("introHasPlayed", "true");
+    setShowIntro(false);
     window.dispatchEvent(new CustomEvent('introComplete'));
-    sessionStorage.removeItem("skipIntro");
     
-    const scrollToSection = sessionStorage.getItem("scrollToSection");
-    if (scrollToSection) {
-      setTimeout(() => {
-        const element = document.getElementById(scrollToSection);
-        if (element) {
-          element.scrollIntoView({ behavior: "smooth" });
-        }
-        sessionStorage.removeItem("scrollToSection");
-      }, 500);
-    }
+    // Auto-play main audio after intro
+    setTimeout(() => {
+      if (audioRef.current) {
+        audioRef.current.play().catch(e => console.error("Audio playback failed:", e));
+      }
+    }, 500);
   };
 
   const contacts = [
@@ -527,10 +507,25 @@ export default function Home() {
   ];
 
   useEffect(() => {
+    // Check if user previously completed intro in this session
+    const introCompleted = sessionStorage.getItem("introCompleted") === "true";
+    if (introCompleted) {
+      setShowIntro(false);
+    }
+    
+    // Start playing audio if intro is skipped
     if (!showIntro && audioRef.current) {
       audioRef.current.play().catch(e => console.error("Audio playback failed:", e));
     }
   }, [showIntro]);
+
+  // Handle music toggle
+  const toggleMusic = () => {
+    setIsMuted(!isMuted);
+    if (audioRef.current) {
+      audioRef.current.muted = !isMuted;
+    }
+  };
 
   if (showIntro) {
     return <AnimatePresence><IntroOverlay onComplete={handleIntroComplete} /></AnimatePresence>;
@@ -540,18 +535,23 @@ export default function Home() {
     <div className="min-h-screen bg-black text-white selection:bg-primary selection:text-white overflow-hidden relative font-montserrat">
       <audio ref={audioRef} src={audioFile} loop muted={isMuted} />
       
-      {/* Enhanced Background */}
+      {/* Background Image with Dark Wash */}
       <div 
-        className="fixed inset-0 z-0 bg-cover bg-center bg-no-repeat opacity-70 grayscale-[0.3]"
+        className="fixed inset-0 z-0 bg-cover bg-center bg-no-repeat opacity-60 grayscale-[0.3]"
         style={{ backgroundImage: `url(${mainBg})` }}
       />
-      <div className="fixed inset-0 z-1 bg-gradient-to-b from-black/90 via-black/60 to-black/80 pointer-events-none" />
+      <div className="fixed inset-0 z-1 bg-black/40 pointer-events-none" />
       
+      {/* Bottom Left Music Toggle Button - Fixed position */}
       <button 
-        onClick={() => setIsMuted(!isMuted)}
-        className="fixed top-8 right-8 z-[100] p-2 text-white/40 hover:text-white transition-colors bg-black/40 backdrop-blur-sm rounded-full border border-white/10"
+        onClick={toggleMusic}
+        className="fixed bottom-10 left-10 z-[100] p-3 text-white/40 hover:text-white transition-colors bg-black/20 backdrop-blur-sm rounded-full border border-white/10 hover:border-primary/50 group"
       >
-        {isMuted ? <VolumeX size={20} /> : <Volume2 size={20} />}
+        {isMuted ? (
+          <VolumeX size={20} className="group-hover:scale-110 transition-transform" />
+        ) : (
+          <Volume2 size={20} className="group-hover:scale-110 transition-transform animate-pulse" />
+        )}
       </button>
 
       <div className="scanline z-10" />
@@ -568,64 +568,39 @@ export default function Home() {
         <motion.div 
           initial={{ opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1.5, ease: "easeOut" }}
+          transition={{ duration: 1 }}
           className="text-center space-y-6"
         >
           <div className="flex justify-center gap-4 md:gap-8 mb-8">
-            <Circle className="w-12 h-12 md:w-20 md:h-20 stroke-white animate-pulse" size={80} />
-            <Triangle className="w-12 h-12 md:w-20 md:h-20 stroke-white animate-pulse delay-300" size={80} />
-            <Square className="w-12 h-12 md:w-20 md:h-20 stroke-white animate-pulse delay-600" size={80} />
+            <Circle className="w-12 h-12 md:w-20 md:h-20 stroke-white" size={80} />
+            <Triangle className="w-12 h-12 md:w-20 md:h-20 stroke-white" size={80} />
+            <Square className="w-12 h-12 md:w-20 md:h-20 stroke-white" size={80} />
           </div>
 
-          <motion.h1 
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.3, duration: 1 }}
-            className="font-orbitron text-5xl md:text-9xl font-black tracking-tighter text-white mb-2 text-glow"
-          >
-            ASCENT <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary">2k26</span>
-          </motion.h1>
+          <h1 className="font-orbitron text-5xl md:text-9xl font-black tracking-tighter text-white mb-2 text-glow">
+            ASCENT 2k26
+          </h1>
           
-          <motion.p 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.5, duration: 1 }}
-            className="font-montserrat text-lg md:text-3xl text-gray-300 tracking-widest uppercase font-bold"
-          >
+          <p className="font-montserrat text-lg md:text-3xl text-gray-400 tracking-widest uppercase font-bold">
             A Game Where Only the Best Survive
-          </motion.p>
+          </p>
 
-          <motion.p 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.7, duration: 1 }}
-            className="font-montserrat text-sm md:text-lg text-white/70 max-w-2xl mx-auto leading-relaxed tracking-wide"
-          >
+          <p className="font-montserrat text-sm md:text-lg text-white/60 max-w-2xl mx-auto leading-relaxed tracking-wide">
             This competition will test your intelligence, discipline, and composure
-            under pressure. Every decision matters, every second counts.
-          </motion.p>
+            under pressure.
+          </p>
 
-          <motion.div 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.9, duration: 1 }}
-            className="py-12"
-          >
-            <p className="text-primary font-black tracking-[0.4em] mb-4 font-orbitron text-sm drop-shadow-[0_0_10px_rgba(255,0,96,0.5)]">REGISTRATIONS CLOSE IN</p>
+          <div className="py-12">
+            <p className="text-primary font-black tracking-[0.4em] mb-4 font-orbitron text-sm">REGISTRATIONS CLOSE IN</p>
             <CountdownTimer />
-          </motion.div>
+          </div>
 
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 1.1, duration: 1 }}
-            className="flex flex-col md:flex-row items-center justify-center gap-6 mt-8"
-          >
+          <div className="flex flex-col md:flex-row items-center justify-center gap-6 mt-8">
             <motion.a 
               href="#register"
-              whileHover={{ scale: 1.05, boxShadow: "0 0 40px rgba(255, 0, 96, 0.6)" }}
+              whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className="group relative overflow-hidden bg-primary px-12 py-5 font-orbitron font-black text-xl tracking-[0.2em] text-white transition-all"
+              className="group relative overflow-hidden bg-primary px-12 py-5 font-orbitron font-black text-xl tracking-[0.2em] text-white transition-all hover:shadow-[0_0_30px_rgba(255,0,96,0.6)]"
             >
               <div className="absolute inset-0 bg-white/10 -translate-x-full group-hover:translate-x-0 transition-transform duration-300 ease-out skew-x-12" />
               <span className="relative z-10">ENTER THE GAME</span>
@@ -633,24 +608,26 @@ export default function Home() {
 
             <motion.a 
               href="#rules"
-              whileHover={{ scale: 1.05, borderColor: "white", backgroundColor: "rgba(255,255,255,0.1)" }}
+              whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className="group relative overflow-hidden bg-transparent border-2 border-white/20 px-12 py-5 font-orbitron font-black text-xl tracking-[0.2em] text-white transition-all"
+              className="group relative overflow-hidden bg-transparent border-2 border-white/20 px-12 py-5 font-orbitron font-black text-xl tracking-[0.2em] text-white transition-all hover:border-white hover:bg-white/5"
             >
               <span className="relative z-10">VIEW RULES</span>
             </motion.a>
 
             <motion.a 
               href="#games"
-              whileHover={{ scale: 1.05, borderColor: "rgb(36, 159, 156)", backgroundColor: "rgba(36, 159, 156, 0.1)" }}
+              whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className="group relative overflow-hidden bg-transparent border-2 border-secondary/30 px-12 py-5 font-orbitron font-black text-xl tracking-[0.2em] text-secondary transition-all"
+              className="group relative overflow-hidden bg-transparent border-2 border-secondary/30 px-12 py-5 font-orbitron font-black text-xl tracking-[0.2em] text-secondary transition-all hover:border-secondary hover:bg-secondary/5"
             >
               <span className="relative z-10">THE TRIALS</span>
             </motion.a>
-          </motion.div>
+          </div>
+
         </motion.div>
 
+        {/* Background Atmosphere Simulation */}
         <div className="absolute inset-0 -z-10 overflow-hidden pointer-events-none opacity-40">
           <div className="absolute inset-0 bg-gradient-to-b from-black via-black/80 to-black" />
           <motion.div 
@@ -683,7 +660,7 @@ export default function Home() {
       {/* Prize Section */}
       <section id="prizes" className="py-32 px-4 relative z-10 overflow-hidden">
         <div className="absolute inset-0 -z-10 flex justify-center">
-          <div className="w-[700px] h-[500px] bg-primary/20 blur-[180px]" />
+          <div className="w-[700px] h-[500px] bg-primary/15 blur-[180px]" />
         </div>
 
         <div className="max-w-5xl mx-auto text-center">
@@ -691,18 +668,18 @@ export default function Home() {
             initial={{ opacity: 0, scale: 0.92 }}
             whileInView={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.8, ease: "easeOut" }}
-            className="relative p-14 md:p-20 border border-primary/30 bg-black/60 backdrop-blur-xl overflow-hidden group"
+            className="relative p-14 md:p-20 border border-primary/30 bg-black/50 backdrop-blur-xl overflow-hidden group"
           >
             <div className="absolute inset-0 bg-primary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-1000" />
 
-            <Trophy className="w-20 h-20 text-primary mx-auto mb-10 drop-shadow-[0_0_30px_rgba(255,0,96,0.6)] animate-bounce" />
+            <Trophy className="w-20 h-20 text-primary mx-auto mb-10 drop-shadow-[0_0_30px_rgba(255,0,96,0.6)]" />
 
             <p className="text-[15px] font-mono tracking-[0.5em] text-white/40 mb-3 uppercase">
               Placement Simulation Rewards
             </p>
 
             <h2 className="text-4xl md:text-6xl font-orbitron font-black text-white tracking-[0.4em] mb-10">
-              THE <span className="text-primary">REWARDS</span>
+              THE REWARDS
             </h2>
 
             <div className="flex justify-center mb-10">
@@ -710,22 +687,16 @@ export default function Home() {
             </div>
 
             <div className="grid md:grid-cols-2 gap-8 mb-12">
-              <motion.div 
-                whileHover={{ scale: 1.05, borderColor: "rgb(255, 0, 96)" }}
-                className="p-6 border border-white/10 bg-black/40 backdrop-blur-sm"
-              >
+              <div className="p-6 border border-white/10 bg-white/5">
                 <p className="text-primary font-orbitron text-sm tracking-widest mb-2">CHAMPION</p>
                 <p className="text-2xl font-black text-white font-orbitron">JUNIOR TRACK</p>
                 <p className="text-white/40 text-[10px] mt-2 font-mono uppercase">1st & 2nd Year Excellence</p>
-              </motion.div>
-              <motion.div 
-                whileHover={{ scale: 1.05, borderColor: "rgb(255, 0, 96)" }}
-                className="p-6 border border-white/10 bg-black/40 backdrop-blur-sm"
-              >
+              </div>
+              <div className="p-6 border border-white/10 bg-white/5">
                 <p className="text-primary font-orbitron text-sm tracking-widest mb-2">CHAMPION</p>
                 <p className="text-2xl font-black text-white font-orbitron">SENIOR TRACK</p>
                 <p className="text-white/40 text-[10px] mt-2 font-mono uppercase">3rd & 4th Year Mastery</p>
-              </motion.div>
+              </div>
             </div>
 
             <p className="text-white/60 text-xs md:text-sm uppercase tracking-[0.35em] font-mono mb-14">
@@ -739,13 +710,12 @@ export default function Home() {
                 "Technical & HR Feedback",
                 "Placement Readiness",
               ].map((item) => (
-                <motion.div
+                <div
                   key={item}
-                  whileHover={{ scale: 1.05, backgroundColor: "rgba(255,255,255,0.1)" }}
                   className="p-4 border border-white/15 bg-white/5 text-white/50 hover:text-white hover:border-primary/50 transition-all duration-300"
                 >
                   {item}
-                </motion.div>
+                </div>
               ))}
             </div>
           </motion.div>
@@ -781,8 +751,7 @@ export default function Home() {
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: idx * 0.1 }}
-                whileHover={{ scale: 1.02, borderColor: "rgba(255, 0, 96, 0.5)" }}
-                className="group relative flex items-center gap-6 p-8 bg-black/40 backdrop-blur-xl border border-white/10 hover:border-primary/50 transition-all duration-500 rounded-sm"
+                className="group relative flex items-center gap-6 p-8 bg-black/20 backdrop-blur-xl border border-white/10 hover:border-primary/50 hover:bg-black/40 transition-all duration-500 rounded-sm"
               >
                 <div className="w-16 h-16 flex flex-col items-center justify-center border border-white/10 font-orbitron group-hover:border-primary transition-colors">
                   <span className="text-xs text-white/30 group-hover:text-primary transition-colors">
@@ -857,8 +826,7 @@ export default function Home() {
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full mb-8">
-                <motion.button 
-                  whileHover={{ scale: 1.05 }}
+                <button 
                   onClick={() => setActiveAction(activeAction === 'call' ? null : 'call')}
                   className={`group relative overflow-hidden border py-5 font-orbitron font-bold text-xs tracking-[0.3em] transition-all duration-500 ${
                     activeAction === 'call' ? 'bg-white text-black border-white' : 'bg-white/5 border-white/10 text-white hover:border-primary'
@@ -866,10 +834,9 @@ export default function Home() {
                 >
                   <span className="relative z-10">CALL SUPPORT</span>
                   <div className="absolute inset-0 bg-primary/20 translate-y-full group-hover:translate-y-0 transition-transform" />
-                </motion.button>
+                </button>
 
-                <motion.button 
-                  whileHover={{ scale: 1.05 }}
+                <button 
                   onClick={() => setActiveAction(activeAction === 'message' ? null : 'message')}
                   className={`group relative overflow-hidden border py-5 font-orbitron font-bold text-xs tracking-[0.3em] transition-all duration-500 ${
                     activeAction === 'message' ? 'bg-white text-black border-white' : 'bg-white/5 border-white/10 text-white hover:border-primary'
@@ -877,7 +844,7 @@ export default function Home() {
                 >
                   <span className="relative z-10">MESSAGE CONTROL</span>
                   <div className="absolute inset-0 bg-primary/20 translate-y-full group-hover:translate-y-0 transition-transform" />
-                </motion.button>
+                </button>
               </div>
 
               <AnimatePresence>
@@ -934,21 +901,21 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Enhanced Footer */}
+      {/* Footer */}
       <footer className="relative z-10 mt-24 border-t border-red-500/20 bg-black/60 backdrop-blur-sm">
-        <div className="max-w-6xl mx-auto px-6 py-12 text-center font-mono text-xs tracking-widest">
-          <p className="text-red-500/80 mb-2">
+        <div className="max-w-6xl mx-auto px-6 py-10 text-center font-mono text-xs tracking-widest text-gray-500">
+          <p className="text-red-500/80">
             OFFICIAL INVITATION • ASCENT 2K26
           </p>
-          <p className="text-white/60 mb-2">
+          <p className="mt-2 text-white-600">
             CONTROLLED ACCESS • AUTHORIZATION REQUIRED
           </p>
           <div className="my-4 h-px w-32 mx-auto bg-gradient-to-r from-transparent via-red-500/40 to-transparent" />
-          <p className="text-white/40 mb-2">
+          <p className="text-white-700">
             UNAUTHORIZED DISTRIBUTION STRICTLY PROHIBITED
           </p>
-          <p className="mt-3 text-[10px] text-white/40">
-            SYSTEM STATUS: <span className="text-red-500 font-bold">ACTIVE</span>
+          <p className="mt-3 text-[10px] text-white-700">
+            SYSTEM STATUS: <span className="text-red-500">ACTIVE</span>
           </p>
         </div>
       </footer>

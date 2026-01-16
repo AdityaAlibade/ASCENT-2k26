@@ -1,156 +1,198 @@
 import { Link, useLocation } from "wouter";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 
 export default function Navbar() {
   const [location, setLocation] = useLocation();
   const [scrolled, setScrolled] = useState(false);
   const [showNavbar, setShowNavbar] = useState(false);
 
+  // Memoized navigation items
+  const navItems = useMemo(() => [
+    { id: "home", label: "Home", action: () => scrollToSection('hero') },
+    { id: "trials", label: "The Trials", href: "/about" },
+    { id: "enlist", label: "Enlist", href: "/registration" },
+    { id: "rules", label: "Rule Book", href: "/rules" },
+  ], []);
+
+  // Handle intro completion
   useEffect(() => {
-    // 1. Initial check: If intro was already completed in this session, show navbar
     const introCompleted = sessionStorage.getItem("introCompleted") === "true";
     if (introCompleted) {
       setShowNavbar(true);
     }
 
-    // 2. Listen for the custom 'introComplete' event from your IntroOverlay
     const handleIntroComplete = () => {
       setShowNavbar(true);
       sessionStorage.setItem("introCompleted", "true");
     };
 
     window.addEventListener('introComplete', handleIntroComplete);
-
-    // 3. Handle scroll effect for background transparency
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 50);
-    };
-
-    window.addEventListener("scroll", handleScroll);
     
     return () => {
       window.removeEventListener('introComplete', handleIntroComplete);
+    };
+  }, []);
+
+  // Scroll effect with throttle for performance
+  useEffect(() => {
+    let ticking = false;
+    
+    const handleScroll = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          setScrolled(window.scrollY > 50);
+          ticking = false;
+        });
+        ticking = true;
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    
+    return () => {
       window.removeEventListener("scroll", handleScroll);
     };
   }, []);
 
-  const handleHomeClick = () => {
-    // Ensure we don't show the intro again when clicking the logo
+  const handleHomeClick = useCallback(() => {
     sessionStorage.setItem("introCompleted", "true");
     setLocation("/");
-  };
+  }, [setLocation]);
 
-  const scrollToSection = (id: string) => {
+  const scrollToSection = useCallback((id: string) => {
     if (location !== "/") {
       setLocation("/");
-      // Wait for navigation to home page before scrolling
-      setTimeout(() => {
-        const element = document.getElementById(id);
-        if (element) {
-          element.scrollIntoView({ behavior: "smooth" });
-        }
-      }, 100);
+      // Use requestAnimationFrame for better timing
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          const element = document.getElementById(id);
+          if (element) {
+            element.scrollIntoView({ behavior: "smooth" });
+          }
+        });
+      });
     } else {
       const element = document.getElementById(id);
       if (element) {
         element.scrollIntoView({ behavior: "smooth" });
       }
     }
-  };
+  }, [location, setLocation]);
 
   // Do not render the navbar at all if the intro is still playing
   if (!showNavbar) return null;
 
+  // Calculate navbar background based on state
+  const navbarBackground = scrolled 
+    ? "bg-black/95 backdrop-blur-xl border-b border-red-500/20 shadow-lg shadow-red-900/10"
+    : "bg-gradient-to-b from-black/80 via-black/40 to-transparent backdrop-blur-lg";
+
   return (
-    <nav className={`fixed top-0 left-0 w-full z-[9999] transition-all duration-500 ${
-      scrolled ? "bg-black/90 backdrop-blur-xl border-b border-red-500/20" : "bg-black/20 backdrop-blur-md"
-    }`}>
-      {/* CCTV Border & Scanline Effect */}
-      <div className="absolute inset-0 border border-red-500/5 pointer-events-none" />
-      <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-red-500/40 to-transparent" />
+    <nav className={`fixed top-0 left-0 w-full z-[9999] transition-all duration-300 ${navbarBackground}`}>
+      {/* Surveillance UI Elements */}
+      <div className="absolute inset-0 border border-red-500/10 pointer-events-none" />
+      <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-red-500/50 to-transparent animate-pulse" />
       
-      <div className="relative max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+      {/* Scanline overlay */}
+      <div className="absolute inset-0 bg-[linear-gradient(transparent_95%,rgba(239,68,68,0.05)_100%)] bg-[length:100%_3px] pointer-events-none" />
+      
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-4 flex items-center justify-between">
         
-        {/* Logo Section */}
+        {/* Logo with enhanced interactivity */}
         <button
           onClick={handleHomeClick}
-          className="font-orbitron text-2xl font-black tracking-[0.3em] text-white flex items-center gap-3 group relative py-2 px-4 border border-white/5 hover:border-red-500/30 transition-all"
+          className="font-orbitron text-xl sm:text-2xl font-black tracking-[0.2em] sm:tracking-[0.3em] text-white flex items-center gap-2 sm:gap-3 group relative py-2 px-3 sm:px-4 border border-white/10 hover:border-red-500/40 transition-all duration-300 hover:shadow-[0_0_20px_rgba(239,68,68,0.3)]"
+          aria-label="Return to homepage"
         >
-          <div className="flex gap-1.5">
-            <div className="w-2.5 h-2.5 border border-red-500 rounded-full" /> {/* Circle */}
-            <div className="w-2.5 h-2.5 border border-red-500 [clip-path:polygon(50%_0%,0%_100%,100%_100%)]" /> {/* Triangle */}
-            <div className="w-2.5 h-2.5 border border-red-500" /> {/* Square */}
+          {/* Animated logo elements */}
+          <div className="flex gap-1 sm:gap-1.5">
+            <div className="w-2 h-2 sm:w-2.5 sm:h-2.5 border border-red-500 rounded-full animate-[ping_2s_cubic-bezier(0,0,0.2,1)_infinite]" />
+            <div className="w-2 h-2 sm:w-2.5 sm:h-2.5 border border-red-500 [clip-path:polygon(50%_0%,0%_100%,100%_100%)] group-hover:rotate-180 transition-transform duration-500" />
+            <div className="w-2 h-2 sm:w-2.5 sm:h-2.5 border border-red-500 group-hover:rotate-45 transition-transform duration-500" />
           </div>
           
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-500 via-white to-red-500">
+          {/* Animated gradient text */}
+          <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-500 via-white to-red-500 bg-[length:200%_auto] animate-gradient">
             ASCENT
           </span>
-          <div className="w-1.5 h-1.5 bg-red-600 rounded-full animate-pulse shadow-[0_0_8px_#ef4444]" />
+          
+          {/* Live indicator */}
+          <div className="relative">
+            <span className="absolute inset-0 animate-ping bg-red-600 rounded-full opacity-75" />
+            <span className="relative block w-1.5 h-1.5 bg-red-600 rounded-full shadow-[0_0_8px_#ef4444]" />
+          </div>
         </button>
 
-        {/* Navigation Links */}
-        <div className="hidden md:flex gap-6 text-[10px] font-mono uppercase tracking-[0.4em]">
-          {[
-            { label: "Home", action: () => scrollToSection('hero') },
-            { label: "The Trials", href: "/About" },
-            { label: "Enlist", href: "/registration" },
-            { label: "Rule Book", href: "/rules" },
-          ].map((item) => (
-            <div key={item.label} className="relative group">
+        {/* Desktop Navigation */}
+        <div className="hidden md:flex items-center gap-4 lg:gap-6">
+          {navItems.map((item) => (
+            <div key={item.id} className="relative group">
               {item.action ? (
                 <button
                   onClick={item.action}
-                  className="px-4 py-2 text-white/50 hover:text-white transition-all hover:bg-white/5"
+                  className="px-4 py-2 text-sm font-mono uppercase tracking-[0.3em] text-white/70 hover:text-white transition-all hover:bg-white/5 relative overflow-hidden group"
                 >
-                  {item.label}
+                  <span className="relative z-10">{item.label}</span>
+                  <span className="absolute inset-0 bg-gradient-to-r from-transparent via-red-500/10 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
                 </button>
               ) : (
                 <Link href={item.href!}>
-                  <a className={`px-4 py-2 transition-all hover:bg-white/5 ${
-                    location === item.href ? "text-red-500" : "text-white/50 hover:text-white"
+                  <a className={`px-4 py-2 text-sm font-mono uppercase tracking-[0.3em] transition-all relative overflow-hidden group ${
+                    location === item.href 
+                      ? "text-red-500 font-bold" 
+                      : "text-white/70 hover:text-white hover:bg-white/5"
                   }`}>
-                    {item.label}
+                    <span className="relative z-10">{item.label}</span>
+                    <span className="absolute bottom-0 left-1/2 w-0 h-[1px] bg-red-600 group-hover:w-full group-hover:left-0 transition-all duration-300" />
                   </a>
                 </Link>
               )}
-              <div className={`absolute bottom-0 left-0 h-[1px] bg-red-600 transition-all duration-300 ${
-                location === item.href ? "w-full" : "w-0 group-hover:w-full"
-              }`} />
             </div>
           ))}
         </div>
 
-        {/* System Status Indicators */}
-        <div className="flex items-center gap-4 font-mono text-[9px]">
-          <div className="flex items-center gap-2">
-            <div className="relative flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-red-600"></span>
+        {/* System Status & Mobile Menu Button */}
+        <div className="flex items-center gap-3 sm:gap-4">
+          {/* System Status Indicators */}
+          <div className="flex items-center gap-2 sm:gap-3 font-mono text-[8px] sm:text-[9px]">
+            <div className="flex items-center gap-1.5 sm:gap-2">
+              <div className="relative flex h-1.5 w-1.5 sm:h-2 sm:w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-full w-full bg-red-600"></span>
+              </div>
+              <span className="text-red-500 font-bold tracking-widest whitespace-nowrap">REC ● LIVE</span>
             </div>
-            <span className="text-red-500 font-bold tracking-widest">REC ● LIVE</span>
-          </div>
-          
-          <div className="hidden sm:block px-3 py-1 border border-green-500/20 bg-green-500/5 text-green-400 font-bold">
-            SYSTEM_ONLINE
+            
+            <div className="hidden sm:block px-2 sm:px-3 py-1 border border-green-500/30 bg-gradient-to-r from-green-500/5 to-green-500/10 text-green-400 font-bold whitespace-nowrap">
+              SYSTEM_ONLINE
+            </div>
+
+            {location !== "/" && (
+              <div className="hidden lg:block px-2 sm:px-3 py-1 border border-red-500/30 bg-gradient-to-r from-red-500/5 to-red-500/10 text-red-500 font-bold whitespace-nowrap animate-pulse">
+                BREACH_DETECTED
+              </div>
+            )}
           </div>
 
-          {location !== "/" && (
-            <div className="px-3 py-1 border border-red-500/30 bg-red-500/10 text-red-500 animate-pulse font-bold">
-              BREACH_DETECTED
+          {/* Mobile Menu Button - Optional */}
+          <button 
+            className="md:hidden p-2 border border-white/10 hover:border-red-500/30 transition-colors"
+            aria-label="Open menu"
+            // Add your mobile menu handler here
+          >
+            <div className="space-y-1.5">
+              <span className="block w-5 h-0.5 bg-white/70" />
+              <span className="block w-5 h-0.5 bg-white/70" />
+              <span className="block w-5 h-0.5 bg-white/70" />
             </div>
-          )}
+          </button>
         </div>
       </div>
 
-      {/* Surveillance Scan Effect */}
-      <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-red-500/30 to-transparent animate-[navscan_3s_linear_infinite]" />
-      
-      <style dangerouslySetInnerHTML={{ __html: `
-        @keyframes navscan {
-          0% { transform: translateX(-100%); }
-          100% { transform: translateX(100%); }
-        }
-      `}} />
+      {/* Animated surveillance scan */}
+      <div className="absolute bottom-0 left-0 right-0 h-[1px]">
+        <div className="h-full bg-gradient-to-r from-transparent via-red-500/50 to-transparent animate-[navscan_3s_linear_infinite]" />
+      </div>
     </nav>
   );
 }

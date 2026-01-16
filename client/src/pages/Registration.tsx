@@ -16,6 +16,10 @@ export default function Registration() {
     }
   }, []);
 
+  const toggleAudio = () => {
+    setIsMuted(!isMuted);
+  };
+
   return (
     <main className="min-h-screen bg-black text-white relative font-montserrat overflow-x-hidden selection:bg-red-500 selection:text-white">
       
@@ -54,17 +58,58 @@ export default function Registration() {
         </div>
       </div>
 
-      {/* 3. FLOATING AUDIO CONTROL */}
-      <button
-        onClick={() => setIsMuted(!isMuted)}
-        className="fixed bottom-10 right-10 z-50 p-4 rounded-full border border-white/10 bg-black/40 backdrop-blur-xl hover:bg-red-600/20 hover:border-red-500/50 transition-all group"
+      {/* 3. FLOATING AUDIO CONTROL - LEFT BOTTOM CORNER */}
+      <motion.button
+        initial={{ opacity: 0, x: -20 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ delay: 0.5, duration: 0.3 }}
+        onClick={toggleAudio}
+        className="fixed left-4 bottom-4 z-50 p-3 bg-black/60 backdrop-blur-md border border-white/10 hover:border-red-500/30 rounded-full hover:bg-red-500/10 transition-all group shadow-lg"
+        aria-label={isMuted ? "Unmute audio" : "Mute audio"}
+        whileHover={{ scale: 1.1 }}
+        whileTap={{ scale: 0.9 }}
       >
-        {isMuted ? (
-          <VolumeX size={20} className="text-white/40 group-hover:text-white" />
-        ) : (
-          <Volume2 size={20} className="text-red-500 group-hover:text-red-400" />
+        <div className="relative">
+          {isMuted ? (
+            <VolumeX size={18} className="text-white/60 group-hover:text-white" />
+          ) : (
+            <Volume2 size={18} className="text-red-500 group-hover:text-red-400" />
+          )}
+          
+          {/* Audio wave animation when playing */}
+          {!isMuted && (
+            <div className="absolute -inset-1 flex items-center justify-center">
+              <div className="flex items-end justify-center space-x-[2px]">
+                {[1, 2, 3, 2, 1].map((height, index) => (
+                  <div
+                    key={index}
+                    className="w-[2px] bg-red-500 rounded-full animate-pulse"
+                    style={{
+                      height: `${height * 4}px`,
+                      animationDelay: `${index * 0.1}s`,
+                      animationDuration: '0.8s'
+                    }}
+                  />
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+        
+        {/* Pulsing ring when audio is playing */}
+        {!isMuted && (
+          <div className="absolute inset-0 rounded-full border border-red-500/30 animate-ping" />
         )}
-      </button>
+
+        {/* Tooltip on hover */}
+        <div className="absolute left-full ml-2 top-1/2 -translate-y-1/2 px-2 py-1 bg-black/90 backdrop-blur-sm border border-red-500/20 text-xs font-mono text-white opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap pointer-events-none">
+          {isMuted ? "ENABLE AUDIO" : "DISABLE AUDIO"}
+          <div className="absolute left-0 top-1/2 -translate-x-1 -translate-y-1/2 w-0 h-0 border-t-[4px] border-t-transparent border-r-[4px] border-r-black/90 border-b-[4px] border-b-transparent" />
+        </div>
+
+        {/* Status indicator */}
+        <div className={`absolute -top-1 -right-1 w-3 h-3 rounded-full border border-white/20 ${!isMuted ? 'bg-red-500 animate-pulse' : 'bg-white/10'}`} />
+      </motion.button>
 
       {/* 4. CONTENT WRAPPER */}
       <div className="relative z-20 flex flex-col items-center">
