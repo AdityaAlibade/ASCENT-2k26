@@ -199,7 +199,7 @@ export default function TrialsSection() {
             icon={<Code size={28} />}
             title="Round 2"
             subtitle="The Glass Bridge"
-            description="Competitive coding on a digital precipice where one syntax error results in immediate server disconnection."
+            description="Step onto the Glass Bridge — a coding challenge where every decision matters. Precision and problem-solving will determine whether you cross safely or fall behind."
             stats={[
               { icon: <Clock size={14} />, label: "Tracked" },
               { icon: <Target size={14} />, label: "Algorithm Focus" },
@@ -217,7 +217,7 @@ export default function TrialsSection() {
             description="Face the Board of Directors. Defend your architecture and survive the ultimate psychological evaluation."
             stats={[
               { icon: <Users size={14} />, label: "DSA Review" },
-              { icon: <Target size={14} />, label: "System Design" },
+              { icon: <Target size={14} />, label: "Project Discussion" },
               { icon: <Activity size={14} />, label: "HR Round" }
             ]}
             color="white"
