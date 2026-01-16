@@ -3,8 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useGameStats } from "@/hooks/use-players";
 import { RegistrationForm } from "@/components/RegistrationForm";
 import { Circle, Triangle, Square, FloatingShapes } from "@/components/ui/GameShapes";
-import { ChevronDown, AlertTriangle, Clock, Trophy, ShieldAlert, Video, Volume2, VolumeX } from "lucide-react";
-import audioFile from "@assets/Round_And_Round_Mingle_1767983924508.mp3";
+import { ChevronDown, Trophy, Video } from "lucide-react";
 import frontManTheme from "@assets/squid_game_1768071980984.mp3";
 import frontManImg from "@assets/FM_1768130131807.png"
 import mainBg from "@assets/MAin_background_1768146583042.jpg";
@@ -55,7 +54,7 @@ const SystemLoader = ({ onComplete }: { onComplete: () => void }) => {
     <div className="fixed inset-0 z-[200] bg-black flex flex-col items-center justify-center overflow-hidden">
       <div className="vignette" />
       <div className="scanline opacity-10" />
-      
+
       <div className="flex gap-16 md:gap-24 items-center mb-24">
         <div className="relative">
           <svg className="w-16 h-16 md:w-24 md:h-24">
@@ -67,7 +66,7 @@ const SystemLoader = ({ onComplete }: { onComplete: () => void }) => {
               transition={{ duration: 1.5, ease: "linear", delay: 0 }}
             />
           </svg>
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: [0, 1, 0] }}
             transition={{ delay: 1.5, duration: 0.5 }}
@@ -85,7 +84,7 @@ const SystemLoader = ({ onComplete }: { onComplete: () => void }) => {
               transition={{ duration: 1.5, ease: "linear", delay: 1.5 }}
             />
           </svg>
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: [0, 1, 0] }}
             transition={{ delay: 3, duration: 0.5 }}
@@ -103,7 +102,7 @@ const SystemLoader = ({ onComplete }: { onComplete: () => void }) => {
               transition={{ duration: 1.5, ease: "linear", delay: 3 }}
             />
           </svg>
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 4.5, duration: 0.5 }}
@@ -131,15 +130,15 @@ const DdakjiTransition = ({ onComplete }: { onComplete: () => void }) => {
 
   return (
     <div className="fixed inset-0 z-[150] bg-black flex items-center justify-center overflow-hidden">
-      <motion.div 
+      <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
         className="text-center space-y-12"
       >
         <div className="relative w-64 h-64 mx-auto flex items-center justify-center">
-          <motion.div 
-            animate={isFlipped ? { 
+          <motion.div
+            animate={isFlipped ? {
               rotateY: 180,
               y: [0, -150, 0],
               scale: [1, 1.3, 1]
@@ -152,12 +151,12 @@ const DdakjiTransition = ({ onComplete }: { onComplete: () => void }) => {
             <div className="absolute inset-0 bg-red-600" style={{ transform: "rotateY(180deg)", backfaceVisibility: "hidden" }} />
           </motion.div>
         </div>
-        
+
         <div className="space-y-8">
           <p className="font-orbitron text-white/10 uppercase tracking-[0.5em] text-xs">
             SLAP... SLAP... SLAP...
           </p>
-          
+
           {!isFlipped && (
             <motion.button
               initial={{ opacity: 0 }}
@@ -178,31 +177,11 @@ const IntroOverlay = ({ onComplete }: { onComplete: () => void }) => {
   const [phase, setPhase] = useState<'loader' | 'video' | 'welcome' | 'frontman' | 'conditions'>('loader');
   const [step, setStep] = useState(0);
   const [isMuted, setIsMuted] = useState(false);
-  const audioRef = useRef<HTMLAudioElement | null>(null);
-  const [audioInitialized, setAudioInitialized] = useState(false);
-
   // Initialize audio with user interaction
-  const initializeAudio = async () => {
-    if (audioRef.current && !audioInitialized) {
-      audioRef.current.volume = 0.3;
-      audioRef.current.muted = false;
-      setAudioInitialized(true);
-      
-      try {
-        await audioRef.current.play();
-        console.log("Intro audio autoplay successful");
-      } catch (error) {
-        console.log("Intro audio autoplay blocked, will play after user interaction");
-      }
-    }
-  };
 
   // Try to autoplay when component mounts (may fail due to browser policy)
   useEffect(() => {
-    if (audioRef.current) {
-      audioRef.current.volume = 0.3;
-      audioRef.current.muted = false;
-    }
+    // Logic for frontend theme if needed, but we removed ref.
   }, []);
 
   useEffect(() => {
@@ -216,22 +195,9 @@ const IntroOverlay = ({ onComplete }: { onComplete: () => void }) => {
         clearTimeout(timer3);
       };
     }
-    if (phase === 'frontman' && audioRef.current) {
-      audioRef.current.pause();
-    }
   }, [phase]);
 
-  const handleStart = async () => {
-    // Ensure audio is initialized before playing
-    if (!audioInitialized && audioRef.current) {
-      await initializeAudio();
-    } else if (audioRef.current) {
-      try {
-        await audioRef.current.play();
-      } catch (error) {
-        console.error("Audio playback failed:", error);
-      }
-    }
+  const handleStart = () => {
     setPhase('frontman');
   };
 
@@ -239,36 +205,20 @@ const IntroOverlay = ({ onComplete }: { onComplete: () => void }) => {
   if (phase === 'video') return <DdakjiTransition onComplete={() => setPhase('welcome')} />;
 
   return (
-    <motion.div 
+    <motion.div
       className="fixed inset-0 z-[100] bg-black flex flex-col items-center justify-center p-4 overflow-hidden"
       initial={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 1.5, ease: "easeInOut" }}
-      onClick={initializeAudio} // Add click anywhere to initialize audio
     >
-      <audio ref={audioRef} src={audioFile} loop />
-      
-      {/* Mute button in intro - top right */}
-      <button 
-        onClick={() => {
-          setIsMuted(!isMuted);
-          if (audioRef.current) {
-            audioRef.current.muted = !isMuted;
-          }
-        }}
-        className="absolute top-8 right-8 z-50 p-2 text-white/40 hover:text-white transition-colors"
-      >
-        {isMuted ? <VolumeX size={24} /> : <Volume2 size={24} />}
-      </button>
-
       <AnimatePresence>
         {phase === 'frontman' && (
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 0.8 }}
             exit={{ opacity: 0 }}
             className="absolute inset-0 z-0"
-            style={{ 
+            style={{
               backgroundImage: `url(${frontManImg})`,
               backgroundSize: 'cover',
               backgroundPosition: 'center',
@@ -306,7 +256,7 @@ const IntroOverlay = ({ onComplete }: { onComplete: () => void }) => {
                   </motion.div>
                 )}
               </AnimatePresence>
-              
+
               <AnimatePresence mode="wait">
                 {step >= 2 && (
                   <motion.div
@@ -319,7 +269,7 @@ const IntroOverlay = ({ onComplete }: { onComplete: () => void }) => {
                     <p className="font-montserrat text-xl md:text-2xl text-primary font-bold tracking-[0.5em] uppercase text-glow-primary">
                       You have been selected.
                     </p>
-                    <motion.p 
+                    <motion.p
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
                       transition={{ delay: 1.5, duration: 2 }}
@@ -356,7 +306,7 @@ const IntroOverlay = ({ onComplete }: { onComplete: () => void }) => {
 
         {phase === 'frontman' && (
           <div className="absolute inset-0 flex items-center justify-center">
-            <audio autoPlay loop src={frontManTheme} ref={el => { if(el) el.volume = 0.15; }} />
+            <audio autoPlay loop src={frontManTheme} ref={el => { if (el) el.volume = 0.15; }} />
             <FrontManDialogue onComplete={() => setPhase('conditions')} />
           </div>
         )}
@@ -367,19 +317,20 @@ const IntroOverlay = ({ onComplete }: { onComplete: () => void }) => {
           </div>
         )}
       </div>
-      
+
       <div className="absolute inset-0 pointer-events-none overflow-hidden opacity-40">
         <div className="scanline" />
         <div className="vignette" />
         <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-30 contrast-150 brightness-50" />
       </div>
 
-      <style dangerouslySetInnerHTML={{ __html: `
+      <style dangerouslySetInnerHTML={{
+        __html: `
         @keyframes shimmer {
           100% { transform: translateX(100%); }
         }
       `}} />
-    </motion.div>
+    </motion.div >
   );
 };
 
@@ -407,9 +358,9 @@ const FrontManDialogue = ({ onComplete }: { onComplete: () => void }) => {
           charIndex++;
         } else {
           clearInterval(interval);
-          
+
           const pauseDuration = lineIndex === lines.length - 1 ? 1500 : 2500;
-          
+
           setTimeout(() => {
             if (lineIndex < lines.length - 1) {
               setLineIndex(prev => prev + 1);
@@ -448,8 +399,8 @@ const FrontManDialogue = ({ onComplete }: { onComplete: () => void }) => {
           <motion.div
             initial={{ opacity: 0, scale: 0.95, filter: "blur(10px)" }}
             animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
-            transition={{ 
-              duration: 1.5, 
+            transition={{
+              duration: 1.5,
               ease: [0.22, 1, 0.36, 1],
               delay: 0.5
             }}
@@ -473,12 +424,14 @@ const FrontManDialogue = ({ onComplete }: { onComplete: () => void }) => {
 };
 
 const ConditionsAccept = ({ onComplete }: { onComplete: () => void }) => {
+  const { startMusic } = useAudio();
   const [flashing, setFlashing] = useState(false);
 
   const handleFinalEnter = () => {
     setFlashing(true);
     setTimeout(() => {
       setFlashing(false);
+      startMusic();
       onComplete();
     }, 1000);
   };
@@ -487,7 +440,7 @@ const ConditionsAccept = ({ onComplete }: { onComplete: () => void }) => {
     <div className="space-y-12 relative">
       <AnimatePresence>
         {flashing && (
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -515,115 +468,22 @@ const ConditionsAccept = ({ onComplete }: { onComplete: () => void }) => {
   );
 };
 
+import { useAudio } from "@/context/AudioContext";
+
 export default function Home() {
-  const [showIntro, setShowIntro] = useState(true);
-  const [isMuted, setIsMuted] = useState(false);
-  const audioRef = useRef<HTMLAudioElement | null>(null);
-  const [audioReady, setAudioReady] = useState(false);
+  // Check if intro was already completed in this session
+  const [showIntro, setShowIntro] = useState(() => !sessionStorage.getItem("introCompleted"));
   const { data: stats } = useGameStats();
-  const [open, setOpen] = useState(false);
-  const [activeAction, setActiveAction] = useState<string | null>(null);
-  
-  // Store audio state globally to persist across page loads
-  const [globalAudioState, setGlobalAudioState] = useState({
-    volume: 0.3,
-    muted: false,
-    ready: false
-  });
+  const { startMusic } = useAudio();
+  const [activeAction, setActiveAction] = useState<'call' | 'message' | null>(null);
 
   const handleIntroComplete = () => {
     sessionStorage.setItem("introCompleted", "true");
     setShowIntro(false);
     window.dispatchEvent(new CustomEvent('introComplete'));
-    
-    // Initialize audio after intro completes
-    setTimeout(() => {
-      initializeMainAudio();
-    }, 500);
   };
 
-  // Initialize main audio with proper user interaction handling
-  const initializeMainAudio = async () => {
-    if (audioRef.current) {
-      audioRef.current.volume = globalAudioState.volume;
-      audioRef.current.muted = globalAudioState.muted;
-      
-      try {
-        // First, try to play the audio
-        await audioRef.current.play();
-        setAudioReady(true);
-        console.log("Main audio autoplay successful");
-        
-        // Store audio state
-        setGlobalAudioState(prev => ({ ...prev, ready: true }));
-      } catch (error) {
-        console.log("Main audio autoplay blocked, will require user interaction");
-        setAudioReady(false);
-      }
-    }
-  };
 
-  // Force audio play on user interaction
-  const forceAudioPlay = async () => {
-    if (audioRef.current && !audioReady) {
-      try {
-        await audioRef.current.play();
-        setAudioReady(true);
-        setGlobalAudioState(prev => ({ ...prev, ready: true }));
-        console.log("Audio unblocked by user interaction");
-      } catch (error) {
-        console.log("Audio still blocked:", error);
-      }
-    }
-  };
-
-  // Initialize on component mount
-  useEffect(() => {
-    const introCompleted = sessionStorage.getItem("introCompleted") === "true";
-    if (introCompleted) {
-      setShowIntro(false);
-      // Initialize audio after a short delay when intro is already completed
-      setTimeout(() => {
-        initializeMainAudio();
-      }, 1000);
-    }
-
-    // Add global click handler to unblock audio
-    const handleUserInteraction = async () => {
-      if (!audioReady) {
-        await forceAudioPlay();
-      }
-    };
-
-    // Add multiple interaction listeners
-    document.addEventListener('click', handleUserInteraction);
-    document.addEventListener('touchstart', handleUserInteraction);
-    document.addEventListener('keydown', handleUserInteraction);
-
-    return () => {
-      document.removeEventListener('click', handleUserInteraction);
-      document.removeEventListener('touchstart', handleUserInteraction);
-      document.removeEventListener('keydown', handleUserInteraction);
-    };
-  }, [audioReady]);
-
-  // Handle music toggle
-  const toggleMusic = () => {
-    const newMutedState = !isMuted;
-    setIsMuted(newMutedState);
-    
-    // Update global state
-    setGlobalAudioState(prev => ({ ...prev, muted: newMutedState }));
-    
-    if (audioRef.current) {
-      audioRef.current.muted = newMutedState;
-      
-      // If unmuting and audio was blocked, try to play it
-      if (!newMutedState && !audioReady) {
-        forceAudioPlay();
-      }
-    }
-  };
 
   const contacts = [
     { name: "Patel Abdul Rahman (President)", phone: "989038583", wa: "989038583" },
@@ -636,62 +496,23 @@ export default function Home() {
   }
 
   return (
-    <div 
+    <div
       className="min-h-screen bg-black text-white selection:bg-primary selection:text-white overflow-hidden relative font-montserrat"
-      onClick={forceAudioPlay} // Click anywhere to trigger audio
     >
-      <audio 
-        ref={audioRef} 
-        src={audioFile} 
-        loop 
-        preload="auto"
-        onCanPlayThrough={() => {
-          // When audio is ready to play, try to play it
-          if (!audioReady) {
-            forceAudioPlay();
-          }
-        }}
-      />
-      
-      {/* Background Image with Dark Wash */}
-      <div 
-        className="fixed inset-0 z-0 bg-cover bg-center bg-no-repeat opacity-60 grayscale-[0.3]"
-        style={{ backgroundImage: `url(${mainBg})` }}
-      />
-      <div className="fixed inset-0 z-1 bg-black/40 pointer-events-none" />
-      
-      {/* Bottom Left Music Toggle Button - Fixed position */}
-      <button 
-        onClick={toggleMusic}
-        className="fixed bottom-10 left-10 z-[100] p-3 text-white/40 hover:text-white transition-colors bg-black/20 backdrop-blur-sm rounded-full border border-white/10 hover:border-primary/50 group"
-      >
-        {isMuted ? (
-          <VolumeX size={20} className="group-hover:scale-110 transition-transform" />
-        ) : (
-          <Volume2 size={20} className="group-hover:scale-110 transition-transform" />
-        )}
-        {!audioReady && (
-          <span className="absolute -top-1 -right-1 w-3 h-3 bg-red-600 rounded-full animate-pulse" />
-        )}
-      </button>
 
-      {/* Audio Status Indicator (debug) */}
-      <div className="fixed bottom-24 left-10 z-[100] font-mono text-[8px] text-white/30">
-        {audioReady ? "AUDIO: ACTIVE" : "AUDIO: PENDING INTERACTION"}
-      </div>
 
       <div className="scanline z-10" />
       <div className="vignette z-10" />
       <div className="cctv-overlay z-10" />
       <div className="absolute top-24 left-8 z-50 font-mono text-[10px] opacity-40 uppercase tracking-[0.2em] pointer-events-none">
-        REC ● LIVE // CAM_01<br/>
+        REC ● LIVE // CAM_01<br />
         SQ_DORMITORY_H1
       </div>
       <FloatingShapes />
 
       {/* Hero Section */}
       <section id="hero" className="relative min-h-screen flex flex-col items-center justify-center px-4 z-20 pt-24 md:pt-28">
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1 }}
@@ -706,7 +527,7 @@ export default function Home() {
           <h1 className="font-orbitron text-5xl md:text-9xl font-black tracking-tighter text-white mb-2 text-glow">
             ASCENT 2k26
           </h1>
-          
+
           <p className="font-montserrat text-lg md:text-3xl text-gray-400 tracking-widest uppercase font-bold">
             A Game Where Only the Best Survive
           </p>
@@ -722,32 +543,32 @@ export default function Home() {
           </div>
 
           <div className="flex flex-col md:flex-row items-center justify-center gap-6 mt-8">
-            <motion.a 
+            <motion.a
               href="Registration"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              onClick={forceAudioPlay} // Ensure audio plays on any user interaction
+              onClick={() => startMusic()} // Ensure audio plays on any user interaction
               className="group relative overflow-hidden bg-primary px-12 py-5 font-orbitron font-black text-xl tracking-[0.2em] text-white transition-all hover:shadow-[0_0_30px_rgba(255,0,96,0.6)]"
             >
               <div className="absolute inset-0 bg-white/10 -translate-x-full group-hover:translate-x-0 transition-transform duration-300 ease-out skew-x-12" />
               <span className="relative z-10">ENTER THE GAME</span>
             </motion.a>
 
-            <motion.a 
+            <motion.a
               href="Rules"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              onClick={forceAudioPlay}
+              onClick={() => startMusic()}
               className="group relative overflow-hidden bg-transparent border-2 border-white/20 px-12 py-5 font-orbitron font-black text-xl tracking-[0.2em] text-white transition-all hover:border-white hover:bg-white/5"
             >
               <span className="relative z-10">VIEW RULES</span>
             </motion.a>
 
-            <motion.a 
+            <motion.a
               href="About"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              onClick={forceAudioPlay}
+              onClick={() => startMusic()}
               className="group relative overflow-hidden bg-transparent border-2 border-secondary/30 px-12 py-5 font-orbitron font-black text-xl tracking-[0.2em] text-secondary transition-all hover:border-secondary hover:bg-secondary/5"
             >
               <span className="relative z-10">THE TRIALS</span>
@@ -759,14 +580,14 @@ export default function Home() {
         {/* Background Atmosphere Simulation */}
         <div className="absolute inset-0 -z-10 overflow-hidden pointer-events-none opacity-40">
           <div className="absolute inset-0 bg-gradient-to-b from-black via-black/80 to-black" />
-          <motion.div 
+          <motion.div
             animate={{ x: [-20, 20] }}
             transition={{ repeat: Infinity, duration: 20, ease: "linear", repeatType: "mirror" }}
             className="absolute inset-0 scale-110"
           >
-             <div className="w-full h-full bg-[linear-gradient(90deg,transparent_0%,rgba(36,159,156,0.05)_50%,transparent_100%)] opacity-30" />
+            <div className="w-full h-full bg-[linear-gradient(90deg,transparent_0%,rgba(36,159,156,0.05)_50%,transparent_100%)] opacity-30" />
           </motion.div>
-          
+
           <motion.div
             animate={{ x: ["-100%", "200%"] }}
             transition={{ repeat: Infinity, duration: 40, ease: "linear" }}
@@ -777,7 +598,7 @@ export default function Home() {
           </motion.div>
         </div>
 
-        <motion.div 
+        <motion.div
           animate={{ y: [0, 10, 0] }}
           transition={{ repeat: Infinity, duration: 2 }}
           className="absolute bottom-10 left-1/2 -translate-x-1/2 opacity-50"
@@ -855,7 +676,7 @@ export default function Home() {
       <section id="schedule" className="py-24 px-4 relative z-10 bg-transparent border-y border-white/5 mt-10">
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-16">
-            <motion.p 
+            <motion.p
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
               className="text-primary font-mono text-[10px] tracking-[0.8em] mb-4 uppercase"
@@ -874,7 +695,7 @@ export default function Home() {
               { round: "Round 2", title: "THE GLASS BRIDGE", date: "Jan 30, 2026", time: "TO BE DETERMINED", symbol: "△" },
               { round: "Round 3", title: "THE FINAL STAND", date: "Jan 31, 2026", time: "TO BE DETERMINED", symbol: "□" }
             ].map((item, idx) => (
-              <motion.div 
+              <motion.div
                 key={idx}
                 initial={{ opacity: 0, x: -30 }}
                 whileInView={{ opacity: 1, x: 0 }}
@@ -901,7 +722,7 @@ export default function Home() {
                       {item.round}
                     </span>
                   </div>
-                  
+
                   <div className="flex items-center gap-4">
                     <p className="font-mono text-xs text-white/40 uppercase tracking-widest">
                       {item.date} <span className="mx-2 text-white/10">{"//"}</span> {item.time}
@@ -936,7 +757,7 @@ export default function Home() {
             <div className="w-[600px] h-[300px] bg-primary/10 blur-[120px] animate-pulse" />
           </div>
 
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             className="relative p-[1px] bg-gradient-to-b from-white/20 to-transparent backdrop-blur-2xl shadow-2xl"
@@ -955,27 +776,25 @@ export default function Home() {
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full mb-8">
-                <button 
+                <button
                   onClick={() => {
                     setActiveAction(activeAction === 'call' ? null : 'call');
-                    forceAudioPlay();
+                    startMusic();
                   }}
-                  className={`group relative overflow-hidden border py-5 font-orbitron font-bold text-xs tracking-[0.3em] transition-all duration-500 ${
-                    activeAction === 'call' ? 'bg-white text-black border-white' : 'bg-white/5 border-white/10 text-white hover:border-primary'
-                  }`}
+                  className={`group relative overflow-hidden border py-5 font-orbitron font-bold text-xs tracking-[0.3em] transition-all duration-500 ${activeAction === 'call' ? 'bg-white text-black border-white' : 'bg-white/5 border-white/10 text-white hover:border-primary'
+                    }`}
                 >
                   <span className="relative z-10">CALL SUPPORT</span>
                   <div className="absolute inset-0 bg-primary/20 translate-y-full group-hover:translate-y-0 transition-transform" />
                 </button>
 
-                <button 
+                <button
                   onClick={() => {
                     setActiveAction(activeAction === 'message' ? null : 'message');
-                    forceAudioPlay();
+                    startMusic();
                   }}
-                  className={`group relative overflow-hidden border py-5 font-orbitron font-bold text-xs tracking-[0.3em] transition-all duration-500 ${
-                    activeAction === 'message' ? 'bg-white text-black border-white' : 'bg-white/5 border-white/10 text-white hover:border-primary'
-                  }`}
+                  className={`group relative overflow-hidden border py-5 font-orbitron font-bold text-xs tracking-[0.3em] transition-all duration-500 ${activeAction === 'message' ? 'bg-white text-black border-white' : 'bg-white/5 border-white/10 text-white hover:border-primary'
+                    }`}
                 >
                   <span className="relative z-10">MESSAGE CONTROL</span>
                   <div className="absolute inset-0 bg-primary/20 translate-y-full group-hover:translate-y-0 transition-transform" />
@@ -984,7 +803,7 @@ export default function Home() {
 
               <AnimatePresence>
                 {activeAction && (
-                  <motion.div 
+                  <motion.div
                     initial={{ opacity: 0, height: 0 }}
                     animate={{ opacity: 1, height: 'auto' }}
                     exit={{ opacity: 0, height: 0 }}
