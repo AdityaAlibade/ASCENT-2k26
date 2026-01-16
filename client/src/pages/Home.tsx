@@ -5,7 +5,7 @@ import { RegistrationForm } from "@/components/RegistrationForm";
 import { Circle, Triangle, Square, FloatingShapes } from "@/components/ui/GameShapes";
 import { ChevronDown, Trophy, Video } from "lucide-react";
 import frontManTheme from "@assets/squid_game_1768071980984.mp3";
-import frontManImg from "@assets/FM_1768130131807.png"
+import frontManImg from "@assets/FM_1768130131807.png";
 import mainBg from "@assets/MAin_background_1768146583042.jpg";
 
 const CountdownTimer = () => {
@@ -177,12 +177,6 @@ const IntroOverlay = ({ onComplete }: { onComplete: () => void }) => {
   const [phase, setPhase] = useState<'loader' | 'video' | 'welcome' | 'frontman' | 'conditions'>('loader');
   const [step, setStep] = useState(0);
   const [isMuted, setIsMuted] = useState(false);
-  // Initialize audio with user interaction
-
-  // Try to autoplay when component mounts (may fail due to browser policy)
-  useEffect(() => {
-    // Logic for frontend theme if needed, but we removed ref.
-  }, []);
 
   useEffect(() => {
     if (phase === 'welcome') {
@@ -330,7 +324,7 @@ const IntroOverlay = ({ onComplete }: { onComplete: () => void }) => {
           100% { transform: translateX(100%); }
         }
       `}} />
-    </motion.div >
+    </motion.div>
   );
 };
 
@@ -471,7 +465,6 @@ const ConditionsAccept = ({ onComplete }: { onComplete: () => void }) => {
 import { useAudio } from "@/context/AudioContext";
 
 export default function Home() {
-  // Check if intro was already completed in this session
   const [showIntro, setShowIntro] = useState(() => !sessionStorage.getItem("introCompleted"));
   const { data: stats } = useGameStats();
   const { startMusic } = useAudio();
@@ -482,8 +475,6 @@ export default function Home() {
     setShowIntro(false);
     window.dispatchEvent(new CustomEvent('introComplete'));
   };
-
-
 
   const contacts = [
     { name: "Patel Abdul Rahman (President)", phone: "989038583", wa: "989038583" },
@@ -497,10 +488,19 @@ export default function Home() {
 
   return (
     <div
-      className="min-h-screen bg-black text-white selection:bg-primary selection:text-white overflow-hidden relative font-montserrat"
+      className="min-h-screen text-white selection:bg-primary selection:text-white overflow-hidden relative font-montserrat"
+      style={{
+        backgroundImage: `url(${mainBg})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundAttachment: 'fixed',
+        backgroundRepeat: 'no-repeat'
+      }}
     >
+      {/* Dark overlay for better text readability */}
+      <div className="absolute inset-0 bg-black/60 z-0" />
 
-
+      {/* Background effects */}
       <div className="scanline z-10" />
       <div className="vignette z-10" />
       <div className="cctv-overlay z-10" />
@@ -532,9 +532,9 @@ export default function Home() {
             A Game Where Only the Best Survives
           </p>
 
-          <p className="font-montserrat text-sm md:text-lg text-white/60 max-w-2xl mx-auto leading-relaxed tracking-wide">
+          <p className="font-montserrat text-sm md:text-lg text-white/80 max-w-2xl mx-auto leading-relaxed tracking-wide backdrop-blur-sm bg-black/30 p-6 rounded-lg">
             This competition will test your intelligence, discipline, and composure
-            under pressure.
+            under pressure. Only those who prove their worth will advance to the final round.
           </p>
 
           <div className="py-12">
@@ -547,7 +547,7 @@ export default function Home() {
               href="Registration"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              onClick={() => startMusic()} // Ensure audio plays on any user interaction
+              onClick={() => startMusic()}
               className="group relative overflow-hidden bg-primary px-12 py-5 font-orbitron font-black text-xl tracking-[0.2em] text-white transition-all hover:shadow-[0_0_30px_rgba(255,0,96,0.6)]"
             >
               <div className="absolute inset-0 bg-white/10 -translate-x-full group-hover:translate-x-0 transition-transform duration-300 ease-out skew-x-12" />
@@ -577,24 +577,15 @@ export default function Home() {
 
         </motion.div>
 
-        {/* Background Atmosphere Simulation */}
-        <div className="absolute inset-0 -z-10 overflow-hidden pointer-events-none opacity-40">
-          <div className="absolute inset-0 bg-gradient-to-b from-black via-black/80 to-black" />
+        {/* Additional background elements */}
+        <div className="absolute inset-0 -z-10 overflow-hidden pointer-events-none opacity-20">
+          <div className="absolute inset-0 bg-gradient-radial from-transparent via-black/50 to-black" />
           <motion.div
             animate={{ x: [-20, 20] }}
             transition={{ repeat: Infinity, duration: 20, ease: "linear", repeatType: "mirror" }}
             className="absolute inset-0 scale-110"
           >
             <div className="w-full h-full bg-[linear-gradient(90deg,transparent_0%,rgba(36,159,156,0.05)_50%,transparent_100%)] opacity-30" />
-          </motion.div>
-
-          <motion.div
-            animate={{ x: ["-100%", "200%"] }}
-            transition={{ repeat: Infinity, duration: 40, ease: "linear" }}
-            className="absolute bottom-1/4 left-0 w-8 h-24 flex flex-col items-center opacity-20 filter blur-[2px]"
-          >
-            <div className="w-6 h-6 bg-primary rounded-full mb-1" />
-            <div className="w-4 h-16 bg-primary rounded-sm" />
           </motion.div>
         </div>
 
@@ -609,8 +600,11 @@ export default function Home() {
 
       {/* Prize Section */}
       <section id="prizes" className="py-32 px-4 relative z-10 overflow-hidden mt-10">
-        <div className="absolute inset-0 -z-10 flex justify-center">
-          <div className="w-[700px] h-[500px] bg-primary/15 blur-[180px]" />
+        <div className="absolute inset-0 -z-10">
+          <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" />
+          <div className="absolute inset-0 flex justify-center">
+            <div className="w-[700px] h-[500px] bg-primary/10 blur-[180px]" />
+          </div>
         </div>
 
         <div className="max-w-5xl mx-auto text-center">
@@ -618,13 +612,13 @@ export default function Home() {
             initial={{ opacity: 0, scale: 0.92 }}
             whileInView={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.8, ease: "easeOut" }}
-            className="relative p-14 md:p-20 border border-primary/30 bg-black/50 backdrop-blur-xl overflow-hidden group"
+            className="relative p-14 md:p-20 border border-primary/30 bg-black/60 backdrop-blur-xl overflow-hidden group"
           >
             <div className="absolute inset-0 bg-primary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-1000" />
 
             <Trophy className="w-20 h-20 text-primary mx-auto mb-10 drop-shadow-[0_0_30px_rgba(255,0,96,0.6)]" />
 
-            <p className="text-[15px] font-mono tracking-[0.5em] text-white/40 mb-3 uppercase">
+            <p className="text-[15px] font-mono tracking-[0.5em] text-white/60 mb-3 uppercase">
               Placement Simulation Rewards
             </p>
 
@@ -637,19 +631,19 @@ export default function Home() {
             </div>
 
             <div className="grid md:grid-cols-2 gap-8 mb-12">
-              <div className="p-6 border border-white/10 bg-white/5">
+              <div className="p-6 border border-white/20 bg-black/40 backdrop-blur-sm">
                 <p className="text-primary font-orbitron text-sm tracking-widest mb-2">CHAMPION</p>
                 <p className="text-2xl font-black text-white font-orbitron">JUNIOR TRACK</p>
-                <p className="text-white/40 text-[10px] mt-2 font-mono uppercase">1st & 2nd Year Excellence</p>
+                <p className="text-white/60 text-[10px] mt-2 font-mono uppercase">1st & 2nd Year Excellence</p>
               </div>
-              <div className="p-6 border border-white/10 bg-white/5">
+              <div className="p-6 border border-white/20 bg-black/40 backdrop-blur-sm">
                 <p className="text-primary font-orbitron text-sm tracking-widest mb-2">CHAMPION</p>
                 <p className="text-2xl font-black text-white font-orbitron">SENIOR TRACK</p>
-                <p className="text-white/40 text-[10px] mt-2 font-mono uppercase">3rd & 4th Year Mastery</p>
+                <p className="text-white/60 text-[10px] mt-2 font-mono uppercase">3rd & 4th Year Mastery</p>
               </div>
             </div>
 
-            <p className="text-white/60 text-xs md:text-sm uppercase tracking-[0.35em] font-mono mb-14">
+            <p className="text-white/80 text-xs md:text-sm uppercase tracking-[0.35em] font-mono mb-14">
               The decision of the organizing committee is final.
             </p>
 
@@ -662,7 +656,7 @@ export default function Home() {
               ].map((item) => (
                 <div
                   key={item}
-                  className="p-4 border border-white/15 bg-white/5 text-white/50 hover:text-white hover:border-primary/50 transition-all duration-300"
+                  className="p-4 border border-white/20 bg-black/30 hover:bg-black/50 text-white/80 hover:text-white hover:border-primary/50 transition-all duration-300"
                 >
                   {item}
                 </div>
@@ -673,8 +667,10 @@ export default function Home() {
       </section>
 
       {/* Schedule Section */}
-      <section id="schedule" className="py-24 px-4 relative z-10 bg-transparent border-y border-white/5 mt-10">
-        <div className="max-w-4xl mx-auto">
+      <section id="schedule" className="py-24 px-4 relative z-10 overflow-hidden border-y border-white/10 mt-10">
+        <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
+        
+        <div className="max-w-4xl mx-auto relative z-10">
           <div className="text-center mb-16">
             <motion.p
               initial={{ opacity: 0 }}
@@ -701,9 +697,9 @@ export default function Home() {
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: idx * 0.1 }}
-                className="group relative flex items-center gap-6 p-8 bg-black/20 backdrop-blur-xl border border-white/10 hover:border-primary/50 hover:bg-black/40 transition-all duration-500 rounded-sm"
+                className="group relative flex items-center gap-6 p-8 bg-black/40 backdrop-blur-xl border border-white/10 hover:border-primary/50 hover:bg-black/60 transition-all duration-500 rounded-sm"
               >
-                <div className="w-16 h-16 flex flex-col items-center justify-center border border-white/10 font-orbitron group-hover:border-primary transition-colors">
+                <div className="w-16 h-16 flex flex-col items-center justify-center border border-white/20 font-orbitron group-hover:border-primary transition-colors">
                   <span className="text-xs text-white/30 group-hover:text-primary transition-colors">
                     {item.symbol}
                   </span>
@@ -724,7 +720,7 @@ export default function Home() {
                   </div>
 
                   <div className="flex items-center gap-4">
-                    <p className="font-mono text-xs text-white/40 uppercase tracking-widest">
+                    <p className="font-mono text-xs text-white/60 uppercase tracking-widest">
                       {item.date} <span className="mx-2 text-white/10">{"//"}</span> {item.time}
                     </p>
                   </div>
@@ -732,7 +728,7 @@ export default function Home() {
 
                 <div className="flex flex-col items-end gap-2">
                   <div className="w-2 h-2 rounded-full bg-primary animate-pulse shadow-[0_0_10px_#ff003c]" />
-                  <span className="text-[8px] font-mono text-white/20 uppercase tracking-[0.3em] [writing-mode:vertical-lr]">
+                  <span className="text-[8px] font-mono text-white/40 uppercase tracking-[0.3em] [writing-mode:vertical-lr]">
                     SECURED
                   </span>
                 </div>
@@ -742,7 +738,7 @@ export default function Home() {
             ))}
           </div>
 
-          <div className="mt-16 text-center opacity-150">
+          <div className="mt-16 text-center opacity-80">
             <p className="text-[13px] font-mono text-white uppercase tracking-[0.5em]">
               {"[ FAILURE TO REPORT ON ASSIGNED DAY RESULTS IN ELIMINATION ]"}
             </p>
@@ -752,6 +748,8 @@ export default function Home() {
 
       {/* Control Room Section */}
       <section id="control-room" className="py-32 px-4 relative z-10 overflow-hidden mt-10">
+        <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
+        
         <div className="max-w-3xl mx-auto text-center relative">
           <div className="absolute inset-0 -z-10 flex items-center justify-center">
             <div className="w-[600px] h-[300px] bg-primary/10 blur-[120px] animate-pulse" />
@@ -762,13 +760,13 @@ export default function Home() {
             whileInView={{ opacity: 1, y: 0 }}
             className="relative p-[1px] bg-gradient-to-b from-white/20 to-transparent backdrop-blur-2xl shadow-2xl"
           >
-            <div className="p-8 md:p-12 bg-black/60 border border-white/5 relative overflow-hidden">
+            <div className="p-8 md:p-12 bg-black/60 border border-white/10 relative overflow-hidden">
               <div className="flex justify-between items-center mb-10 border-b border-white/10 pb-6">
                 <div className="text-left">
                   <h3 className="font-orbitron font-black text-2xl tracking-[0.2em] text-white">
                     CONTROL <span className="text-primary">ROOM</span>
                   </h3>
-                  <p className="text-[9px] font-mono text-white/40 uppercase tracking-widest mt-1">
+                  <p className="text-[9px] font-mono text-white/60 uppercase tracking-widest mt-1">
                     {"Secure Channel // CAM_04 // Dormitory_H1"}
                   </p>
                 </div>
@@ -781,7 +779,7 @@ export default function Home() {
                     setActiveAction(activeAction === 'call' ? null : 'call');
                     startMusic();
                   }}
-                  className={`group relative overflow-hidden border py-5 font-orbitron font-bold text-xs tracking-[0.3em] transition-all duration-500 ${activeAction === 'call' ? 'bg-white text-black border-white' : 'bg-white/5 border-white/10 text-white hover:border-primary'
+                  className={`group relative overflow-hidden border py-5 font-orbitron font-bold text-xs tracking-[0.3em] transition-all duration-500 ${activeAction === 'call' ? 'bg-white text-black border-white' : 'bg-white/10 border-white/20 text-white hover:border-primary'
                     }`}
                 >
                   <span className="relative z-10">CALL SUPPORT</span>
@@ -793,7 +791,7 @@ export default function Home() {
                     setActiveAction(activeAction === 'message' ? null : 'message');
                     startMusic();
                   }}
-                  className={`group relative overflow-hidden border py-5 font-orbitron font-bold text-xs tracking-[0.3em] transition-all duration-500 ${activeAction === 'message' ? 'bg-white text-black border-white' : 'bg-white/5 border-white/10 text-white hover:border-primary'
+                  className={`group relative overflow-hidden border py-5 font-orbitron font-bold text-xs tracking-[0.3em] transition-all duration-500 ${activeAction === 'message' ? 'bg-white text-black border-white' : 'bg-white/10 border-white/20 text-white hover:border-primary'
                     }`}
                 >
                   <span className="relative z-10">MESSAGE CONTROL</span>
@@ -809,7 +807,7 @@ export default function Home() {
                     exit={{ opacity: 0, height: 0 }}
                     className="space-y-3 mb-10 overflow-hidden"
                   >
-                    <div className="bg-white/5 p-4 border border-white/10">
+                    <div className="bg-white/10 p-4 border border-white/20">
                       <p className="text-[10px] font-mono text-primary mb-4 tracking-[0.4em] uppercase">
                         {"[ Select_Frequency ]"}
                       </p>
@@ -820,13 +818,13 @@ export default function Home() {
                             href={activeAction === 'call' ? `tel:${contact.phone}` : `https://wa.me/${contact.wa}`}
                             target={activeAction === 'message' ? "_blank" : "_self"}
                             rel="noreferrer"
-                            className="flex items-center justify-between p-4 bg-black/40 border border-white/5 hover:border-primary group transition-all"
+                            className="flex items-center justify-between p-4 bg-black/40 border border-white/10 hover:border-primary group transition-all"
                           >
                             <div className="text-left">
                               <p className="text-xs font-bold text-white tracking-widest uppercase group-hover:text-primary transition-colors">
                                 {contact.name}
                               </p>
-                              <p className="text-[10px] font-mono text-white/30">{contact.phone}</p>
+                              <p className="text-[10px] font-mono text-white/50">{contact.phone}</p>
                             </div>
                             <div className="text-primary font-mono text-[9px] opacity-0 group-hover:opacity-100 transition-opacity">
                               {"CONNECTING >>"}
@@ -839,7 +837,7 @@ export default function Home() {
                 )}
               </AnimatePresence>
 
-              <div className="pt-8 border-t border-white/10 flex flex-col items-center">
+              <div className="pt-8 border-t border-white/20 flex flex-col items-center">
                 <div className="relative group">
                   <div className="absolute inset-0 bg-red-600 blur-2xl opacity-20 group-hover:opacity-40 transition-opacity" />
                   <div className="w-14 h-14 rounded-full bg-red-600/20 border-2 border-red-600 flex items-center justify-center relative z-10">
@@ -856,20 +854,20 @@ export default function Home() {
       </section>
 
       {/* Footer */}
-      <footer className="relative z-10 mt-32 border-t border-red-500/20 bg-black/60 backdrop-blur-sm">
-        <div className="max-w-6xl mx-auto px-6 py-10 text-center font-mono text-xs tracking-widest text-gray-500">
-          <p className="text-red-500/80">
+      <footer className="relative z-10 mt-32 border-t border-red-500/30 bg-black/80 backdrop-blur-sm">
+        <div className="max-w-6xl mx-auto px-6 py-10 text-center font-mono text-xs tracking-widest text-gray-400">
+          <p className="text-red-500/90">
             OFFICIAL INVITATION • ASCENT 2K26
           </p>
-          <p className="mt-2 text-white-600">
+          <p className="mt-2 text-white-400">
             CONTROLLED ACCESS • AUTHORIZATION REQUIRED
           </p>
-          <div className="my-4 h-px w-32 mx-auto bg-gradient-to-r from-transparent via-red-500/40 to-transparent" />
-          <p className="text-white-700">
+          <div className="my-4 h-px w-32 mx-auto bg-gradient-to-r from-transparent via-red-500/50 to-transparent" />
+          <p className="text-white-300">
             UNAUTHORIZED DISTRIBUTION STRICTLY PROHIBITED
           </p>
-          <p className="mt-3 text-[10px] text-white-700">
-            SYSTEM STATUS: <span className="text-red-500">ACTIVE</span>
+          <p className="mt-3 text-[10px] text-white-300">
+            SYSTEM STATUS: <span className="text-red-500 font-bold">ACTIVE</span>
           </p>
         </div>
       </footer>
